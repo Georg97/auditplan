@@ -1,0 +1,81 @@
+{
+	"app": {
+		"title": "ISO Audit Manager",
+		"loading": "Laden..."
+	},
+	"nav": {
+		"overview": "Übersicht",
+		"dashboard": "Dashboard",
+		"auditor_management": "Auditorenverwaltung",
+		"add_auditor": "Auditor hinzufügen",
+		"search_manage": "Suchen & Verwalten",
+		"calendar": "Kalender",
+		"import_export": "Import/Export",
+		"plan_generator": "Auditplan-Generator",
+		"report_generator": "Berichtsgenerator",
+		"notes_generator": "Notizen-Generator",
+		"audit_questions": "Auditfragen & Dokumente",
+		"action_plan": "Maßnahmenplan",
+		"settings": "Einstellungen"
+	},
+	"common": {
+		"save": "Speichern",
+		"cancel": "Abbrechen",
+		"delete": "Löschen",
+		"edit": "Bearbeiten",
+		"add": "Hinzufügen",
+		"search": "Suchen",
+		"filter": "Filtern",
+		"export": "Exportieren",
+		"import": "Importieren",
+		"close": "Schließen",
+		"confirm": "Bestätigen",
+		"back": "Zurück",
+		"next": "Weiter",
+		"yes": "Ja",
+		"no": "Nein",
+		"all": "Alle",
+		"none": "Keine",
+		"loading": "Laden...",
+		"no_data": "Keine Daten vorhanden.",
+		"required": "Pflichtfeld",
+		"actions": "Aktionen",
+		"name": "Name",
+		"email": "E-Mail",
+		"phone": "Telefon",
+		"date": "Datum",
+		"status": "Status",
+		"notes": "Notizen",
+		"description": "Beschreibung",
+		"download": "Herunterladen",
+		"upload": "Hochladen"
+	},
+	"status": {
+		"planned": "Geplant",
+		"in_progress": "In Bearbeitung",
+		"completed": "Abgeschlossen",
+		"cancelled": "Abgebrochen"
+	},
+	"auth": {
+		"login": "Anmelden",
+		"logout": "Abmelden",
+		"sign_up": "Registrieren"
+	},
+	"settings": {
+		"title": "Einstellungen",
+		"theme": "Design",
+		"language": "Sprache",
+		"compact_view": "Kompaktansicht",
+		"notifications": "Benachrichtigungen",
+		"data_management": "Daten-Management",
+		"export_data": "Daten exportieren",
+		"import_data": "Daten importieren",
+		"delete_data": "Alle Daten löschen"
+	},
+	"validation": {
+		"required": "Dieses Feld ist erforderlich.",
+		"email_invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+		"min_length": "Mindestens {{min}} Zeichen erforderlich.",
+		"max_length": "Maximal {{max}} Zeichen erlaubt."
+	}
+}
