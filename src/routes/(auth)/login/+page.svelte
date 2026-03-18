@@ -85,7 +85,8 @@
 	<!-- ========== LEFT: Brand Panel ========== -->
 	<div class="relative hidden overflow-hidden lg:flex lg:w-[45%] xl:w-[50%]">
 		<!-- Layered gradient background -->
-		<div class="absolute inset-0" style="background: linear-gradient(145deg, oklch(0.11 0.006 265), oklch(0.15 0.005 255), oklch(0.12 0.008 275));"></div>
+		<div class="absolute inset-0 bg-background dark:bg-transparent" style="background: linear-gradient(145deg, oklch(0.96 0.003 265), oklch(0.94 0.005 255), oklch(0.96 0.004 275));"></div>
+		<div class="absolute inset-0 hidden dark:block" style="background: linear-gradient(145deg, oklch(0.11 0.006 265), oklch(0.15 0.005 255), oklch(0.12 0.008 275));"></div>
 
 		<!-- Animated orbs -->
 		<div
@@ -118,7 +119,7 @@
 			<!-- Logo -->
 			<a href="/" class="group flex items-center gap-3" style="font-family: var(--font-display);">
 				<div class="from-brand to-accent-deep flex size-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg shadow-brand/10">
-					<Layers class="size-5 text-white" />
+					<Layers class="size-5 text-primary-foreground" />
 				</div>
 				<span class="text-xl font-semibold tracking-tight">
 					<span class="group-hover:text-brand transition-colors">dabs</span><span class="text-muted-foreground">stack</span>
@@ -151,7 +152,7 @@
 				<Badge class="border-brand/20 bg-brand/10 text-brand">SvelteKit</Badge>
 				<Badge class="border-accent-mid/20 bg-accent-mid/10 text-accent-mid">Tailwind</Badge>
 				<Badge class="border-accent-deep/20 bg-accent-deep/10 text-accent-deep">shadcn</Badge>
-				<Badge variant="outline" class="border-white/10 text-muted-foreground">TypeScript</Badge>
+				<Badge variant="outline" class="border-border text-muted-foreground">TypeScript</Badge>
 			</div>
 		</div>
 	</div>
@@ -161,7 +162,7 @@
 		<!-- Mobile logo -->
 		<a href="/" class="mb-10 flex items-center gap-2.5 lg:hidden" style="font-family: var(--font-display);">
 			<div class="from-brand to-accent-deep flex size-9 items-center justify-center rounded-xl bg-gradient-to-br">
-				<Layers class="size-4.5 text-white" />
+				<Layers class="size-4.5 text-primary-foreground" />
 			</div>
 			<span class="text-lg font-semibold tracking-tight">
 				<span>dabs</span><span class="text-muted-foreground">stack</span>
@@ -194,7 +195,7 @@
 			<div class="animate-fade-up" style="animation-delay: 0.1s;">
 				<Button
 					variant="outline"
-					class="group h-11 w-full border-white/[0.08] bg-white/[0.03] text-sm hover:border-brand/20 hover:bg-brand/[0.04]"
+					class="group h-11 w-full border-border bg-accent/50 text-sm hover:border-brand/20 hover:bg-brand/[0.04]"
 					onclick={handleGoogle}
 					disabled={googleLoading}
 				>
@@ -214,9 +215,9 @@
 
 			<!-- Divider -->
 			<div class="animate-fade-up relative my-7 flex items-center" style="animation-delay: 0.15s;">
-				<Separator class="flex-1 bg-white/[0.06]" />
+				<Separator class="flex-1 bg-border" />
 				<span class="text-muted-foreground/40 mx-4 text-xs tracking-widest uppercase">or</span>
-				<Separator class="flex-1 bg-white/[0.06]" />
+				<Separator class="flex-1 bg-border" />
 			</div>
 
 			<!-- Email form -->
@@ -235,7 +236,7 @@
 										name="name"
 										bind:value={name}
 										required
-										class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-white/[0.06] pl-10"
+										class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-border pl-10"
 									/>
 								</div>
 							</Field.Field>
@@ -253,7 +254,7 @@
 								name="email"
 								bind:value={email}
 								required
-								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-white/[0.06] pl-10"
+								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-border pl-10"
 							/>
 						</div>
 					</Field.Field>
@@ -274,7 +275,7 @@
 								name="password"
 								bind:value={password}
 								required
-								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-white/[0.06] pr-10 pl-10"
+								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-border pr-10 pl-10"
 							/>
 							<button
 								type="button"

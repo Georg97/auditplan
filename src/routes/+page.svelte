@@ -37,6 +37,7 @@
 	import { getRandomMsg, getTags } from '$lib/rpc/data.remote';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { ThemeSwitcher } from '$lib/components/ui/theme-switcher';
 
 	let copied = $state(false);
 	let showEffects = $state(false);
@@ -134,7 +135,7 @@
 
 <div class="grain min-h-screen overflow-hidden">
 	<!-- ========== NAV ========== -->
-	<header class="bg-background/60 fixed top-0 z-50 w-full border-b border-white/[0.06] backdrop-blur-2xl">
+	<header class="bg-background/60 fixed top-0 z-50 w-full border-b border-border backdrop-blur-2xl">
 		<nav class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
 			<a href="/" class="group font-display flex items-center gap-2 text-base font-semibold tracking-tight sm:gap-2.5 sm:text-lg" style="font-family: var(--font-display);">
 				<div class="from-brand to-accent-deep flex size-7 items-center justify-center rounded-lg bg-gradient-to-br sm:size-8">
@@ -144,9 +145,12 @@
 			</a>
 
 			<div class="flex items-center gap-1.5 sm:gap-2">
+				<div class="hidden sm:block">
+					<ThemeSwitcher />
+				</div>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<div class="bg-secondary/50 hidden items-center gap-2 rounded-full border border-white/[0.06] px-3 py-1.5 sm:flex">
+						<div class="bg-secondary/50 hidden items-center gap-2 rounded-full border border-border px-3 py-1.5 sm:flex">
 							<span class="text-muted-foreground text-xs">Effects</span>
 							<Switch bind:checked={showEffects} />
 						</div>
@@ -190,7 +194,7 @@
 			{#each sections as section}
 				<a
 					href="#{section.id}"
-					class="group flex items-center gap-3 rounded-full py-1.5 pr-3 pl-2 text-xs transition-all duration-300 {activeSection === section.id ? 'text-brand bg-brand/10' : 'text-muted-foreground/50 hover:text-muted-foreground hover:bg-white/[0.03]'}"
+					class="group flex items-center gap-3 rounded-full py-1.5 pr-3 pl-2 text-xs transition-all duration-300 {activeSection === section.id ? 'text-brand bg-brand/10' : 'text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent/50'}"
 				>
 					<span
 						class="block size-1.5 rounded-full transition-all duration-300 {activeSection === section.id ? 'bg-brand scale-125' : 'bg-muted-foreground/30 group-hover:bg-muted-foreground/50'}"
@@ -264,7 +268,7 @@
 							size="lg"
 							href="https://github.com/Georg97/dabsstack"
 							target="_blank"
-							class="border-white/10 text-base hover:border-white/20 hover:bg-white/[0.04]"
+							class="border-border text-base hover:border-border hover:bg-accent/50"
 						>
 							<Github class="mr-1.5 size-4" />
 							Source Code
@@ -275,7 +279,7 @@
 					<div class="animate-fade-up mt-8" style="animation-delay: 0.4s;">
 						<button
 							onclick={copyCommand}
-							class="group bg-secondary/40 hover:border-brand/20 hover:bg-secondary/60 flex w-full max-w-md cursor-pointer items-center gap-3 rounded-xl border border-white/[0.06] px-5 py-3.5 font-mono text-sm transition-all"
+							class="group bg-secondary/40 hover:border-brand/20 hover:bg-secondary/60 flex w-full max-w-md cursor-pointer items-center gap-3 rounded-xl border border-border px-5 py-3.5 font-mono text-sm transition-all"
 						>
 							<Terminal class="text-brand size-4 shrink-0" />
 							<code class="text-muted-foreground flex-1 text-left">
@@ -294,7 +298,7 @@
 				<div class="animate-fade-up relative hidden lg:block" style="animation-delay: 0.3s;">
 					<div class="grid grid-cols-2 gap-3">
 						<!-- Card 1: Component preview -->
-						<Card.Card class="bg-card/60 col-span-2 overflow-hidden border-white/[0.06] backdrop-blur-sm">
+						<Card.Card class="bg-card/60 col-span-2 overflow-hidden border-border backdrop-blur-sm">
 							<Card.CardHeader class="pb-3">
 								<div class="flex items-center gap-2">
 									<div class="bg-accent-deep size-2.5 rounded-full"></div>
@@ -320,19 +324,19 @@
 						</Card.Card>
 
 						<!-- Card 2: Buttons showcase -->
-						<Card.Card class="bg-card/60 border-white/[0.06] backdrop-blur-sm">
+						<Card.Card class="bg-card/60 border-border backdrop-blur-sm">
 							<Card.CardHeader class="pb-2">
 								<Card.CardTitle class="text-muted-foreground text-xs font-medium tracking-wider uppercase">Buttons</Card.CardTitle>
 							</Card.CardHeader>
 							<Card.CardContent class="space-y-2 pb-4">
 								<Button size="sm" class="from-brand to-accent-mid text-primary-foreground w-full border-0 bg-gradient-to-r">Primary</Button>
-								<Button size="sm" variant="outline" class="w-full border-white/10">Outline</Button>
+								<Button size="sm" variant="outline" class="w-full border-border">Outline</Button>
 								<Button size="sm" variant="secondary" class="w-full">Secondary</Button>
 							</Card.CardContent>
 						</Card.Card>
 
 						<!-- Card 3: Badges & Avatars -->
-						<Card.Card class="bg-card/60 border-white/[0.06] backdrop-blur-sm">
+						<Card.Card class="bg-card/60 border-border backdrop-blur-sm">
 							<Card.CardHeader class="pb-2">
 								<Card.CardTitle class="text-muted-foreground text-xs font-medium tracking-wider uppercase">Badges</Card.CardTitle>
 							</Card.CardHeader>
@@ -340,13 +344,13 @@
 								<Badge class="border-brand/20 bg-brand/10 text-brand">svelte</Badge>
 								<Badge class="border-accent-mid/20 bg-accent-mid/10 text-accent-mid">tailwind</Badge>
 								<Badge class="border-accent-deep/20 bg-accent-deep/10 text-accent-deep">shadcn</Badge>
-								<Badge variant="outline" class="border-white/10">typescript</Badge>
+								<Badge variant="outline" class="border-border">typescript</Badge>
 								<Badge class="border-green-400/20 bg-green-400/10 text-green-400/80">bun</Badge>
 							</Card.CardContent>
 						</Card.Card>
 
 						<!-- Card 4: Wide card with avatars -->
-						<Card.Card class="bg-card/60 col-span-2 border-white/[0.06] backdrop-blur-sm">
+						<Card.Card class="bg-card/60 col-span-2 border-border backdrop-blur-sm">
 							<Card.CardContent class="flex items-center justify-between py-4">
 								<div class="flex items-center gap-3">
 									<div class="flex -space-x-2">
@@ -382,9 +386,9 @@
 	<!-- ========== SEPARATOR WITH LABEL ========== -->
 	<div class="mx-auto max-w-6xl px-6 lg:px-8">
 		<div class="relative flex items-center py-4">
-			<Separator class="flex-1 bg-white/[0.06]" />
+			<Separator class="flex-1 bg-border" />
 			<span class="text-muted-foreground/50 mx-4 shrink-0 text-[10px] font-medium tracking-[0.2em] uppercase">The Stack</span>
-			<Separator class="flex-1 bg-white/[0.06]" />
+			<Separator class="flex-1 bg-border" />
 		</div>
 	</div>
 
@@ -405,7 +409,7 @@
 			</div>
 
 			<Tabs.Root value="SvelteKit" class="relative">
-				<Tabs.List class="bg-secondary/30 mb-8 flex w-full justify-start gap-1 rounded-xl border border-white/[0.06] p-1.5 backdrop-blur-sm sm:w-fit">
+				<Tabs.List class="bg-secondary/30 mb-8 flex w-full justify-start gap-1 rounded-xl border border-border p-1.5 backdrop-blur-sm sm:w-fit">
 					{#each stackItems as item}
 						<Tabs.Trigger
 							value={item.name}
@@ -418,14 +422,14 @@
 
 				{#each stackItems as item}
 					<Tabs.Content value={item.name}>
-						<Card.Card class="bg-card/40 overflow-hidden border-white/[0.06] backdrop-blur-sm">
-							<div class="grid divide-x divide-white/[0.06] md:grid-cols-[1fr_1.5fr]">
+						<Card.Card class="bg-card/40 overflow-hidden border-border backdrop-blur-sm">
+							<div class="grid divide-x divide-border md:grid-cols-[1fr_1.5fr]">
 								<Card.CardHeader class="flex flex-col justify-center p-8">
-									<div class="bg-secondary/50 mb-4 flex size-14 items-center justify-center rounded-2xl border border-white/[0.06]">
+									<div class="bg-secondary/50 mb-4 flex size-14 items-center justify-center rounded-2xl border border-border">
 										<item.icon class="size-7 {item.color}" />
 									</div>
 									<Card.CardTitle class="text-2xl" style="font-family: var(--font-display);">{item.name}</Card.CardTitle>
-									<Badge variant="outline" class="text-muted-foreground mt-2 w-fit border-white/10 text-xs">v{item.version}</Badge>
+									<Badge variant="outline" class="text-muted-foreground mt-2 w-fit border-border text-xs">v{item.version}</Badge>
 								</Card.CardHeader>
 								<Card.CardContent class="flex items-center p-8">
 									<p class="text-muted-foreground text-lg leading-relaxed">
@@ -455,7 +459,7 @@
 
 		<div class="grid gap-4 md:grid-cols-3 md:grid-rows-2">
 			<!-- Large card: Performance -->
-			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500 md:row-span-2">
+			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 overflow-hidden border-border backdrop-blur-sm transition-all duration-500 md:row-span-2">
 				<Card.CardHeader class="relative p-8 pb-4">
 					{#if showEffects}
 						<div
@@ -491,7 +495,7 @@
 			</Card.Card>
 
 			<!-- Top right: Type Safety -->
-			<Card.Card class="group bg-card/50 hover:border-accent-mid/20 hover:bg-card/70 border-white/[0.06] backdrop-blur-sm transition-all duration-500">
+			<Card.Card class="group bg-card/50 hover:border-accent-mid/20 hover:bg-card/70 border-border backdrop-blur-sm transition-all duration-500">
 				<Card.CardHeader class="p-6">
 					<div class="border-accent-mid/20 bg-accent-mid/10 mb-3 flex size-10 items-center justify-center rounded-xl border">
 						<Code class="text-accent-mid size-5" />
@@ -502,7 +506,7 @@
 			</Card.Card>
 
 			<!-- Top far right: DX -->
-			<Card.Card class="group bg-card/50 hover:border-accent-deep/20 hover:bg-card/70 border-white/[0.06] backdrop-blur-sm transition-all duration-500">
+			<Card.Card class="group bg-card/50 hover:border-accent-deep/20 hover:bg-card/70 border-border backdrop-blur-sm transition-all duration-500">
 				<Card.CardHeader class="p-6">
 					<div class="border-accent-deep/20 bg-accent-deep/10 mb-3 flex size-10 items-center justify-center rounded-xl border">
 						<Cpu class="text-accent-deep size-5" />
@@ -513,7 +517,7 @@
 			</Card.Card>
 
 			<!-- Bottom spanning: Component count -->
-			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500 md:col-span-2">
+			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 overflow-hidden border-border backdrop-blur-sm transition-all duration-500 md:col-span-2">
 				<Card.CardContent class="flex flex-col items-start justify-between gap-6 p-6 sm:flex-row sm:items-center">
 					<div>
 						<p class="text-brand text-4xl font-bold" style="font-family: var(--font-display);">50+</p>
@@ -521,7 +525,7 @@
 					</div>
 					<div class="flex flex-wrap gap-2">
 						{#each ['Button', 'Card', 'Tabs', 'Badge', 'Avatar', 'Switch', 'Tooltip', 'Dialog', 'Dropdown', 'Sheet'] as comp}
-							<Badge variant="outline" class="bg-secondary/30 text-muted-foreground hover:border-brand/20 hover:text-brand border-white/[0.06] transition-colors">
+							<Badge variant="outline" class="bg-secondary/30 text-muted-foreground hover:border-brand/20 hover:text-brand border-border transition-colors">
 								{comp}
 							</Badge>
 						{/each}
@@ -538,9 +542,9 @@
 	<!-- ========== REMOTE QUERIES SHOWCASE ========== -->
 	<div class="mx-auto max-w-6xl px-6 lg:px-8">
 		<div class="relative flex items-center py-4">
-			<Separator class="flex-1 bg-white/[0.06]" />
+			<Separator class="flex-1 bg-border" />
 			<span class="text-muted-foreground/50 mx-4 shrink-0 text-[10px] font-medium tracking-[0.2em] uppercase">Live Demo</span>
-			<Separator class="flex-1 bg-white/[0.06]" />
+			<Separator class="flex-1 bg-border" />
 		</div>
 	</div>
 
@@ -565,7 +569,7 @@
 
 			<div class="grid gap-6 md:grid-cols-2">
 				<!-- SSR: getTags() -->
-				<Card.Card class="group bg-card/50 hover:border-accent-mid/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500">
+				<Card.Card class="group bg-card/50 hover:border-accent-mid/20 hover:bg-card/70 overflow-hidden border-border backdrop-blur-sm transition-all duration-500">
 					<Card.CardHeader class="p-6 pb-4">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-3">
@@ -582,7 +586,7 @@
 					</Card.CardHeader>
 					<Card.CardContent class="p-6 pt-0">
 						<p class="text-muted-foreground mb-4 text-sm">Resolved on the server before the page renders. Zero client-side loading.</p>
-						<div class="bg-secondary/30 rounded-lg border border-white/[0.06] p-4">
+						<div class="bg-secondary/30 rounded-lg border border-border p-4">
 							<p class="text-muted-foreground/60 mb-2.5 text-xs tracking-wider uppercase">Response</p>
 							<div class="flex flex-wrap gap-1.5">
 								{#each await getTags() as tag}
@@ -594,7 +598,7 @@
 				</Card.Card>
 
 				<!-- Client: getRandomMsg() -->
-				<Card.Card class="group bg-card/50 hover:border-accent-deep/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500">
+				<Card.Card class="group bg-card/50 hover:border-accent-deep/20 hover:bg-card/70 overflow-hidden border-border backdrop-blur-sm transition-all duration-500">
 					<Card.CardHeader class="p-6 pb-4">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-3">
@@ -611,7 +615,7 @@
 					</Card.CardHeader>
 					<Card.CardContent class="p-6 pt-0">
 						<p class="text-muted-foreground mb-4 text-sm">Called at runtime with reactive loading & error states. Errors are simulated randomly.</p>
-						<div class="bg-secondary/30 rounded-lg border border-white/[0.06] p-4">
+						<div class="bg-secondary/30 rounded-lg border border-border p-4">
 							<p class="text-muted-foreground/60 mb-2.5 text-xs tracking-wider uppercase">Response</p>
 							<div class="flex min-h-[2.5rem] items-center">
 								{#if randomQuery?.error}
@@ -632,7 +636,7 @@
 						<Button
 							variant="outline"
 							size="sm"
-							class="hover:border-accent-deep/20 hover:text-accent-deep mt-4 border-white/10"
+							class="hover:border-accent-deep/20 hover:text-accent-deep mt-4 border-border"
 							onclick={() => {
 								randomQuery.refresh();
 							}}
@@ -649,9 +653,9 @@
 	<!-- ========== FORM SHOWCASE ========== -->
 	<div class="mx-auto max-w-6xl px-6 lg:px-8">
 		<div class="relative flex items-center py-4">
-			<Separator class="flex-1 bg-white/[0.06]" />
+			<Separator class="flex-1 bg-border" />
 			<span class="text-muted-foreground/50 mx-4 shrink-0 text-[10px] font-medium tracking-[0.2em] uppercase">Forms</span>
-			<Separator class="flex-1 bg-white/[0.06]" />
+			<Separator class="flex-1 bg-border" />
 		</div>
 	</div>
 
@@ -686,7 +690,7 @@
 			</div>
 
 			<!-- Right: Form -->
-			<Card.Card class="bg-card/50 overflow-hidden border-white/[0.06] backdrop-blur-sm">
+			<Card.Card class="bg-card/50 overflow-hidden border-border backdrop-blur-sm">
 				<Card.CardHeader class="p-6 pb-0">
 					<div class="mb-1 flex items-center gap-2">
 						<div class="bg-accent-deep size-2.5 rounded-full"></div>
@@ -714,7 +718,7 @@
 											placeholder="Your name"
 											name="name"
 											bind:value={$form.name}
-											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-white/[0.06]"
+											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-border"
 										/>
 										{#if $errors.name}
 											<Field.Error>{$errors.name}</Field.Error>
@@ -727,7 +731,7 @@
 											placeholder="you@example.com"
 											name="email"
 											bind:value={$form.email}
-											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-white/[0.06]"
+											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-border"
 										/>
 										{#if $errors.email}
 											<Field.Error>{$errors.email}</Field.Error>
@@ -740,7 +744,7 @@
 											placeholder="What's on your mind?"
 											name="message"
 											bind:value={$form.message}
-											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-white/[0.06]"
+											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-border"
 										/>
 										{#if $errors.message}
 											<Field.Error>{$errors.message}</Field.Error>
@@ -752,7 +756,7 @@
 										<Send class="mr-1.5 size-3.5" />
 										Submit
 									</Button>
-									<Button variant="outline" type="button" class="border-white/10 hover:border-white/20 hover:bg-white/[0.04]">Cancel</Button>
+									<Button variant="outline" type="button" class="border-border hover:border-border hover:bg-accent/50">Cancel</Button>
 								</Field.Field>
 							</Field.Set>
 						</Field.Group>
@@ -794,7 +798,7 @@
 	</section>
 
 	<!-- ========== FOOTER ========== -->
-	<footer class="border-t border-white/[0.04]">
+	<footer class="border-t border-border">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-8 lg:px-8">
 			<div class="text-muted-foreground/60 flex items-center gap-2 text-sm">
 				<div class="from-brand/40 to-accent-deep/40 flex size-5 items-center justify-center rounded bg-gradient-to-br">
