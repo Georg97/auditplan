@@ -46,6 +46,7 @@
 ### 1.1 Grundlegende Architekturanforderungen
 
 Die Anwendung muss als Svelte/SvelteKit Anwendung implementiert sein. Der Stack wurde bereits initialisiert. Hauptmerkmale vom Stack:
+
 - Drizzle ORM
 - Turso als DB Provider (Auth + Appdata)
 - Svelte 5 + SvelteKit mit den neuen Remote Functions
@@ -285,37 +286,44 @@ Am oberen Rand der Seite (ID: `page-search-manage`) **MUSS** ein prominentes Suc
 Das Audit-Formular (ID: `auditForm`) **MUSS** aus sechs Unterabschnitten bestehen, die jeweils mit einer farbigen Überschrift (Farbe: #667eea) gruppiert sind:
 
 #### Abschnitt "Grundinformationen"
+
 - **Auditname** (ID: `auditName`, PFLICHTFELD): Bezeichnung des Audits.
 - **Audittyp** (ID: `auditType`, PFLICHTFELD, Select): Optionen: "Typ wählen...", "Internes Audit", "Externes Audit", "Zertifizierungsaudit", "Überwachungsaudit", "Rezertifizierung".
 
 #### Abschnitt "Zeitplanung"
+
 - **Startdatum** (ID: `auditDate`, PFLICHTFELD, Typ: date).
 - **Enddatum** (ID: `auditEndDate`, optional, Typ: date).
 - **Uhrzeit von** (ID: `auditTimeFrom`, optional, Typ: time).
 - **Uhrzeit bis** (ID: `auditTimeTo`, optional, Typ: time).
 
 #### Abschnitt "Organisation & Standort"
+
 - **Unternehmen** (ID: `auditCompany`, PFLICHTFELD): Auditiertes Unternehmen.
 - **Abteilung/Bereich** (ID: `department`, PFLICHTFELD): Auditierte Abteilung.
 - **Standort** (ID: `auditLocation`, optional): Platzhalter: "z.B. München, Hauptsitz".
 - **Format** (ID: `auditFormat`, optional, Select): "Vor Ort", "Remote", "Hybrid".
 
 #### Abschnitt "Norm & Geltungsbereich"
+
 - **Auditierte Standards** (5 Checkboxen, Klasse: `audit-standard`): ISO 9001 (QM), ISO 14001 (UM), ISO 45001 (AMS), ISO 50001 (EnMS), ISO 27001 (ISMS), Andere.
 - **Geltungsbereich** (ID: `auditScope`, textarea, 2 Zeilen): Platzhalter: "z.B. Entwicklung und Vertrieb von Softwarelösungen".
 
 #### Abschnitt "Personal"
+
 - **Leitender Auditor** (ID: `auditor`, PFLICHTFELD, Select): Dynamisch mit registrierten Auditoren befüllt.
 - **Auditteam** (ID: `auditTeam`, optional): Weitere Teammitglieder, Platzhalter: "z.B. Max Müller, Anna Schmidt".
 - **Ansprechpartner** (ID: `auditContact`, optional): Hauptkontaktperson beim Kunden.
 - **Kontakt-E-Mail** (ID: `auditContactEmail`, optional, Typ: email).
 
 #### Abschnitt "Status & Planung"
+
 - **Status** (ID: `status`, PFLICHTFELD, Select): "geplant", "in-bearbeitung", "abgeschlossen", "verschoben", "abgesagt".
 - **Geplante Dauer** (ID: `auditDuration`, optional, Typ: number, min: 0, step: 0.5): Dauer in Tagen, Platzhalter: "z.B. 1.5".
 - **Auditziele** (ID: `auditObjectives`, textarea, 2 Zeilen): Platzhalter: "z.B. Überprüfung der Wirksamkeit des QM-Systems".
 
 #### Abschnitt "Notizen & Dokumente"
+
 - **Notizen** (ID: `notes`, textarea, 3 Zeilen).
 - **Dokumente/Links** (ID: `auditDocuments`, textarea, 2 Zeilen).
 - **Datei-Upload** (ID: `auditFiles`, Typ: file, multiple): Akzeptierte Formate: PDF, Word, Excel, PowerPoint, Text, Bilder (max. 5MB pro Datei). Der Hilfetext **MUSS** die erlaubten Formate auflisten. Nach dem Upload **MUSS** ein "Dateien anzeigen"-Button (ID: `showFilesPreviewBtn`) erscheinen und die Anzahl der Dateien (ID: `filesCount`) aktualisiert werden.
@@ -363,18 +371,21 @@ Das Modal **MUSS** einen "Abbrechen"-Button und einen "Speichern"-Button enthalt
 Die Import/Export-Seite (ID: `page-import-export`) **MUSS** drei nebeneinander angeordnete Optionskarten (Klasse: `ie-card`, Grid-Layout mit `minmax(300px, 1fr)`) anzeigen:
 
 ### 10.2 Karte 1: Daten exportieren
+
 - Überschrift: "📤 Daten exportieren"
 - Beschreibung: "Exportieren Sie alle Ihre Audit-Daten und Auditor-Informationen als JSON-Datei."
 - Button (ID: `exportAllData`, Klasse: `btn btn-primary`): "Alle Daten exportieren"
-- **Anforderung**: Beim Klick **MUSS** die Funktion `exportData()` aufgerufen werden, die alle Daten aus allen localStorage-Schlüsseln (audits, auditors, saved_notes, saved_plans, calendar_entries, actions, settings, saved_audits, saved_audit_questions) in ein JSON-Objekt zusammenfasst und als Datei `auditplan_backup_{timestamp}.json` herunterlädt.
+- **Anforderung**: Beim Klick **MUSS** die Funktion `exportData()` aufgerufen werden, die alle Daten aus allen localStorage-Schlüsseln (audits, auditors, saved*notes, saved_plans, calendar_entries, actions, settings, saved_audits, saved_audit_questions) in ein JSON-Objekt zusammenfasst und als Datei `auditplan_backup*{timestamp}.json` herunterlädt.
 
 ### 10.3 Karte 2: Daten importieren
+
 - Überschrift: "📥 Daten importieren"
 - Beschreibung: "Importieren Sie zuvor exportierte Daten aus einer JSON-Datei."
 - Datei-Input (ID: `importAllData`, akzeptiert: `.json`, versteckt): Der sichtbare Button ist ein `<label>`, das als Button gestylt ist.
 - **Anforderung**: Die Funktion `importData(e)` **MUSS** die JSON-Datei lesen, validieren und alle enthaltenen Daten in die entsprechenden localStorage-Schlüssel schreiben. Anschließend **MÜSSEN** alle UI-Komponenten aktualisiert werden.
 
 ### 10.4 Karte 3: CSV Export
+
 - Überschrift: "📄 CSV Export"
 - Beschreibung: "Exportieren Sie Audit-Daten als CSV-Datei für Excel."
 - Button (ID: `exportCSV`, Klasse: `btn btn-secondary`): "Als CSV exportieren"
@@ -397,12 +408,14 @@ Der Auditplan-Generator (ID: `page-plan-generator`) ist das **Kernmodul** der An
 ### 11.2 Abschnitt: Auditplan (ZN und Logo)
 
 #### ZN-Verwaltung (Zertifizierungsnummern)
+
 - Eingabefeld (ID: `znInput`, Standardwert: "01 ") mit "Hinzufügen"-Button (ID: `addZnBtn`).
 - Die ZN-Nummern werden in einem Array `znNumbers` gespeichert und als Pillenbadges in einem Flexbox-Container (ID: `znList`) dargestellt.
 - Jede ZN-Pille **MUSS** einen Lösch-Button (×) enthalten, der die ZN aus dem Array entfernt.
 - Im Word-Export erscheinen die ZN-Nummern auf dem Deckblatt.
 
 #### Logo-Upload
+
 - Datei-Input (ID: `plan_logo`, akzeptiert: `image/*`).
 - Vorschau-Container (ID: `plan_logo_preview`) mit gestricheltem Rahmen (`border: 2px dashed`), minimaler Höhe 150px und Platzhaltertext "Logo wird hier angezeigt".
 - "Logo entfernen"-Button (ID: `remove_plan_logo_btn`, standardmäßig versteckt).
@@ -411,17 +424,21 @@ Der Auditplan-Generator (ID: `page-plan-generator`) ist das **Kernmodul** der An
 ### 11.3 Abschnitt: Grunddaten
 
 #### Auftraggeber
+
 - Textarea (ID: `auftraggeber`, 4 Zeilen): Platzhalter mit Zeilenumbrüchen: "Firmenname\nStraße Hausnummer\nPLZ Ort". Unterhalb des Feldes **MUSS** ein Hilfetext stehen: "Sofern vom Auftraggeber keine Änderungen des Auditplans bis 1 Woche vor dem Audittermin eingehen, so gilt dieser als genehmigt."
 
 #### Standort(e) / Produktionsstätte(n)
+
 - Dynamische Liste (Container-ID: `standorteContainer`) mit "Standort hinzufügen"-Button (onclick: `addStandort()`).
 - Jeder hinzugefügte Standort **MUSS** als editierbares Feld mit eigenem Lösch-Button erscheinen.
 - Die Standorte werden im Array `standorteList` gespeichert und bei Speicherung/Wiederherstellung berücksichtigt.
 
 #### Geltungsbereich
+
 - Textarea (ID: `geltungsbereich`, 2 Zeilen): Platzhalter: "z.B. Herstellung von Präzisionsteilen für die Automobilindustrie".
 
 #### Normgrundlage / Auditkriterien
+
 - Custom-Multiselect mit durchsuchbarem Dropdown (Klasse: `custom-multiselect`).
 - Auswahlfeld (ID: `criteriaSelectedDisplay`) mit Pfeil-Symbol, das beim Klick den Dropdown (ID: `criteriaDropdown`) ein-/ausblendet.
 - **5 Checkboxen** (Standard: ISO 9001, 14001, 45001, 50001 aktiviert, ISO 27001 deaktiviert): ISO 9001:2015, ISO 14001:2015, ISO 45001:2018, ISO 50001:2018, ISO 27001:2022.
@@ -430,20 +447,24 @@ Der Auditplan-Generator (ID: `page-plan-generator`) ist das **Kernmodul** der An
 ### 11.4 Abschnitt: Auditdetails
 
 #### Auditart (Durchsuchbarer Multiselect)
+
 - Container (ID: `auditart_container`, Klasse: `auditart-multiselect-container`).
 - Hidden Input (ID: `auditart_hidden`) für den tatsächlichen Formularwert.
 - Suchfeld (ID: `auditart_search`): Echtzeit-Filterung der 16 vordefinierten Auditarten + Möglichkeit zur eigenen Eingabe über Custom-Input (ID: `auditart_custom_input`) und "Hinzufügen"-Button (onclick: `addCustomAuditart()`).
 - **16 vordefinierte Auditarten:** Erstzertifizierung, Überwachungsaudit, Rezertifizierung, Sonderaudit, Integrationsaudit, Erweiterungsaudit, Vorabaudit, Pre-Assessment, Follow-up Audit, Systemaudit, Prozessaudit, Produktaudit, Remote Audit, Kombiniertes Audit, Angekündigtes Audit, Unangekündigtes Audit.
 
 #### Beauftragter des Kunden
+
 - Textfeld (ID: `beauftragter`): Platzhalter: "Ansprechpartner beim Kunden".
 
 #### Auditziel
+
 - Textarea (ID: `auditziel`, 8 Zeilen, standardmäßig readonly, Hintergrund: #f8f9fa).
 - Der Standardtext **MUSS** ein professionell formuliertes Auditziel zur Überprüfung des Managementsystems enthalten.
 - Checkbox (ID: `customAuditziel`, Label: "Auditziel anpassen"): Beim Aktivieren **MUSS** die Textarea editierbar werden (readonly entfernt, Hintergrund auf weiß).
 
 #### Auditsprache(n)
+
 - Custom-Multiselect mit 14 Sprachen: Deutsch (Standard: aktiviert), Englisch, Französisch, Spanisch, Italienisch, Niederländisch, Polnisch, Tschechisch, Russisch, Türkisch, Chinesisch, Japanisch, Arabisch, Portugiesisch.
 
 ### 11.5 Abschnitt: Audit-Team
@@ -516,6 +537,7 @@ Der generierte Bericht **MUSS** im Container (ID: `generatedReport`) angezeigt w
 ### 13.1 Aktionsleiste
 
 Die Seite (ID: `page-notes-generator`) **MUSS** eine Aktionsleiste mit drei Buttons enthalten:
+
 - **"Speichern"** (onclick: `saveAuditNotes()`): Speichert alle Notizen in localStorage.
 - **"Generieren"** (Typ: submit, Formular: `notesGeneratorForm`): Generiert das Word-Dokument.
 - **"Zurücksetzen"** (ID: `resetNotesBtn`): Setzt das Formular zurück.
@@ -527,22 +549,27 @@ Das Formular **MUSS** ein zweispaltiges Layout haben: links die Eingabefelder, r
 #### Linke Spalte — Formularfelder (in 4 Reihen à 2 Felder):
 
 **Reihe 1:**
+
 - **Firma/Auftraggeber** (ID: `notes_client`): Platzhalter: "z.B. Jongen Werkzeugtechnik GmbH".
 - **Standard(s)** (ID: `notes_standards`): Platzhalter: "z.B. ISO 9001:2015".
 
 **Reihe 2:**
+
 - **Zertifikat** (ID: `notes_certificate`): Platzhalter: "z.B. 01 100 2200342".
 - **Auditart** (ID: `notes_audit_type`): Platzhalter: "z.B. RA".
 
 **Reihe 3:**
+
 - **Datum (von — bis)**: Zwei Datumfelder (IDs: `notes_header_date_from`, `notes_header_date_to`).
 - **Standort(e)** (ID: `notes_location`): Platzhalter: "Standort eingeben".
 
 **Reihe 4:**
+
 - **Auditor** (ID: `notes_auditor`): Platzhalter: "Auditor Name".
 - **Seite (von — bis)**: Zwei Textfelder (IDs: `notes_page_from`, `notes_page_to`), Platzhalter: "1" und "5".
 
 #### Rechte Spalte — Logo-Upload:
+
 - Datei-Input (ID: `notes_logo`, akzeptiert: `image/*`).
 - Vorschau (ID: `logo_preview`, gestrichelter Rahmen, 150px Mindesthöhe).
 - "Logo entfernen"-Button (ID: `remove_logo_btn`).
@@ -554,6 +581,7 @@ Siehe Kapitel [24. Block-Management-System](#24-block-management-system) für di
 ### 13.4 Export-Optionen
 
 Jeder Notizen-Block **MUSS** drei Checkboxen zur Steuerung des Word-Exports enthalten:
+
 - **Dokumente anzeigen** (Standard: aktiviert) — steuert ob QHSE-Dokumente im Word erscheinen.
 - **Bewertung anzeigen** (Standard: aktiviert) — steuert ob Bewertungsfelder und Zusammenfassung im Word erscheinen.
 - **Notizen anzeigen** (Standard: aktiviert) — steuert ob Notizen im Word erscheinen.
@@ -579,6 +607,7 @@ Jeder Notizen-Block **MUSS** drei Checkboxen zur Steuerung des Word-Exports enth
 ### 14.3 Automatische Fragengenerierung
 
 Bei Auswahl einer Abteilung und/oder Norm **MUSS** die Funktion `loadAuditQuestions()` aufgerufen werden, die:
+
 - Relevante Auditfragen aus der Wissensdatenbank (`auditQuestionsData`) lädt und im Container (ID: `questions_list`) als nummerierte Liste anzeigt.
 - Relevante Dokumente zur Einsichtnahme im Container (ID: `documents_list`) als Aufzählungsliste anzeigt.
 - Den Abteilungstitel (ID: `department_title`) aktualisiert.
@@ -598,11 +627,13 @@ Bei Auswahl einer Abteilung und/oder Norm **MUSS** die Funktion `loadAuditQuesti
 Der Maßnahmenplan (ID: `page-action-plan`) **MUSS** eine zweireihige Filterleiste mit sechs Filtern bereitstellen, die bei jeder Änderung die Funktion `filterActions()` aufrufen:
 
 **Reihe 1:**
+
 - **Feststellungsart** (ID: `action_type_filter`): Alle, Hauptabweichung, Nebenabweichung, Beobachtung/Hinweis, Verbesserungspotenzial, Positive Feststellung, Risiko/Chance.
 - **Status** (ID: `action_status_filter`): Alle, Offen, In Bearbeitung, Abgeschlossen, Überfällig.
 - **Audittyp** (ID: `action_audit_type_filter`): Alle, Internes Audit, Externes Audit, Zertifizierungsaudit, Lieferantenaudit, Kundenaudit.
 
 **Reihe 2:**
+
 - **Verantwortlicher** (ID: `action_responsible_filter`): Dynamisch aus vorhandenen Daten befüllt.
 - **Priorität** (ID: `action_priority_filter`): Alle, Hoch, Mittel, Niedrig.
 - **Norm** (ID: `action_standard_filter`): Alle, ISO 9001, ISO 14001, ISO 45001, ISO 50001, ISO 27001, Andere.
@@ -610,6 +641,7 @@ Der Maßnahmenplan (ID: `page-action-plan`) **MUSS** eine zweireihige Filterleis
 ### 15.2 Maßnahmen-Felder
 
 Jede Maßnahme **MUSS** folgende Felder enthalten:
+
 - **Feststellungsbeschreibung** (Textarea): Detaillierte Beschreibung der Feststellung.
 - **Feststellungsart** (Select): Farbkodierte Auswahl (Rot für Hauptabweichung, Gelb für Nebenabweichung, etc.).
 - **Geplante Maßnahme** (Textarea): Beschreibung der Korrekturmaßnahme.
@@ -636,30 +668,38 @@ Das Einstellungsmodal (ID: `settingsModal`, Klasse: `modal`) **MUSS** beim Klick
 ### 16.2 Farbschemata
 
 #### Globale Farbschemata (23 Themes)
+
 Im Tab "Global" **MÜSSEN** 18 vordefinierte Farbschemata als quadratische Farbvorschauen in einem Grid angezeigt werden. Jedes Theme definiert: Body-Hintergrund (Gradient), Header-Hintergrund, Button-Farben, Navigations-Highlight, Karten-Überschriften und Modal-Header-Farbe. Die Themes sind:
 
 Default (#667eea → #764ba2), Dark (#2d3436 → #000000), Light (#f8f9fa → #e9ecef), Green (#1cc88a → #13855c), Blue (#4e73df → #224abe), Red (#e74c3c → #c0392b), Purple (#9b59b6 → #8e44ad), Orange (#f39c12 → #e67e22), Cyan (#00cec9 → #00b894), Pink (#fd79a8 → #e84393), Yellow (#f1c40f → #f39c12), Indigo (#6c5ce7 → #5f27cd), Teal (#16a085 → #1abc9c), Rose (#e84393 → #fd79a8), Emerald (#2ecc71 → #27ae60), Sky (#74b9ff → #0984e3), Slate (#636e72 → #2d3436).
 
 #### Individuelle Bereichsfarben
+
 Im Tab "Individuelle Bereiche" **MÜSSEN** drei Farbauswahlen bereitgestellt werden:
+
 - **Header-Farbe** (ID: `headerColor`): Optionen: inherit (Standard), default, blue, green, red, purple, orange.
 - **Navigations-Farbe** (ID: `navColor`): Gleiche Optionen.
 - **Karten-Farbe** (ID: `cardColor`): Gleiche Optionen.
 
 ### 16.3 Kompaktansicht
+
 - Checkbox (ID: `compactView`): "Kompakte Ansicht" — reduziert Paddings und Schriftgrößen in der gesamten Anwendung.
 
 ### 16.4 Benachrichtigungen
+
 - Checkbox (ID: `showNotifications`, Standard: aktiviert): "Benachrichtigungen anzeigen" — steuert ob Erfolgs- und Fehlermeldungen angezeigt werden.
 
 ### 16.5 Sprache
+
 - Select (ID: `languageSelect`): 10 Sprachen — Deutsch (de), English (en), Français (fr), Español (es), Italiano (it), Nederlands (nl), Português (pt), Polski (pl), Русский (ru), Türkçe (tr).
 
 ### 16.6 Standard-Einstellungen
+
 - **Standard-Auditor** (ID: `defaultAuditor`): Vorausgefüllter Auditorname in Formularen.
 - **Standard-Abteilung** (ID: `defaultDepartment`): Vorausgefüllte Abteilung.
 
 ### 16.7 Daten-Management im Einstellungsmodal
+
 - **Export (JSON)** (ID: `exportData`): Identisch mit Import/Export-Seite.
 - **Import** (ID: `importData`): Datei-Upload für JSON-Import.
 - **Alle Daten löschen** (ID: `clearData`, Klasse: `btn btn-danger`): Löscht ALLE Daten aus localStorage mit Bestätigungsdialog.
@@ -748,6 +788,7 @@ Die Funktion `generateNotesWordDocumentFromBlocks(data)` (asynchron, ca. 540 Zei
 ### 19.2 Datensammlung
 
 Die Funktion sammelt die Daten direkt aus den Formularelementen des Auditplan-Generators:
+
 - Auftraggeber, Standorte, Geltungsbereich aus den Grunddaten-Feldern.
 - Auditart aus dem Hidden-Input `auditart_hidden`.
 - ISO-Standards aus der `ausgewaehlteKriterien`-Textarea.
@@ -804,6 +845,7 @@ Ein Fallback-Text von 7 Sätzen, der verwendet wird, wenn für die gewählte Abt
 ### 21.5 ISO-Normkapitel
 
 Für jede der 5 unterstützten ISO-Normen **MUSS** eine vollständige Kapitelliste vorhanden sein:
+
 - **ISO 9001:2015** (~80 Kapitel, von 4.1 bis 10.3): Gespeichert in `normkapitel`.
 - **ISO 14001:2015** (~44 Kapitel): Gespeichert in `normkapitelISO14001`.
 - **ISO 45001:2018** (~47 Kapitel): Gespeichert in `normkapitelISO45001`.
@@ -843,6 +885,7 @@ Jeder Notizen-Block enthält sechs Toggles:
 ### 22.3 Toggle-Zustandserhaltung
 
 Alle Toggle-Zustände **MÜSSEN** bei folgenden Operationen vollständig erhalten bleiben:
+
 - Block duplizieren (`duplicateAuditBlock()`, `duplicateNotesBlock()`).
 - Block-Reihenfolge ändern (Verschieben, Drag & Drop).
 - Plan/Notizen speichern (`saveAuditPlan()`, `saveAuditNotes()`).
@@ -871,6 +914,7 @@ Identische Logik wie 23.1, implementiert in den Funktionen `handleDepartmentSele
 ### 23.3 Auto-Fill-Schutz-Logik
 
 Der Auto-Fill-Schutz **MUSS** sicherstellen, dass manuell bearbeitete Felder nie überschrieben werden. Die Prüfung erfolgt durch Vergleich des aktuellen Feldwerts mit:
+
 - Leerer String (Feld ist leer → darf befüllt werden)
 - `zusammenfassungDefaultText` (generischer Text → darf durch spezifischen ersetzt werden)
 - Alle Werte in `Object.values(zusammenfassungBeschreibungen)` (ein anderer auto-befüllter Text → darf ersetzt werden)
@@ -902,6 +946,7 @@ Jede Zeile enthält folgende Felder (ID-Schema: `block_{blockId}_row_{rowId}_{fe
 #### Notizen-Panel pro Zeile
 
 Aufklappbar über einen Stift-Button. Enthält sechs Textarea-Felder:
+
 - Beschreibung (5 Zeilen, auto-befüllt)
 - Vorstellung (2 Zeilen, Standardtext)
 - Allgemein (2 Zeilen, Standardtext)
@@ -954,6 +999,7 @@ Bewertungsfelder werden im Objekt `additionalFields` als `{blockId: [{id, type, 
 ### 26.2 Feldtypen
 
 Das Typ-Feld (Select) **MUSS** folgende Optionen bieten:
+
 - Abweichung (Hauptabweichung)
 - Nebenabweichung
 - Beobachtung
@@ -978,6 +1024,7 @@ Das Kapitel-Feld (Multiselect) **MUSS** die ISO-Normkapitel anzeigen, die für d
 ### 27.1 Akzeptierte Formate
 
 Die Anwendung **MUSS** folgende Dateiformate akzeptieren:
+
 - Dokumente: PDF (.pdf), Word (.doc, .docx)
 - Tabellen: Excel (.xls, .xlsx)
 - Präsentationen: PowerPoint (.ppt, .pptx)
@@ -1003,18 +1050,18 @@ Die Anwendung **MUSS** folgende Dateiformate akzeptieren:
 
 ### 28.1 localStorage-Schlüssel
 
-| Schlüssel | Datentyp | Inhalt | Gelesen von | Geschrieben von |
-|---|---|---|---|---|
-| `audits` | JSON Array | Alle Audit-Datensätze | `displayAudits()`, `updateDashboard()` | `addAudit()`, `editAudit()`, `deleteAudit()` |
-| `auditors` | JSON Array | Alle Auditorenprofile | `displayAuditors()`, `updateAuditorSelect()` | `addAuditor()`, `editAuditor()`, `deleteAuditor()` |
-| `saved_plans` | JSON Array | Gespeicherte Auditpläne | `updateSavedPlansDisplay()` | `saveAuditPlan()` |
-| `saved_notes` | JSON Array | Gespeicherte Auditnotizen | `updateSavedNotesDisplay()` | `saveAuditNotes()` |
-| `saved_audits` | JSON Array | Gespeicherte Auditfragen | `updateSavedAuditsDisplay()` | `saveAuditForm()` |
-| `saved_audit_questions` | JSON Array | Auditfragen-Vorlagen | `loadSavedAudit()` | `saveAuditForm()` |
-| `calendar_entries` | JSON Array | Kalendereinträge | `renderCalendar()` | `saveCalendarEntry()` |
-| `actions` | JSON Array | Maßnahmenplan-Einträge | `loadActions()`, `filterActions()` | `addNewAction()`, `saveAction()` |
-| `auditplan_logo` | String (Base64) | Firmenlogo | `loadSavedLogo()` | `processLogoUpload()` |
-| `settings` | JSON Object | Einstellungen (Theme, Sprache, etc.) | `loadSettingsToForm()` | `saveSettings()` |
+| Schlüssel               | Datentyp        | Inhalt                               | Gelesen von                                  | Geschrieben von                                    |
+| ----------------------- | --------------- | ------------------------------------ | -------------------------------------------- | -------------------------------------------------- |
+| `audits`                | JSON Array      | Alle Audit-Datensätze                | `displayAudits()`, `updateDashboard()`       | `addAudit()`, `editAudit()`, `deleteAudit()`       |
+| `auditors`              | JSON Array      | Alle Auditorenprofile                | `displayAuditors()`, `updateAuditorSelect()` | `addAuditor()`, `editAuditor()`, `deleteAuditor()` |
+| `saved_plans`           | JSON Array      | Gespeicherte Auditpläne              | `updateSavedPlansDisplay()`                  | `saveAuditPlan()`                                  |
+| `saved_notes`           | JSON Array      | Gespeicherte Auditnotizen            | `updateSavedNotesDisplay()`                  | `saveAuditNotes()`                                 |
+| `saved_audits`          | JSON Array      | Gespeicherte Auditfragen             | `updateSavedAuditsDisplay()`                 | `saveAuditForm()`                                  |
+| `saved_audit_questions` | JSON Array      | Auditfragen-Vorlagen                 | `loadSavedAudit()`                           | `saveAuditForm()`                                  |
+| `calendar_entries`      | JSON Array      | Kalendereinträge                     | `renderCalendar()`                           | `saveCalendarEntry()`                              |
+| `actions`               | JSON Array      | Maßnahmenplan-Einträge               | `loadActions()`, `filterActions()`           | `addNewAction()`, `saveAction()`                   |
+| `auditplan_logo`        | String (Base64) | Firmenlogo                           | `loadSavedLogo()`                            | `processLogoUpload()`                              |
+| `settings`              | JSON Object     | Einstellungen (Theme, Sprache, etc.) | `loadSettingsToForm()`                       | `saveSettings()`                                   |
 
 ### 28.2 Datenintegrität
 

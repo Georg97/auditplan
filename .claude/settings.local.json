@@ -9,7 +9,14 @@
       "WebFetch(domain:ghuntley.com)",
       "Bash(ls /c/Users/GeorgHirsch/development/github/Georg97/auditplan/eslint.config.*)",
       "Bash(grep -r \"dropdown\\\\|select\\\\|menu\" /c/Users/GeorgHirsch/development/github/Georg97/auditplan/src/lib/components/ui --include=*.svelte -l)",
-      "Bash(grep -r \"ModeWatcher\\\\|createInitialMode\\\\|mode-watcher\" /c/Users/GeorgHirsch/development/github/Georg97/auditplan --include=*.json --include=*.ts --include=*.js --include=*.svelte -l)"
+      "Bash(grep -r \"ModeWatcher\\\\|createInitialMode\\\\|mode-watcher\" /c/Users/GeorgHirsch/development/github/Georg97/auditplan --include=*.json --include=*.ts --include=*.js --include=*.svelte -l)",
+      "Bash(find ./src/routes -name *signup* -o -name *register*)",
+      "Bash(ls:*)",
+      "Bash(grep -r \"$session\\\\|$user\\\\|locals.user\\\\|locals.session\" ./src --include=\"*.svelte\" --include=\"*.ts\")",
+      "Bash(make test:*)",
+      "Bash(grep:*)",
+      "Bash(grep -r \"svelte-i18n\\\\|@inlang\\\\|i18n\" C:UsersGeorgHirschdevelopmentgithubGeorg97auditplan --include=*.json --include=*.ts --include=*.js)",
+      "Bash(cat /c/Users/GeorgHirsch/development/github/Georg97/auditplan/src/routes/\\\\\\(auth\\\\\\)/+layout.server.ts)"
     ]
   }
 }
