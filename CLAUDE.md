@@ -206,3 +206,7 @@
 ## Learnings
 
 (Ralph adds discovered patterns and gotchas here)
+- shadcn-svelte CLI: use `@latest` (not `@next`) with `echo "y" | bunx shadcn-svelte@latest add ... --overwrite` for non-interactive install. The `--no-git` flag does not exist.
+- The `.vercel/` build output directory must be in eslint ignores to avoid linting generated code.
+- Prettier SyntaxError on `columns: [...]` in specs/01-architektur.md code blocks is a harmless warning — prettier still reports all files pass.
+- `copy-button` component depends on `ButtonPropsWithoutHTML` which was removed in newer shadcn button — fixed to use `ButtonVariant`/`ButtonSize` directly.
