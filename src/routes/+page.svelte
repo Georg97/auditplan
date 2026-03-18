@@ -39,7 +39,7 @@
 	import { goto } from '$app/navigation';
 
 	let copied = $state(false);
-	let showEffects = $state(true);
+	let showEffects = $state(false);
 	let activeSection = $state('hero');
 
 	const sections = [
@@ -101,28 +101,28 @@
 			version: '2.x',
 			description: 'Cybernetically enhanced web apps. File-based routing, SSR, and a compiler that turns your components into surgical DOM updates.',
 			icon: Zap,
-			color: 'text-amber'
+			color: 'text-brand'
 		},
 		{
 			name: 'Tailwind CSS',
 			version: '4.0',
 			description: 'A new engine rewritten from scratch. Zero-config, lightning fast, CSS-native. The utility framework that won.',
 			icon: Palette,
-			color: 'text-copper'
+			color: 'text-accent-mid'
 		},
 		{
 			name: 'shadcn-svelte',
 			version: 'latest',
 			description: 'Beautifully designed components you copy into your project. Accessible, customizable, and yours to own forever.',
 			icon: Box,
-			color: 'text-terracotta'
+			color: 'text-accent-deep'
 		},
 		{
 			name: 'TypeScript',
 			version: '5.x',
 			description: 'Type safety without the ceremony. Catch errors before they happen, get autocomplete everywhere.',
 			icon: Code,
-			color: 'text-amber'
+			color: 'text-brand'
 		}
 	];
 </script>
@@ -137,10 +137,10 @@
 	<header class="bg-background/60 fixed top-0 z-50 w-full border-b border-white/[0.06] backdrop-blur-2xl">
 		<nav class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
 			<a href="/" class="group font-display flex items-center gap-2 text-base font-semibold tracking-tight sm:gap-2.5 sm:text-lg" style="font-family: var(--font-display);">
-				<div class="from-amber to-terracotta flex size-7 items-center justify-center rounded-lg bg-gradient-to-br sm:size-8">
+				<div class="from-brand to-accent-deep flex size-7 items-center justify-center rounded-lg bg-gradient-to-br sm:size-8">
 					<Layers class="text-primary-foreground size-3.5 sm:size-4" />
 				</div>
-				<span class="group-hover:text-amber transition-colors">dabs</span><span class="text-muted-foreground">stack</span>
+				<span class="group-hover:text-brand transition-colors">dabs</span><span class="text-muted-foreground">stack</span>
 			</a>
 
 			<div class="flex items-center gap-1.5 sm:gap-2">
@@ -175,7 +175,7 @@
 						<Tooltip.Content>Sign out</Tooltip.Content>
 					</Tooltip.Root>
 				{:else}
-					<Button size="sm" href="/login" class="from-amber to-copper text-primary-foreground border-0 bg-gradient-to-r text-xs hover:opacity-90 sm:text-sm">
+					<Button size="sm" href="/login" class="from-brand to-accent-mid text-primary-foreground border-0 bg-gradient-to-r text-xs hover:opacity-90 sm:text-sm">
 						Sign In
 						<ArrowRight class="ml-1 size-3.5" />
 					</Button>
@@ -190,10 +190,10 @@
 			{#each sections as section}
 				<a
 					href="#{section.id}"
-					class="group flex items-center gap-3 rounded-full py-1.5 pr-3 pl-2 text-xs transition-all duration-300 {activeSection === section.id ? 'text-amber bg-amber/10' : 'text-muted-foreground/50 hover:text-muted-foreground hover:bg-white/[0.03]'}"
+					class="group flex items-center gap-3 rounded-full py-1.5 pr-3 pl-2 text-xs transition-all duration-300 {activeSection === section.id ? 'text-brand bg-brand/10' : 'text-muted-foreground/50 hover:text-muted-foreground hover:bg-white/[0.03]'}"
 				>
 					<span
-						class="block size-1.5 rounded-full transition-all duration-300 {activeSection === section.id ? 'bg-amber scale-125' : 'bg-muted-foreground/30 group-hover:bg-muted-foreground/50'}"
+						class="block size-1.5 rounded-full transition-all duration-300 {activeSection === section.id ? 'bg-brand scale-125' : 'bg-muted-foreground/30 group-hover:bg-muted-foreground/50'}"
 					></span>
 					{section.label}
 				</a>
@@ -207,15 +207,15 @@
 		{#if showEffects}
 			<div
 				class="animate-float-slower pointer-events-none absolute top-20 -left-32 size-[500px] rounded-full opacity-20 blur-[120px]"
-				style="background: radial-gradient(circle, var(--amber), transparent 70%);"
+				style="background: radial-gradient(circle, var(--brand), transparent 70%);"
 			></div>
 			<div
 				class="animate-float-slow pointer-events-none absolute -right-20 bottom-40 size-[400px] rounded-full opacity-15 blur-[100px]"
-				style="background: radial-gradient(circle, var(--terracotta), transparent 70%);"
+				style="background: radial-gradient(circle, var(--accent-deep), transparent 70%);"
 			></div>
 			<div
 				class="pointer-events-none absolute top-1/2 left-1/2 size-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.07] blur-[80px]"
-				style="background: radial-gradient(circle, var(--copper), transparent 60%);"
+				style="background: radial-gradient(circle, var(--accent-mid), transparent 60%);"
 			></div>
 		{/if}
 
@@ -223,7 +223,7 @@
 		{#if showEffects}
 			<div
 				class="pointer-events-none absolute inset-0 opacity-[0.03]"
-				style="background-image: linear-gradient(var(--cream) 1px, transparent 1px), linear-gradient(90deg, var(--cream) 1px, transparent 1px); background-size: 60px 60px;"
+				style="background-image: linear-gradient(var(--surface-light) 1px, transparent 1px), linear-gradient(90deg, var(--surface-light) 1px, transparent 1px); background-size: 60px 60px;"
 			></div>
 		{/if}
 
@@ -232,7 +232,7 @@
 				<!-- Left: Text -->
 				<div>
 					<div class="animate-fade-up">
-						<Badge class="border-amber/20 bg-amber/10 text-amber hover:bg-amber/15 mb-6">
+						<Badge class="border-brand/20 bg-brand/10 text-brand hover:bg-brand/15 mb-6">
 							<Sparkles class="mr-1 size-3" />
 							Open Source Stack
 						</Badge>
@@ -241,7 +241,7 @@
 					<h1 class="animate-fade-up text-5xl leading-[1.05] font-bold tracking-tight sm:text-6xl lg:text-7xl" style="font-family: var(--font-display); animation-delay: 0.1s;">
 						Build your
 						<br />
-						<span class="from-amber via-copper to-terracotta bg-gradient-to-r bg-clip-text text-transparent">stack</span>,<br />
+						<span class="from-brand via-accent-mid to-accent-deep bg-gradient-to-r bg-clip-text text-transparent">stack</span>,<br />
 						your
 						<span class="text-muted-foreground italic">way</span>.
 					</h1>
@@ -255,7 +255,7 @@
 
 					<!-- CTA row -->
 					<div class="animate-fade-up mt-9 flex flex-wrap items-center gap-3" style="animation-delay: 0.3s;">
-						<Button size="lg" class="from-amber via-copper to-terracotta text-primary-foreground border-0 bg-gradient-to-r px-7 text-base hover:opacity-90">
+						<Button size="lg" class="from-brand via-accent-mid to-accent-deep text-primary-foreground border-0 bg-gradient-to-r px-7 text-base hover:opacity-90">
 							Get Started
 							<ArrowRight class="ml-1.5 size-4" />
 						</Button>
@@ -275,11 +275,11 @@
 					<div class="animate-fade-up mt-8" style="animation-delay: 0.4s;">
 						<button
 							onclick={copyCommand}
-							class="group bg-secondary/40 hover:border-amber/20 hover:bg-secondary/60 flex w-full max-w-md cursor-pointer items-center gap-3 rounded-xl border border-white/[0.06] px-5 py-3.5 font-mono text-sm transition-all"
+							class="group bg-secondary/40 hover:border-brand/20 hover:bg-secondary/60 flex w-full max-w-md cursor-pointer items-center gap-3 rounded-xl border border-white/[0.06] px-5 py-3.5 font-mono text-sm transition-all"
 						>
-							<Terminal class="text-amber size-4 shrink-0" />
+							<Terminal class="text-brand size-4 shrink-0" />
 							<code class="text-muted-foreground flex-1 text-left">
-								<span class="text-amber/70">$</span> bunx sv create --template minimal .
+								<span class="text-brand/70">$</span> bunx sv create --template minimal .
 							</code>
 							{#if copied}
 								<Check class="size-4 text-green-400 transition-all" />
@@ -297,24 +297,24 @@
 						<Card.Card class="bg-card/60 col-span-2 overflow-hidden border-white/[0.06] backdrop-blur-sm">
 							<Card.CardHeader class="pb-3">
 								<div class="flex items-center gap-2">
-									<div class="bg-terracotta size-2.5 rounded-full"></div>
-									<div class="bg-amber size-2.5 rounded-full"></div>
+									<div class="bg-accent-deep size-2.5 rounded-full"></div>
+									<div class="bg-brand size-2.5 rounded-full"></div>
 									<div class="size-2.5 rounded-full bg-green-500/60"></div>
 									<span class="text-muted-foreground ml-2 font-mono text-xs">+page.svelte</span>
 								</div>
 							</Card.CardHeader>
 							<Card.CardContent class="pb-4">
 								<pre class="text-muted-foreground text-xs leading-relaxed"><code
-										><span class="text-amber/80">&lt;script&gt;</span>
-  <span class="text-copper">import</span> {'{'} Button {'}'} <span class="text-copper">from</span> <span class="text-green-400/70">'$lib/ui/button'</span>;
-  <span class="text-copper">import</span> {'{'} Card {'}'} <span class="text-copper">from</span> <span class="text-green-400/70">'$lib/ui/card'</span>;
-<span class="text-amber/80">&lt;/script&gt;</span>
+										><span class="text-brand/80">&lt;script&gt;</span>
+  <span class="text-accent-mid">import</span> {'{'} Button {'}'} <span class="text-accent-mid">from</span> <span class="text-green-400/70">'$lib/ui/button'</span>;
+  <span class="text-accent-mid">import</span> {'{'} Card {'}'} <span class="text-accent-mid">from</span> <span class="text-green-400/70">'$lib/ui/card'</span>;
+<span class="text-brand/80">&lt;/script&gt;</span>
 
-<span class="text-amber/80">&lt;Card&gt;</span>
-  <span class="text-amber/80">&lt;Button</span> <span class="text-copper">variant=</span><span class="text-green-400/70">"default"</span><span class="text-amber/80">&gt;</span>
-    Ship it <span class="text-terracotta">&#x1f680;</span>
-  <span class="text-amber/80">&lt;/Button&gt;</span>
-<span class="text-amber/80">&lt;/Card&gt;</span></code
+<span class="text-brand/80">&lt;Card&gt;</span>
+  <span class="text-brand/80">&lt;Button</span> <span class="text-accent-mid">variant=</span><span class="text-green-400/70">"default"</span><span class="text-brand/80">&gt;</span>
+    Ship it <span class="text-accent-deep">&#x1f680;</span>
+  <span class="text-brand/80">&lt;/Button&gt;</span>
+<span class="text-brand/80">&lt;/Card&gt;</span></code
 									></pre>
 							</Card.CardContent>
 						</Card.Card>
@@ -325,7 +325,7 @@
 								<Card.CardTitle class="text-muted-foreground text-xs font-medium tracking-wider uppercase">Buttons</Card.CardTitle>
 							</Card.CardHeader>
 							<Card.CardContent class="space-y-2 pb-4">
-								<Button size="sm" class="from-amber to-copper text-primary-foreground w-full border-0 bg-gradient-to-r">Primary</Button>
+								<Button size="sm" class="from-brand to-accent-mid text-primary-foreground w-full border-0 bg-gradient-to-r">Primary</Button>
 								<Button size="sm" variant="outline" class="w-full border-white/10">Outline</Button>
 								<Button size="sm" variant="secondary" class="w-full">Secondary</Button>
 							</Card.CardContent>
@@ -337,9 +337,9 @@
 								<Card.CardTitle class="text-muted-foreground text-xs font-medium tracking-wider uppercase">Badges</Card.CardTitle>
 							</Card.CardHeader>
 							<Card.CardContent class="flex flex-wrap gap-1.5 pb-4">
-								<Badge class="border-amber/20 bg-amber/10 text-amber">svelte</Badge>
-								<Badge class="border-copper/20 bg-copper/10 text-copper">tailwind</Badge>
-								<Badge class="border-terracotta/20 bg-terracotta/10 text-terracotta">shadcn</Badge>
+								<Badge class="border-brand/20 bg-brand/10 text-brand">svelte</Badge>
+								<Badge class="border-accent-mid/20 bg-accent-mid/10 text-accent-mid">tailwind</Badge>
+								<Badge class="border-accent-deep/20 bg-accent-deep/10 text-accent-deep">shadcn</Badge>
 								<Badge variant="outline" class="border-white/10">typescript</Badge>
 								<Badge class="border-green-400/20 bg-green-400/10 text-green-400/80">bun</Badge>
 							</Card.CardContent>
@@ -351,18 +351,18 @@
 								<div class="flex items-center gap-3">
 									<div class="flex -space-x-2">
 										<Avatar.Root class="border-card size-7 border-2">
-											<Avatar.Fallback class="bg-amber/20 text-amber text-xs">GH</Avatar.Fallback>
+											<Avatar.Fallback class="bg-brand/20 text-brand text-xs">GH</Avatar.Fallback>
 										</Avatar.Root>
 										<Avatar.Root class="border-card size-7 border-2">
-											<Avatar.Fallback class="bg-copper/20 text-copper text-xs">SK</Avatar.Fallback>
+											<Avatar.Fallback class="bg-accent-mid/20 text-accent-mid text-xs">SK</Avatar.Fallback>
 										</Avatar.Root>
 										<Avatar.Root class="border-card size-7 border-2">
-											<Avatar.Fallback class="bg-terracotta/20 text-terracotta text-xs">TW</Avatar.Fallback>
+											<Avatar.Fallback class="bg-accent-deep/20 text-accent-deep text-xs">TW</Avatar.Fallback>
 										</Avatar.Root>
 									</div>
 									<span class="text-muted-foreground text-sm">Built by the community</span>
 								</div>
-								<Badge variant="outline" class="border-amber/20 text-amber text-xs">
+								<Badge variant="outline" class="border-brand/20 text-brand text-xs">
 									<Sparkles class="mr-1 size-3" />
 									v0.1
 								</Badge>
@@ -372,7 +372,7 @@
 
 					<!-- Decorative diagonal line -->
 					{#if showEffects}
-						<div class="pointer-events-none absolute -top-8 -right-8 size-32 rounded-full opacity-20 blur-[60px]" style="background: var(--amber);"></div>
+						<div class="pointer-events-none absolute -top-8 -right-8 size-32 rounded-full opacity-20 blur-[60px]" style="background: var(--brand);"></div>
 					{/if}
 				</div>
 			</div>
@@ -391,7 +391,7 @@
 	<!-- ========== STACK TABS ========== -->
 	<section id="stack" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		{#if showEffects}
-			<div class="pointer-events-none absolute top-0 left-1/2 size-[500px] -translate-x-1/2 rounded-full opacity-[0.06] blur-[100px]" style="background: var(--copper);"></div>
+			<div class="pointer-events-none absolute top-0 left-1/2 size-[500px] -translate-x-1/2 rounded-full opacity-[0.06] blur-[100px]" style="background: var(--accent-mid);"></div>
 		{/if}
 
 		<div class="relative">
@@ -409,7 +409,7 @@
 					{#each stackItems as item}
 						<Tabs.Trigger
 							value={item.name}
-							class="text-muted-foreground data-[state=active]:from-amber/20 data-[state=active]:to-copper/10 data-[state=active]:text-amber rounded-lg px-4 py-2 text-sm font-medium transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:shadow-sm"
+							class="text-muted-foreground data-[state=active]:from-brand/20 data-[state=active]:to-accent-mid/10 data-[state=active]:text-brand rounded-lg px-4 py-2 text-sm font-medium transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:shadow-sm"
 						>
 							{item.name}
 						</Tabs.Trigger>
@@ -443,29 +443,29 @@
 	<!-- ========== FEATURES BENTO GRID ========== -->
 	<section id="features" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		<div class="mb-14 text-center">
-			<Badge class="border-copper/20 bg-copper/10 text-copper mb-4">
+			<Badge class="border-accent-mid/20 bg-accent-mid/10 text-accent-mid mb-4">
 				<Eye class="mr-1 size-3" />
 				Showcase
 			</Badge>
 			<h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl" style="font-family: var(--font-display);">
-				What's <span class="from-amber to-terracotta bg-gradient-to-r bg-clip-text text-transparent">possible</span>
+				What's <span class="from-brand to-accent-deep bg-gradient-to-r bg-clip-text text-transparent">possible</span>
 			</h2>
 			<p class="text-muted-foreground mx-auto mt-4 max-w-lg leading-relaxed">shadcn-svelte gives you production-grade components out of the box. Here's a taste.</p>
 		</div>
 
 		<div class="grid gap-4 md:grid-cols-3 md:grid-rows-2">
 			<!-- Large card: Performance -->
-			<Card.Card class="group bg-card/50 hover:border-amber/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500 md:row-span-2">
+			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500 md:row-span-2">
 				<Card.CardHeader class="relative p-8 pb-4">
 					{#if showEffects}
 						<div
 							class="pointer-events-none absolute -top-12 -right-12 size-32 rounded-full opacity-0 blur-[50px] transition-opacity duration-500 group-hover:opacity-30"
-							style="background: var(--amber);"
+							style="background: var(--brand);"
 						></div>
 					{/if}
 					<div class="relative">
-						<div class="border-amber/20 bg-amber/10 mb-5 flex size-12 items-center justify-center rounded-2xl border">
-							<Zap class="text-amber size-6" />
+						<div class="border-brand/20 bg-brand/10 mb-5 flex size-12 items-center justify-center rounded-2xl border">
+							<Zap class="text-brand size-6" />
 						</div>
 						<Card.CardTitle class="text-xl" style="font-family: var(--font-display);">Blazing Fast</Card.CardTitle>
 						<Card.CardDescription class="mt-2 text-base leading-relaxed">
@@ -479,10 +479,10 @@
 							<div>
 								<div class="mb-1.5 flex items-center justify-between text-sm">
 									<span class="text-muted-foreground">{metric.label}</span>
-									<span class="text-amber font-mono">{metric.value}</span>
+									<span class="text-brand font-mono">{metric.value}</span>
 								</div>
 								<div class="bg-secondary/80 h-1.5 overflow-hidden rounded-full">
-									<div class="from-amber to-copper h-full rounded-full bg-gradient-to-r transition-all duration-1000" style="width: {metric.pct}%;"></div>
+									<div class="from-brand to-accent-mid h-full rounded-full bg-gradient-to-r transition-all duration-1000" style="width: {metric.pct}%;"></div>
 								</div>
 							</div>
 						{/each}
@@ -491,10 +491,10 @@
 			</Card.Card>
 
 			<!-- Top right: Type Safety -->
-			<Card.Card class="group bg-card/50 hover:border-copper/20 hover:bg-card/70 border-white/[0.06] backdrop-blur-sm transition-all duration-500">
+			<Card.Card class="group bg-card/50 hover:border-accent-mid/20 hover:bg-card/70 border-white/[0.06] backdrop-blur-sm transition-all duration-500">
 				<Card.CardHeader class="p-6">
-					<div class="border-copper/20 bg-copper/10 mb-3 flex size-10 items-center justify-center rounded-xl border">
-						<Code class="text-copper size-5" />
+					<div class="border-accent-mid/20 bg-accent-mid/10 mb-3 flex size-10 items-center justify-center rounded-xl border">
+						<Code class="text-accent-mid size-5" />
 					</div>
 					<Card.CardTitle class="text-lg" style="font-family: var(--font-display);">Type Safe</Card.CardTitle>
 					<Card.CardDescription class="mt-1 leading-relaxed">Full TypeScript support from routes to components. Catch bugs at build time, not in production.</Card.CardDescription>
@@ -502,10 +502,10 @@
 			</Card.Card>
 
 			<!-- Top far right: DX -->
-			<Card.Card class="group bg-card/50 hover:border-terracotta/20 hover:bg-card/70 border-white/[0.06] backdrop-blur-sm transition-all duration-500">
+			<Card.Card class="group bg-card/50 hover:border-accent-deep/20 hover:bg-card/70 border-white/[0.06] backdrop-blur-sm transition-all duration-500">
 				<Card.CardHeader class="p-6">
-					<div class="border-terracotta/20 bg-terracotta/10 mb-3 flex size-10 items-center justify-center rounded-xl border">
-						<Cpu class="text-terracotta size-5" />
+					<div class="border-accent-deep/20 bg-accent-deep/10 mb-3 flex size-10 items-center justify-center rounded-xl border">
+						<Cpu class="text-accent-deep size-5" />
 					</div>
 					<Card.CardTitle class="text-lg" style="font-family: var(--font-display);">Bun Runtime</Card.CardTitle>
 					<Card.CardDescription class="mt-1 leading-relaxed">Installs in milliseconds, runs in milliseconds. The all-in-one JavaScript toolkit.</Card.CardDescription>
@@ -513,19 +513,19 @@
 			</Card.Card>
 
 			<!-- Bottom spanning: Component count -->
-			<Card.Card class="group bg-card/50 hover:border-amber/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500 md:col-span-2">
+			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500 md:col-span-2">
 				<Card.CardContent class="flex flex-col items-start justify-between gap-6 p-6 sm:flex-row sm:items-center">
 					<div>
-						<p class="text-amber text-4xl font-bold" style="font-family: var(--font-display);">50+</p>
+						<p class="text-brand text-4xl font-bold" style="font-family: var(--font-display);">50+</p>
 						<p class="text-muted-foreground mt-1 text-sm">Accessible shadcn-svelte components ready to use</p>
 					</div>
 					<div class="flex flex-wrap gap-2">
 						{#each ['Button', 'Card', 'Tabs', 'Badge', 'Avatar', 'Switch', 'Tooltip', 'Dialog', 'Dropdown', 'Sheet'] as comp}
-							<Badge variant="outline" class="bg-secondary/30 text-muted-foreground hover:border-amber/20 hover:text-amber border-white/[0.06] transition-colors">
+							<Badge variant="outline" class="bg-secondary/30 text-muted-foreground hover:border-brand/20 hover:text-brand border-white/[0.06] transition-colors">
 								{comp}
 							</Badge>
 						{/each}
-						<Badge class="border-amber/20 bg-amber/10 text-amber">
+						<Badge class="border-brand/20 bg-brand/10 text-brand">
 							+40 more
 							<ChevronRight class="ml-0.5 size-3" />
 						</Badge>
@@ -546,12 +546,12 @@
 
 	<section id="queries" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		{#if showEffects}
-			<div class="pointer-events-none absolute top-1/2 right-0 size-[400px] -translate-y-1/2 rounded-full opacity-[0.05] blur-[100px]" style="background: var(--terracotta);"></div>
+			<div class="pointer-events-none absolute top-1/2 right-0 size-[400px] -translate-y-1/2 rounded-full opacity-[0.05] blur-[100px]" style="background: var(--accent-deep);"></div>
 		{/if}
 
 		<div class="relative">
 			<div class="mb-14 max-w-xl">
-				<Badge class="border-terracotta/20 bg-terracotta/10 text-terracotta mb-4">
+				<Badge class="border-accent-deep/20 bg-accent-deep/10 text-accent-deep mb-4">
 					<Radio class="mr-1 size-3" />
 					Remote Queries
 				</Badge>
@@ -565,12 +565,12 @@
 
 			<div class="grid gap-6 md:grid-cols-2">
 				<!-- SSR: getTags() -->
-				<Card.Card class="group bg-card/50 hover:border-copper/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500">
+				<Card.Card class="group bg-card/50 hover:border-accent-mid/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500">
 					<Card.CardHeader class="p-6 pb-4">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-3">
-								<div class="border-copper/20 bg-copper/10 flex size-10 items-center justify-center rounded-xl border">
-									<Server class="text-copper size-5" />
+								<div class="border-accent-mid/20 bg-accent-mid/10 flex size-10 items-center justify-center rounded-xl border">
+									<Server class="text-accent-mid size-5" />
 								</div>
 								<div>
 									<Card.CardTitle class="text-base" style="font-family: var(--font-display);">Server-Side Data</Card.CardTitle>
@@ -586,7 +586,7 @@
 							<p class="text-muted-foreground/60 mb-2.5 text-xs tracking-wider uppercase">Response</p>
 							<div class="flex flex-wrap gap-1.5">
 								{#each await getTags() as tag}
-									<Badge class="border-amber/20 bg-amber/10 text-amber">{tag}</Badge>
+									<Badge class="border-brand/20 bg-brand/10 text-brand">{tag}</Badge>
 								{/each}
 							</div>
 						</div>
@@ -594,19 +594,19 @@
 				</Card.Card>
 
 				<!-- Client: getRandomMsg() -->
-				<Card.Card class="group bg-card/50 hover:border-terracotta/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500">
+				<Card.Card class="group bg-card/50 hover:border-accent-deep/20 hover:bg-card/70 overflow-hidden border-white/[0.06] backdrop-blur-sm transition-all duration-500">
 					<Card.CardHeader class="p-6 pb-4">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-3">
-								<div class="border-terracotta/20 bg-terracotta/10 flex size-10 items-center justify-center rounded-xl border">
-									<Radio class="text-terracotta size-5" />
+								<div class="border-accent-deep/20 bg-accent-deep/10 flex size-10 items-center justify-center rounded-xl border">
+									<Radio class="text-accent-deep size-5" />
 								</div>
 								<div>
 									<Card.CardTitle class="text-base" style="font-family: var(--font-display);">Runtime Query</Card.CardTitle>
 									<p class="text-muted-foreground mt-0.5 font-mono text-xs">getRandomMsg()</p>
 								</div>
 							</div>
-							<Badge variant="outline" class="border-terracotta/20 text-terracotta text-xs">Client</Badge>
+							<Badge variant="outline" class="border-accent-deep/20 text-accent-deep text-xs">Client</Badge>
 						</div>
 					</Card.CardHeader>
 					<Card.CardContent class="p-6 pt-0">
@@ -632,7 +632,7 @@
 						<Button
 							variant="outline"
 							size="sm"
-							class="hover:border-terracotta/20 hover:text-terracotta mt-4 border-white/10"
+							class="hover:border-accent-deep/20 hover:text-accent-deep mt-4 border-white/10"
 							onclick={() => {
 								randomQuery.refresh();
 							}}
@@ -657,13 +657,13 @@
 
 	<section id="forms" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		{#if showEffects}
-			<div class="pointer-events-none absolute top-1/3 left-0 size-[350px] rounded-full opacity-[0.05] blur-[100px]" style="background: var(--amber);"></div>
+			<div class="pointer-events-none absolute top-1/3 left-0 size-[350px] rounded-full opacity-[0.05] blur-[100px]" style="background: var(--brand);"></div>
 		{/if}
 
 		<div class="relative grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
 			<!-- Left: Description -->
 			<div class="lg:sticky lg:top-24">
-				<Badge class="border-amber/20 bg-amber/10 text-amber mb-4">
+				<Badge class="border-brand/20 bg-brand/10 text-brand mb-4">
 					<Mail class="mr-1 size-3" />
 					SuperForms
 				</Badge>
@@ -676,8 +676,8 @@
 				<div class="mt-6 space-y-3">
 					{#each ['Zod schema validation', 'Progressive enhancement', 'Reactive error states', 'No page reload on submit'] as feature}
 						<div class="text-muted-foreground flex items-center gap-2.5 text-sm">
-							<div class="bg-amber/10 flex size-5 items-center justify-center rounded-full">
-								<Check class="text-amber size-3" />
+							<div class="bg-brand/10 flex size-5 items-center justify-center rounded-full">
+								<Check class="text-brand size-3" />
 							</div>
 							{feature}
 						</div>
@@ -689,8 +689,8 @@
 			<Card.Card class="bg-card/50 overflow-hidden border-white/[0.06] backdrop-blur-sm">
 				<Card.CardHeader class="p-6 pb-0">
 					<div class="mb-1 flex items-center gap-2">
-						<div class="bg-terracotta size-2.5 rounded-full"></div>
-						<div class="bg-amber size-2.5 rounded-full"></div>
+						<div class="bg-accent-deep size-2.5 rounded-full"></div>
+						<div class="bg-brand size-2.5 rounded-full"></div>
 						<div class="size-2.5 rounded-full bg-green-500/60"></div>
 						<span class="text-muted-foreground ml-2 font-mono text-xs">contact-form.svelte</span>
 					</div>
@@ -714,7 +714,7 @@
 											placeholder="Your name"
 											name="name"
 											bind:value={$form.name}
-											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-amber/30 focus:ring-amber/20 border-white/[0.06]"
+											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-white/[0.06]"
 										/>
 										{#if $errors.name}
 											<Field.Error>{$errors.name}</Field.Error>
@@ -727,7 +727,7 @@
 											placeholder="you@example.com"
 											name="email"
 											bind:value={$form.email}
-											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-amber/30 focus:ring-amber/20 border-white/[0.06]"
+											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-white/[0.06]"
 										/>
 										{#if $errors.email}
 											<Field.Error>{$errors.email}</Field.Error>
@@ -740,7 +740,7 @@
 											placeholder="What's on your mind?"
 											name="message"
 											bind:value={$form.message}
-											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-amber/30 focus:ring-amber/20 border-white/[0.06]"
+											class="bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-brand/30 focus:ring-brand/20 border-white/[0.06]"
 										/>
 										{#if $errors.message}
 											<Field.Error>{$errors.message}</Field.Error>
@@ -748,7 +748,7 @@
 									</Field.Field>
 								</Field.Group>
 								<Field.Field orientation="horizontal">
-									<Button type="submit" class="from-amber to-copper text-primary-foreground border-0 bg-gradient-to-r hover:opacity-90">
+									<Button type="submit" class="from-brand to-accent-mid text-primary-foreground border-0 bg-gradient-to-r hover:opacity-90">
 										<Send class="mr-1.5 size-3.5" />
 										Submit
 									</Button>
@@ -765,20 +765,20 @@
 	<!-- ========== CTA ========== -->
 	<section id="cta" class="relative mx-auto max-w-6xl px-6 py-32 lg:px-8">
 		{#if showEffects}
-			<div class="pointer-events-none absolute inset-0 opacity-[0.08]" style="background: radial-gradient(ellipse at center, var(--amber), transparent 70%);"></div>
+			<div class="pointer-events-none absolute inset-0 opacity-[0.08]" style="background: radial-gradient(ellipse at center, var(--brand), transparent 70%);"></div>
 		{/if}
 
 		<div class="relative text-center">
 			<h2 class="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl" style="font-family: var(--font-display);">
 				Start <span class="text-muted-foreground italic">building</span>
 				<br />
-				<span class="from-amber via-copper to-terracotta bg-gradient-to-r bg-clip-text text-transparent"> something great </span>
+				<span class="from-brand via-accent-mid to-accent-deep bg-gradient-to-r bg-clip-text text-transparent"> something great </span>
 			</h2>
 			<p class="text-muted-foreground mx-auto mt-5 max-w-md text-lg">Clone the repo, install with Bun, and ship your first feature in minutes.</p>
 			<div class="mt-10 flex flex-wrap items-center justify-center gap-4">
 				<Button
 					size="lg"
-					class="from-amber via-copper to-terracotta text-primary-foreground border-0 bg-gradient-to-r px-8 text-base hover:opacity-90"
+					class="from-brand via-accent-mid to-accent-deep text-primary-foreground border-0 bg-gradient-to-r px-8 text-base hover:opacity-90"
 					href="https://github.com/Georg97/dabsstack"
 					target="_blank"
 				>
@@ -797,7 +797,7 @@
 	<footer class="border-t border-white/[0.04]">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-8 lg:px-8">
 			<div class="text-muted-foreground/60 flex items-center gap-2 text-sm">
-				<div class="from-amber/40 to-terracotta/40 flex size-5 items-center justify-center rounded bg-gradient-to-br">
+				<div class="from-brand/40 to-accent-deep/40 flex size-5 items-center justify-center rounded bg-gradient-to-br">
 					<Layers class="text-muted-foreground size-3" />
 				</div>
 				<span>dabsstack</span>

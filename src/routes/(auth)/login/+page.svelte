@@ -85,43 +85,43 @@
 	<!-- ========== LEFT: Brand Panel ========== -->
 	<div class="relative hidden overflow-hidden lg:flex lg:w-[45%] xl:w-[50%]">
 		<!-- Layered gradient background -->
-		<div class="absolute inset-0" style="background: linear-gradient(145deg, oklch(0.12 0.02 45), oklch(0.18 0.015 55), oklch(0.14 0.02 35));"></div>
+		<div class="absolute inset-0" style="background: linear-gradient(145deg, oklch(0.11 0.006 265), oklch(0.15 0.005 255), oklch(0.12 0.008 275));"></div>
 
 		<!-- Animated orbs -->
 		<div
 			class="animate-float-slower pointer-events-none absolute -top-20 -left-20 size-[450px] rounded-full opacity-25 blur-[100px]"
-			style="background: radial-gradient(circle, var(--amber), transparent 70%);"
+			style="background: radial-gradient(circle, var(--brand), transparent 70%);"
 		></div>
 		<div
 			class="animate-float-slow pointer-events-none absolute -right-16 bottom-1/4 size-[350px] rounded-full opacity-20 blur-[90px]"
-			style="background: radial-gradient(circle, var(--terracotta), transparent 70%);"
+			style="background: radial-gradient(circle, var(--accent-deep), transparent 70%);"
 		></div>
 		<div
 			class="pointer-events-none absolute top-1/2 left-1/3 size-[300px] -translate-y-1/2 rounded-full opacity-[0.08] blur-[70px]"
-			style="background: radial-gradient(circle, var(--copper), transparent 60%);"
+			style="background: radial-gradient(circle, var(--accent-mid), transparent 60%);"
 		></div>
 
 		<!-- Grid pattern -->
 		<div
 			class="pointer-events-none absolute inset-0 opacity-[0.025]"
-			style="background-image: linear-gradient(var(--cream) 1px, transparent 1px), linear-gradient(90deg, var(--cream) 1px, transparent 1px); background-size: 50px 50px;"
+			style="background-image: linear-gradient(var(--surface-light) 1px, transparent 1px), linear-gradient(90deg, var(--surface-light) 1px, transparent 1px); background-size: 50px 50px;"
 		></div>
 
 		<!-- Diagonal decorative lines -->
 		<div class="pointer-events-none absolute inset-0 opacity-[0.04]">
-			<div class="absolute top-0 right-0 h-full w-px origin-top-right rotate-[15deg]" style="background: linear-gradient(to bottom, transparent, var(--amber), transparent);"></div>
-			<div class="absolute top-0 right-24 h-full w-px origin-top-right rotate-[15deg]" style="background: linear-gradient(to bottom, transparent, var(--copper) 60%, transparent);"></div>
+			<div class="absolute top-0 right-0 h-full w-px origin-top-right rotate-[15deg]" style="background: linear-gradient(to bottom, transparent, var(--brand), transparent);"></div>
+			<div class="absolute top-0 right-24 h-full w-px origin-top-right rotate-[15deg]" style="background: linear-gradient(to bottom, transparent, var(--accent-mid) 60%, transparent);"></div>
 		</div>
 
 		<!-- Content -->
 		<div class="relative z-10 flex flex-col justify-between p-12 xl:p-16">
 			<!-- Logo -->
 			<a href="/" class="group flex items-center gap-3" style="font-family: var(--font-display);">
-				<div class="from-amber to-terracotta flex size-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg shadow-amber/10">
+				<div class="from-brand to-accent-deep flex size-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg shadow-brand/10">
 					<Layers class="size-5 text-white" />
 				</div>
 				<span class="text-xl font-semibold tracking-tight">
-					<span class="group-hover:text-amber transition-colors">dabs</span><span class="text-muted-foreground">stack</span>
+					<span class="group-hover:text-brand transition-colors">dabs</span><span class="text-muted-foreground">stack</span>
 				</span>
 			</a>
 
@@ -132,7 +132,7 @@
 					style="font-family: var(--font-display);"
 				>
 					Build
-					<span class="from-amber via-copper to-terracotta bg-gradient-to-r bg-clip-text text-transparent">
+					<span class="from-brand via-accent-mid to-accent-deep bg-gradient-to-r bg-clip-text text-transparent">
 						something
 					</span>
 					<br />
@@ -148,9 +148,9 @@
 
 			<!-- Bottom decorative badges -->
 			<div class="animate-fade-up flex flex-wrap gap-2" style="animation-delay: 0.2s;">
-				<Badge class="border-amber/20 bg-amber/10 text-amber">SvelteKit</Badge>
-				<Badge class="border-copper/20 bg-copper/10 text-copper">Tailwind</Badge>
-				<Badge class="border-terracotta/20 bg-terracotta/10 text-terracotta">shadcn</Badge>
+				<Badge class="border-brand/20 bg-brand/10 text-brand">SvelteKit</Badge>
+				<Badge class="border-accent-mid/20 bg-accent-mid/10 text-accent-mid">Tailwind</Badge>
+				<Badge class="border-accent-deep/20 bg-accent-deep/10 text-accent-deep">shadcn</Badge>
 				<Badge variant="outline" class="border-white/10 text-muted-foreground">TypeScript</Badge>
 			</div>
 		</div>
@@ -160,7 +160,7 @@
 	<div class="flex flex-1 flex-col items-center justify-center px-6 py-12 sm:px-12 lg:px-16">
 		<!-- Mobile logo -->
 		<a href="/" class="mb-10 flex items-center gap-2.5 lg:hidden" style="font-family: var(--font-display);">
-			<div class="from-amber to-terracotta flex size-9 items-center justify-center rounded-xl bg-gradient-to-br">
+			<div class="from-brand to-accent-deep flex size-9 items-center justify-center rounded-xl bg-gradient-to-br">
 				<Layers class="size-4.5 text-white" />
 			</div>
 			<span class="text-lg font-semibold tracking-tight">
@@ -178,7 +178,7 @@
 					{#if mode === 'signin'}
 						Welcome <span class="italic text-muted-foreground">back</span>
 					{:else}
-						Create your <span class="from-amber to-copper bg-gradient-to-r bg-clip-text text-transparent">account</span>
+						Create your <span class="from-brand to-accent-mid bg-gradient-to-r bg-clip-text text-transparent">account</span>
 					{/if}
 				</h2>
 				<p class="text-muted-foreground mt-2 text-sm">
@@ -194,7 +194,7 @@
 			<div class="animate-fade-up" style="animation-delay: 0.1s;">
 				<Button
 					variant="outline"
-					class="group h-11 w-full border-white/[0.08] bg-white/[0.03] text-sm hover:border-amber/20 hover:bg-amber/[0.04]"
+					class="group h-11 w-full border-white/[0.08] bg-white/[0.03] text-sm hover:border-brand/20 hover:bg-brand/[0.04]"
 					onclick={handleGoogle}
 					disabled={googleLoading}
 				>
@@ -235,7 +235,7 @@
 										name="name"
 										bind:value={name}
 										required
-										class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-amber/30 focus:ring-amber/20 h-11 border-white/[0.06] pl-10"
+										class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-white/[0.06] pl-10"
 									/>
 								</div>
 							</Field.Field>
@@ -253,7 +253,7 @@
 								name="email"
 								bind:value={email}
 								required
-								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-amber/30 focus:ring-amber/20 h-11 border-white/[0.06] pl-10"
+								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-white/[0.06] pl-10"
 							/>
 						</div>
 					</Field.Field>
@@ -263,7 +263,7 @@
 						<div class="mb-1.5 flex items-center justify-between">
 							<Field.Label class="text-muted-foreground text-xs font-medium tracking-wide uppercase">Password</Field.Label>
 							{#if mode === 'signin'}
-								<button type="button" class="text-amber/70 hover:text-amber text-xs transition-colors">Forgot?</button>
+								<button type="button" class="text-brand/70 hover:text-brand text-xs transition-colors">Forgot?</button>
 							{/if}
 						</div>
 						<div class="relative">
@@ -274,7 +274,7 @@
 								name="password"
 								bind:value={password}
 								required
-								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-amber/30 focus:ring-amber/20 h-11 border-white/[0.06] pr-10 pl-10"
+								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-white/[0.06] pr-10 pl-10"
 							/>
 							<button
 								type="button"
@@ -294,7 +294,7 @@
 				<!-- Submit -->
 				<Button
 					type="submit"
-					class="from-amber via-copper to-terracotta text-primary-foreground mt-6 h-11 w-full border-0 bg-gradient-to-r text-sm font-medium hover:opacity-90"
+					class="from-brand via-accent-mid to-accent-deep text-primary-foreground mt-6 h-11 w-full border-0 bg-gradient-to-r text-sm font-medium hover:opacity-90"
 					disabled={loading}
 				>
 					{#if loading}
@@ -309,12 +309,12 @@
 			<p class="animate-fade-up text-muted-foreground mt-7 text-center text-sm" style="animation-delay: 0.25s;">
 				{#if mode === 'signin'}
 					Don't have an account?
-					<button class="text-amber hover:text-amber/80 ml-1 font-medium transition-colors" onclick={toggleMode}>
+					<button class="text-brand hover:text-brand/80 ml-1 font-medium transition-colors" onclick={toggleMode}>
 						Sign up
 					</button>
 				{:else}
 					Already have an account?
-					<button class="text-amber hover:text-amber/80 ml-1 font-medium transition-colors" onclick={toggleMode}>
+					<button class="text-brand hover:text-brand/80 ml-1 font-medium transition-colors" onclick={toggleMode}>
 						Sign in
 					</button>
 				{/if}
