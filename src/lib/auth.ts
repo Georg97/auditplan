@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { organization } from 'better-auth/plugins';
 import { db } from '$lib/server/db';
 import * as schema from '../db/schema';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
@@ -21,5 +22,10 @@ export const auth = betterAuth({
 			clientSecret: env.GOOGLE_CLIENT_SECRET as string
 		}
 	},
-	plugins: [sveltekitCookies(getRequestEvent)] // make sure this is the last plugin in the array
+	plugins: [
+		organization({
+			allowUserToCreateOrganization: true
+		}),
+		sveltekitCookies(getRequestEvent)
+	]
 });
