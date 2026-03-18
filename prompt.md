@@ -47,12 +47,14 @@ Execute based on the task tag:
 ### `[IMPL]` — Implementation
 
 - Read the relevant tests and interfaces for the current task.
+- **For UI tasks:** Use the frontend-design skill (`.claude/skills/frontend-design.md`) to produce polished, production-grade interfaces. Read the skill file for design guidelines before implementing any page or component.
 - For pages: implement in `src/routes/(app)/[page-name]/+page.svelte` with optional `+page.server.ts`.
 - For server data: use remote functions (`.remote.ts` with `query()` / `mutation()`) or `+page.server.ts` load functions.
 - For shared components: place in `src/lib/components/`.
 - For database operations: use Drizzle queries in server-side code only.
 - Use Svelte 5 runes (`$state`, `$derived`, `$effect`) — NOT Svelte 4 stores.
 - Use `{@render children()}` — NOT `<slot/>`.
+- Use the project's theme system: `bg-brand`, `bg-accent-mid`, `bg-accent-deep`, `bg-surface-light`, ShadCN semantic colors. See `CLAUDE.md` Styling section. Support dark mode.
 - No placeholders, no shortcuts, no incomplete implementations.
 - Verification: `make check` (ALL four gates must pass: format + typecheck + lint + test)
 
@@ -85,6 +87,7 @@ Use the Playwright MCP tools to verify your UI implementation in a real browser.
 6. **Close the browser** when done with `browser_close`
 
 **Important:**
+
 - Use `browser_snapshot` (accessibility tree) over `browser_screenshot` (image) to save tokens — only screenshot when debugging visual issues
 - Don't spend more than 2-3 minutes on E2E verification per iteration
 - If the dev server fails to start (e.g. port in use), skip E2E and note it in the commit message
@@ -92,6 +95,7 @@ Use the Playwright MCP tools to verify your UI implementation in a real browser.
 ## Step 3.9: FINAL CHECKUP (before committing)
 
 After REPAIR passes, do a quick browser walkthrough of the page you modified:
+
 1. Navigate to the relevant page (log in if needed)
 2. Take a `browser_snapshot` to confirm the page renders correctly
 3. If anything is broken, fix it before committing
@@ -110,10 +114,13 @@ Run `make check`. If tests OUTSIDE your current task fail:
 
 1. Update `@fix_plan.md` — mark the completed task as `[x]`, add any newly discovered issues.
 2. Update `@CLAUDE.md` Learnings section if you learned something new about building, testing, or running the system.
-3. Commit and push:
+3. **Pre-commit secrets check:** Run `git diff --cached` after staging and scan for hardcoded secrets (API keys, tokens, passwords, connection strings). If any are found, move them to `.env` and reference via `$env/dynamic/private`.
+4. Commit and push:
 
 ```bash
 git add -A
+# Verify no secrets in staged files:
+git diff --cached --name-only | xargs grep -l -i "password\|secret\|token\|api.key" -- 2>/dev/null && echo "WARNING: Possible secrets detected!" || true
 git commit -m "descriptive message about what was implemented"
 git push
 ```
@@ -137,7 +144,7 @@ git push
 
 - **NEVER use localStorage** for data persistence. All data goes through Drizzle ORM + Turso via remote functions (query/mutation). The requirements.md mentions localStorage — IGNORE that, use the server DB.
 - **NEVER use `window.confirm()`** — use ShadCN `alert-dialog` component instead.
-- **NEVER hand-write a UI component** that exists in shadcn-svelte or shadcn-svelte-extras. Install it: `bunx shadcn-svelte@next add <name>` or `bunx jsrepo add <name>`.
+- **NEVER hand-write a UI component** that exists in shadcn-svelte or shadcn-svelte-extras. Install with non-interactive flags: `bunx shadcn-svelte@next add <name> --no-git` or `bunx jsrepo add <name> --yes`.
 - **NEVER write component render tests** — test server logic, Zod schemas, and utilities only. Svelte 5 runes + jsdom has known issues.
 - **NEVER use manual fetch/POST** for form submissions — ALL forms use SuperForms + Zod.
 - **NEVER create custom table implementations** — ALL data tables use TanStack Table (`@tanstack/svelte-table`) with the DataTable.svelte wrapper.
@@ -149,3 +156,10 @@ git push
 - **NEVER create a DB table without `organizationId` column** (except auth/org tables). Every query MUST filter by the user's active `organizationId` — users must only see their organization's data. This is organization-based tenancy, NOT per-user isolation.
 - **NEVER use `{@html}`** without sanitizing via `isomorphic-dompurify` (already installed). User-generated content is untrusted.
 - **NEVER log sensitive data** (passwords, tokens, secrets) to console — remove all `console.log` of form data before committing.
+- **NEVER hardcode secrets, API keys, tokens, passwords, or database URLs** in source code. All secrets MUST be accessed via `import { env } from '$env/dynamic/private'` (server-side) or `$env/static/private` (build-time). If you need a new env var, add an empty placeholder to `.env.template` and use it via `env.VAR_NAME`. Never put actual secret values in `.ts`, `.js`, `.svelte`, or any committed file.
+- **NEVER commit `.env` files.** They are in `.gitignore`. Only `.env.template` (with empty values) may be committed.
+- **Before every `git add -A`**: verify no files containing secrets are staged. Check that no hardcoded connection strings, tokens, or passwords exist in the diff.
+- **NEVER read `requirements.md`** — it contains outdated/wrong patterns (localStorage, German type values, navigateToPage()). ALL requirements are already in `specs/*.md`. Only read spec files.
+- **NEVER add `date-fns`** — use `@internationalized/date` (already installed) for all date operations.
+- **NEVER use `console.log()`** in production code. Remove all console.log statements before committing. The demo code has them — do NOT copy that pattern.
+- **After modifying `src/db/schema.ts`**, always run `make db-push` to push schema changes to Turso.

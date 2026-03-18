@@ -11,6 +11,7 @@
 - `make format` — auto-fix formatting
 - `make build` — production build
 - `make dev` — start dev server
+- `make db-push` — push Drizzle schema changes to Turso (run after modifying src/db/schema.ts)
 
 ## Tech Stack
 
@@ -70,6 +71,19 @@
 - Data writes: `mutation()` from `$app/server` in `.remote.ts` files
 - Only exception for localStorage: transient client-side UI state (e.g. sidebar collapsed)
 
+### Remote Functions vs Form Actions
+
+- Use `.remote.ts` (query/mutation) for: fetching data for display, shared data operations called from multiple pages, bulk operations (batch delete, export)
+- Use `+page.server.ts` form actions for: user form submissions (POST via `<form>`), page-local mutations tied to a specific route
+- Form actions CAN import and call remote mutations internally if needed
+- Rule of thumb: if it's a `<form>` → form action. If it's a button click or data load → remote function.
+
+### Database Migrations
+
+- After modifying `src/db/schema.ts`, run `make db-push` to push changes to Turso
+- Tests mock the DB via vitest aliases — no real DB needed during `make test`
+- For testing Drizzle query logic: mock `$lib/server/db` with `vi.mock()`
+
 ### Forms
 
 - ALL forms MUST use SvelteKit form actions + SuperForms + Zod validation
@@ -86,8 +100,9 @@
 ### UI Components — ShadCN-first
 
 - Before creating ANY new UI component, check if it exists:
-  1. `bunx shadcn-svelte@next add <name>` (shadcn-svelte registry)
-  2. `bunx jsrepo add <name>` (shadcn-svelte-extras registry)
+  1. `bunx shadcn-svelte@next add <name> --no-git` (shadcn-svelte registry, non-interactive)
+  2. `bunx jsrepo add <name> --yes` (shadcn-svelte-extras registry, non-interactive)
+- ALWAYS use `--no-git` / `--yes` flags to avoid interactive prompts (loop runs unattended)
 - Only hand-write a component if NEITHER registry has it
 - NEVER hand-write Dialog, Select, Table, Dropdown, Popover, Checkbox, RadioGroup, etc.
 
@@ -137,11 +152,56 @@
 - NEVER use `{@html}` without sanitization (use isomorphic-dompurify, already installed)
 - File uploads: validate MIME type on SERVER side, not just client side
 - NEVER log sensitive data (passwords, tokens, session secrets) to console
+- **NEVER hardcode secrets, API keys, tokens, passwords, or credentials** in source code. All secrets MUST come from environment variables via `$env/dynamic/private` or `$env/static/private`. If a new secret is needed, add a placeholder to `.env.template` and document it — never put the actual value in code.
+- NEVER commit `.env` files (already in .gitignore). Only `.env.template` with empty placeholders may be committed.
+- Before every `git add -A`: mentally verify no secrets are staged. If a file contains secrets, add it to `.gitignore`.
+
+### Styling & Design
+
+- **Use the frontend-design skill** (`.claude/skills/frontend-design.md`) for ALL UI implementation tasks ([IMPL] with UI). Invoke it to get production-grade, visually polished components.
+- Theme defined in `src/routes/layout.css` — OKLCH color system with light + dark mode:
+  - **Brand colors:** `bg-brand`, `text-brand` (teal-blue primary)
+  - **Accent system:** `bg-accent-mid` (medium depth), `bg-accent-deep` (deepest)
+  - **Surface:** `bg-surface-light` (subtle background for sections)
+  - **Standard ShadCN:** `bg-primary`, `bg-secondary`, `bg-muted`, `bg-card`, `bg-destructive`
+  - **Chart colors:** `bg-chart-1` through `bg-chart-5` (for dashboard statistics)
+- **Fonts:** `font-display` (Plus Jakarta Sans — headings), `font-body` (DM Sans — text). Use via `style="font-family: var(--font-display)"` or Tailwind classes.
+- **Animations available:** `animate-fade-up`, `animate-float-slow`, `animate-float-slower`, `animate-slide-in-left`, `animate-pulse-glow`, `animate-shimmer` (defined in layout.css)
+- **Grain overlay:** Apply `grain` class for subtle texture on hero sections
+- **Page layout pattern:** max-width container with consistent padding:
+  ```svelte
+  <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+  	<h1 class="text-2xl font-bold" style="font-family: var(--font-display)">{i18n.t('page.title')}</h1>
+  	<!-- content -->
+  </div>
+  ```
+- **Card grid pattern:** for dashboard/list pages:
+  ```svelte
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  	<Card.Root>...</Card.Root>
+  </div>
+  ```
+- **Form layout pattern:** two-column on desktop, single on mobile:
+  ```svelte
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+  	<!-- field pairs -->
+  </div>
+  ```
+- Always support dark mode — use ShadCN semantic colors (`bg-card`, `text-foreground`), never hardcode hex colors.
+
+### Date Handling
+
+- Use `@internationalized/date` (already installed) for all date/time operations
+- Do NOT add date-fns — it's unnecessary. Use @internationalized/date for locale-aware formatting.
 
 ### Icons
 
 - Use `@lucide/svelte` for UI icons: `import IconName from '@lucide/svelte/icons/icon-name'`
 - App logos: `static/logo_dark.png`, `static/logo_light.png`
+
+### Off-Limits Files
+
+- **NEVER read `requirements.md`** — it contains outdated patterns (localStorage, German type values, navigateToPage()). ALL requirements are already translated into `specs/*.md` files. Only read spec files.
 
 ## Learnings
 

@@ -7,7 +7,7 @@
 
 interface AuditReport {
 	id: string;
-	userId: string;
+	organizationId: string;
 	auditId: string; // Referenz auf gespeichertes Audit
 	feststellungen: string; // Textarea, 4 Zeilen
 	empfehlungen: string; // Textarea, 4 Zeilen
@@ -52,7 +52,7 @@ interface AuditDocument {
 
 interface SavedAuditQuestions {
 	id: string;
-	userId: string;
+	organizationId: string;
 	formData: AuditQuestionsForm;
 	questions: AuditQuestion[];
 	documents: AuditDocument[];
@@ -62,19 +62,24 @@ interface SavedAuditQuestions {
 
 // --- Massnahmenplan (§15) ---
 
-type Feststellungsart = 'Hauptabweichung' | 'Nebenabweichung' | 'Empfehlung' | 'Verbesserungspotenzial' | 'Positive Feststellung' | 'Beobachtung' | 'Hinweis';
+// Display text comes from i18n
+type Feststellungsart = 'major_nonconformity' | 'minor_nonconformity' | 'recommendation' | 'improvement_potential' | 'positive_finding' | 'observation' | 'note';
 
-type MassnahmenStatus = 'offen' | 'in Bearbeitung' | 'umgesetzt' | 'verifiziert' | 'abgeschlossen';
+// Display text comes from i18n
+type MassnahmenStatus = 'open' | 'in_progress' | 'implemented' | 'verified' | 'completed';
 
-type Audittyp = 'Internes Audit' | 'Externes Audit' | 'Lieferantenaudit' | 'Prozessaudit' | 'Systemaudit' | 'Nachaudit';
+// Display text comes from i18n
+type Audittyp = 'internal' | 'external' | 'supplier' | 'process_audit' | 'system_audit' | 'follow_up_audit';
 
-type Prioritaet = 'Hoch' | 'Mittel' | 'Niedrig';
+// Display text comes from i18n
+type Prioritaet = 'high' | 'medium' | 'low';
 
-type MassnahmenNorm = 'ISO 9001' | 'ISO 14001' | 'ISO 45001' | 'ISO 50001' | 'ISO 27001' | 'Sonstige' | 'Alle';
+// Display text comes from i18n
+type MassnahmenNorm = 'ISO 9001' | 'ISO 14001' | 'ISO 45001' | 'ISO 50001' | 'ISO 27001' | 'other' | 'all';
 
 interface Massnahme {
 	id: string;
-	userId: string;
+	organizationId: string;
 	feststellungsbeschreibung: string; // Textarea
 	feststellungsart: Feststellungsart; // Select, farbcodiert
 	geplanterMassnahme: string; // Textarea
@@ -91,17 +96,17 @@ interface Massnahme {
 }
 
 interface MassnahmenFilter {
-	feststellungsart: Feststellungsart | 'Alle';
-	status: MassnahmenStatus | 'Alle';
-	audittyp: Audittyp | 'Alle';
-	verantwortlicher: string | 'Alle';
-	prioritaet: Prioritaet | 'Alle';
-	norm: MassnahmenNorm | 'Alle';
+	feststellungsart: Feststellungsart | 'all';
+	status: MassnahmenStatus | 'all';
+	audittyp: Audittyp | 'all';
+	verantwortlicher: string | 'all';
+	prioritaet: Prioritaet | 'all';
+	norm: MassnahmenNorm | 'all';
 }
 
 // Ueberfaellig-Berechnung
 interface OverdueCheck {
-	isOverdue: boolean; // frist < today AND status != "abgeschlossen"
+	isOverdue: boolean; // frist < today AND status != "completed"
 }
 ```
 
@@ -109,8 +114,8 @@ interface OverdueCheck {
 
 ### Berichtsgenerator
 
-**Route:** `/auditbericht`
-**Datei:** `src/routes/auditbericht/+page.svelte`
+**Route:** `/report-generator`
+**Datei:** `src/routes/report-generator/+page.svelte`
 
 Das Formular zum Erstellen eines Auditberichts besteht aus folgenden Feldern:
 
@@ -126,8 +131,8 @@ Nach dem Absenden wird der generierte Bericht in einem separaten Container unter
 
 ### Auditfragen & Dokumente
 
-**Route:** `/fragen-dokumente`
-**Datei:** `src/routes/fragen-dokumente/+page.svelte`
+**Route:** `/audit-questions`
+**Datei:** `src/routes/audit-questions/+page.svelte`
 
 **Audit-Informationen (oberer Bereich):**
 
@@ -162,8 +167,8 @@ Nach dem Absenden wird der generierte Bericht in einem separaten Container unter
 
 ### Massnahmenplan
 
-**Route:** `/massnahmenplan`
-**Datei:** `src/routes/massnahmenplan/+page.svelte`
+**Route:** `/action-plan`
+**Datei:** `src/routes/action-plan/+page.svelte`
 
 **Filterleiste (6 Filter in 2 Reihen):**
 
@@ -191,19 +196,19 @@ Jede Massnahme wird als Karte dargestellt mit folgenden Feldern:
 
 **Farbcodierung Feststellungsart:**
 
-| Feststellungsart       | Farbe    |
-| ---------------------- | -------- |
-| Hauptabweichung        | Rot      |
-| Nebenabweichung        | Orange   |
-| Empfehlung             | Gelb     |
-| Verbesserungspotenzial | Blau     |
-| Positive Feststellung  | Gruen    |
-| Beobachtung            | Grau     |
-| Hinweis                | Hellblau |
+| Feststellungsart      | Farbe    |
+| --------------------- | -------- |
+| major_nonconformity   | Rot      |
+| minor_nonconformity   | Orange   |
+| recommendation        | Gelb     |
+| improvement_potential | Blau     |
+| positive_finding      | Gruen    |
+| observation           | Grau     |
+| note                  | Hellblau |
 
 **Ueberfaellig-Markierung:**
 
-Wenn `frist < heute` UND `status !== "abgeschlossen"`, wird die Massnahme visuell hervorgehoben (z.B. roter Rahmen oder roter Hintergrund-Akzent).
+Wenn `frist < heute` UND `status !== "completed"`, wird die Massnahme visuell hervorgehoben (z.B. roter Rahmen oder roter Hintergrund-Akzent).
 
 ## Interaktionen
 
@@ -226,7 +231,7 @@ Wenn `frist < heute` UND `status !== "abgeschlossen"`, wird die Massnahme visuel
 1. **Filtern:** Jede Aenderung eines Filters loedt sofort die gefilterten Massnahmen neu (clientseitig oder via Server-Load mit Query-Parametern).
 2. **Massnahme erstellen:** Button "Neue Massnahme" oeffnet ein leeres Formular. Speichern via Server-Action.
 3. **Massnahme bearbeiten:** Klick auf eine bestehende Massnahme oeffnet diese zum Bearbeiten. Aenderungen werden via Server-Action gespeichert.
-4. **Ueberfaellig-Pruefung:** Bei jedem Laden/Filtern wird fuer jede Massnahme geprueft: `frist < new Date()` UND `status !== "abgeschlossen"`. Ueberfaellige Eintraege erhalten eine visuelle Hervorhebung.
+4. **Ueberfaellig-Pruefung:** Bei jedem Laden/Filtern wird fuer jede Massnahme geprueft: `frist < new Date()` UND `status !== "completed"`. Ueberfaellige Eintraege erhalten eine visuelle Hervorhebung.
 5. **Dynamischer Verantwortlicher-Filter:** Die Optionen im Filter "Verantwortlicher" werden aus den vorhandenen Massnahmen-Eintraegen abgeleitet.
 
 ## Abhaengigkeiten
@@ -237,7 +242,7 @@ Wenn `frist < heute` UND `status !== "abgeschlossen"`, wird die Massnahme visuel
 | -------------------------- | ------------------------------------------------------------------------ |
 | `src/lib/data/`            | Wissensdatenbank: Abteilungen, Normkapitel, Auditfragen (siehe Spec 13)  |
 | `src/lib/server/db/`       | Drizzle ORM Schema und Datenbankzugriff (Turso)                          |
-| `better-auth`              | Authentifizierung: `userId` fuer alle Datensaetze                        |
+| `better-auth`              | Authentifizierung: `organizationId` fuer alle Datensaetze                |
 | Spec 01 (Architektur)      | Authentifizierung, Datenbankschema, i18n                                 |
 | Spec 13 (Wissensdatenbank) | `organisationseinheitOptionen`, `auditQuestionsData`, Normkapitel-Listen |
 | Spec 14 (Einstellungen)    | Farbschema, Sprache, Standard-Auditor/Abteilung                          |

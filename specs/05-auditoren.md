@@ -7,7 +7,7 @@
 
 interface Auditor {
 	id: string;
-	userId: string; // Zuordnung zum angemeldeten Benutzer
+	organizationId: string; // Zuordnung zur Organisation
 
 	// Persoenliche Daten
 	name: string; // Pflichtfeld
@@ -35,7 +35,7 @@ interface Auditor {
 
 	// Verfuegbarkeit
 	dailyRate: number | null; // Tagessatz in EUR (Schrittweite 50)
-	availability: 'vollzeit' | 'teilzeit' | 'nach_vereinbarung' | 'eingeschraenkt' | null;
+	availability: 'full_time' | 'part_time' | 'by_arrangement' | 'limited' | null;
 
 	// Notizen
 	notes: string | null;
@@ -83,7 +83,7 @@ interface AuditorValidationErrors {
 interface AuditorRemoteFunctions {
 	getAuditors: () => Promise<Auditor[]>;
 	getAuditor: (id: string) => Promise<Auditor | null>;
-	createAuditor: (data: Omit<Auditor, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => Promise<Auditor>;
+	createAuditor: (data: Omit<Auditor, 'id' | 'organizationId' | 'createdAt' | 'updatedAt'>) => Promise<Auditor>;
 	updateAuditor: (id: string, data: Partial<Auditor>) => Promise<Auditor>;
 	deleteAuditor: (id: string) => Promise<void>;
 	searchAuditors: (query: string) => Promise<Auditor[]>;
@@ -94,8 +94,8 @@ interface AuditorRemoteFunctions {
 
 ### Teil A: Auditorenverwaltung (Grid-Ansicht)
 
-**Route:** `src/routes/(app)/auditoren/+page.svelte`
-**Remote Functions:** `src/routes/(app)/auditoren/auditors.remote.ts`
+**Route:** `src/routes/(app)/auditor-management/+page.svelte`
+**Remote Functions:** `src/routes/(app)/auditor-management/auditors.remote.ts`
 
 #### Seitenaufbau
 
@@ -180,16 +180,16 @@ Karten-Inhalt:
 #### Leerer Zustand
 
 - Zentrierte Anzeige: "Keine Auditoren vorhanden. Fuegen Sie Ihren ersten Auditor hinzu."
-- Button: "Auditor hinzufuegen" -> navigiert zu `/auditor-neu`
+- Button: "Auditor hinzufuegen" -> navigiert zu `/add-auditor`
 
 ---
 
 ### Teil B: Auditor hinzufuegen / bearbeiten (Formular)
 
-**Route:** `src/routes/(app)/auditor-neu/+page.svelte`
-**Remote Functions:** `src/routes/(app)/auditor-neu/auditor-form.remote.ts`
+**Route:** `src/routes/(app)/add-auditor/+page.svelte`
+**Remote Functions:** `src/routes/(app)/add-auditor/auditor-form.remote.ts`
 
-Im Bearbeitungsmodus wird die Route mit Query-Parameter aufgerufen: `/auditor-neu?edit={id}`
+Im Bearbeitungsmodus wird die Route mit Query-Parameter aufgerufen: `/add-auditor?edit={id}`
 
 #### Seitenaufbau
 
@@ -345,7 +345,7 @@ Buttons: `padding: 0.75rem 2rem`, `border-radius: 8px`, `font-size: 1rem`
 ### Grid-Ansicht: Bearbeiten
 
 1. Klick auf "Bearbeiten" in einer Auditor-Karte
-2. Navigation zu `/auditor-neu?edit={id}`
+2. Navigation zu `/add-auditor?edit={id}`
 3. Die Formular-Seite erkennt den `edit`-Parameter und laedt den Auditor per `getAuditor(id)`
 
 ### Grid-Ansicht: Loeschen
@@ -380,7 +380,7 @@ Buttons: `padding: 0.75rem 2rem`, `border-radius: 8px`, `font-size: 1rem`
    - Bestehender Auditor: `updateAuditor(id, data)` wird aufgerufen
 3. Nach erfolgreichem Speichern:
    - Toast-Benachrichtigung: "Auditor erfolgreich gespeichert"
-   - Navigation zurueck zu `/auditoren`
+   - Navigation zurueck zu `/auditor-management`
 4. Bei Fehler: Toast-Benachrichtigung mit Fehlermeldung
 
 ### Formular: Zuruecksetzen

@@ -7,7 +7,7 @@
 // Enums & Konstanten
 // ──────────────────────────────────────────────
 
-type KalenderAnsicht = 'monat' | 'woche' | 'tag';
+type KalenderAnsicht = 'month' | 'week' | 'day';
 
 // ──────────────────────────────────────────────
 // Drizzle-Schema (Turso / SQLite)
@@ -19,7 +19,7 @@ type KalenderAnsicht = 'monat' | 'woche' | 'tag';
  */
 interface CalendarEntryRow {
 	id: string; // UUID, Primary Key
-	userId: string; // FK -> user.id (better-auth)
+	organizationId: string; // FK -> organization.id (organization-based tenancy)
 	datum: string; // ISO-Date (YYYY-MM-DD), NOT NULL
 	titel: string; // NOT NULL
 	startzeit: string | null; // "HH:mm"
@@ -192,7 +192,7 @@ Bits-UI `Dialog` mit folgenden Feldern:
 
 - Beim Seitenladen und bei jeder Navigation wird `getCalendarEntries` aufgerufen.
 - Parameter: `startDatum` und `endDatum` des sichtbaren Bereichs (ganzer Monat inkl. ueberlappender Tage bei Monatsansicht).
-- Server filtert nach `userId` (aus Session) und Datumsbereich.
+- Server filtert nach `organizationId` (aus Session) und Datumsbereich.
 
 ## Abhaengigkeiten
 
@@ -202,7 +202,7 @@ Bits-UI `Dialog` mit folgenden Feldern:
 | -------------------------- | -------------------------------------------------------- |
 | `auditors`-Tabelle         | Dropdown fuer Auditor-Auswahl im Modal                   |
 | `audits`-Tabelle           | Optionale Verknuepfung von Kalendereintraegen mit Audits |
-| better-auth Session        | `userId` fuer alle CRUD-Operationen                      |
+| better-auth Session        | `organizationId` fuer alle CRUD-Operationen              |
 | Drizzle ORM Schema         | Tabellendefinition `calendar_entries`                    |
 | Spec 06 (Audit-Verwaltung) | Audits koennen als Kalendereintraege verknuepft werden   |
 
@@ -210,7 +210,7 @@ Bits-UI `Dialog` mit folgenden Feldern:
 
 | Paket          | Verwendung                                         |
 | -------------- | -------------------------------------------------- |
-| SvelteKit      | Routing (`/kalender`), Server-Funktionen           |
+| SvelteKit      | Routing (`/calendar`), Server-Funktionen           |
 | Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`) |
 | Bits-UI        | Dialog, ToggleGroup, Button, Select, AlertDialog   |
 | Tailwind CSS 4 | Grid-Layout, aspect-ratio, Farbkodierung           |

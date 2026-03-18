@@ -7,45 +7,36 @@
 // ENUMS & KONSTANTEN
 // ══════════════════════════════════════════════
 
+// Display text comes from i18n
 type AuditartOption =
-	| 'Erstzertifizierung'
-	| 'Überwachungsaudit'
-	| 'Rezertifizierung'
-	| 'Internes Audit'
-	| 'Lieferantenaudit'
-	| 'Prozessaudit'
-	| 'Systemaudit'
-	| 'Produktaudit'
-	| 'Kombiaudit'
-	| 'Transferaudit'
-	| 'Voraudit'
-	| 'Delta-Audit'
-	| 'Follow-up-Audit'
-	| 'Unangekündigtes Audit'
-	| 'Remote Audit'
-	| 'Hybrid Audit';
+	| 'initial_certification'
+	| 'surveillance_audit'
+	| 'recertification'
+	| 'internal'
+	| 'supplier'
+	| 'process_audit'
+	| 'system_audit'
+	| 'product_audit'
+	| 'combined_audit'
+	| 'transfer_audit'
+	| 'preliminary_audit'
+	| 'delta_audit'
+	| 'follow_up_audit'
+	| 'unannounced_audit'
+	| 'remote_audit'
+	| 'hybrid_audit';
 
-type AuditSprache =
-	| 'Deutsch'
-	| 'Englisch'
-	| 'Französisch'
-	| 'Spanisch'
-	| 'Italienisch'
-	| 'Portugiesisch'
-	| 'Niederländisch'
-	| 'Polnisch'
-	| 'Tschechisch'
-	| 'Türkisch'
-	| 'Russisch'
-	| 'Chinesisch'
-	| 'Japanisch'
-	| 'Koreanisch';
+// Display text comes from i18n
+type AuditSprache = 'de' | 'en' | 'fr' | 'es' | 'it' | 'pt' | 'nl' | 'pl' | 'cs' | 'tr' | 'ru' | 'zh' | 'ja' | 'ko';
 
-type Schichtsystem = '1-Schicht' | '2-Schicht' | '3-Schicht' | 'Anderes';
+// Display text comes from i18n
+type Schichtsystem = 'single_shift' | 'double_shift' | 'triple_shift' | 'other';
 
-type Auditmethode = 'vor Ort' | 'vor Ort & remote' | '100% remote';
+// Display text comes from i18n
+type Auditmethode = 'on_site' | 'on_site_and_remote' | 'fully_remote';
 
-type TeamRolle = 'Auditleiter' | 'Auditoren' | 'Trainees' | 'Experten';
+// Display text comes from i18n
+type TeamRolle = 'lead_auditor' | 'auditors' | 'trainees' | 'experts';
 
 // ISO-Normen (5+1 Checkboxen)
 const ISO_NORMEN = [
@@ -98,7 +89,7 @@ const ORGANISATIONSEINHEITEN: string[] = [
  */
 interface SavedPlanRow {
 	id: string; // UUID
-	userId: string; // FK -> user.id
+	organizationId: string; // FK -> organization.id
 	name: string; // Planname fuer Anzeige
 	daten: string; // JSON-String von AuditplanDaten
 	createdAt: string;
@@ -627,7 +618,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 
 1. Klick auf **Auditnotizen generieren**.
 2. Relevante Daten (Audit-Bloecke, Grunddaten, Team) werden an den Notizen-Generator (Spec 10) uebertragen.
-3. Navigation zu `/notizen-generator` mit vorausgefuellten Daten.
+3. Navigation zu `/notes-generator` mit vorausgefuellten Daten.
 
 ### Formular zuruecksetzen
 
@@ -727,7 +718,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 | ----------------------- | ---------------------------------------------------------------- |
 | `saved_plans`-Tabelle   | Persistierung der Auditplan-Daten                                |
 | `auditors`-Tabelle      | Auditor-Auswahl in Auditzeiten und Team                          |
-| better-auth Session     | `userId` fuer Speichern/Laden                                    |
+| better-auth Session     | `organizationId` fuer Speichern/Laden                            |
 | Drizzle ORM Schema      | Tabellendefinition `saved_plans`                                 |
 | Spec 10 (Notizen)       | Datenuebergabe bei "Auditnotizen generieren"                     |
 | Spec 08 (Import/Export) | `saved_plans` wird exportiert/importiert                         |
@@ -738,7 +729,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 
 | Paket               | Verwendung                                                         |
 | ------------------- | ------------------------------------------------------------------ |
-| SvelteKit           | Routing (`/auditplan-generator`), Server-Funktionen                |
+| SvelteKit           | Routing (`/plan-generator`), Server-Funktionen                     |
 | Svelte 5            | Reaktive Zustandsverwaltung (`$state`, `$derived`, `$effect`)      |
 | Bits-UI             | Card, Button, Select, Checkbox, Switch, Badge, Collapsible, Dialog |
 | Tailwind CSS 4      | Formularlayout, responsive Design                                  |

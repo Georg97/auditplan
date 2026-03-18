@@ -10,7 +10,8 @@
 /**
  * Bewertungstypen (§26)
  */
-type BewertungsTyp = 'Abweichung (Hauptabweichung)' | 'Nebenabweichung' | 'Beobachtung' | 'Verbesserungspotenzial' | 'Positive Feststellung';
+// Display text comes from i18n
+type BewertungsTyp = 'major_nonconformity' | 'minor_nonconformity' | 'observation' | 'improvement_potential' | 'positive_finding';
 
 // ══════════════════════════════════════════════
 // DRIZZLE-SCHEMA (Turso / SQLite)
@@ -22,7 +23,7 @@ type BewertungsTyp = 'Abweichung (Hauptabweichung)' | 'Nebenabweichung' | 'Beoba
  */
 interface SavedNotesRow {
 	id: string; // UUID
-	userId: string; // FK -> user.id
+	organizationId: string; // FK -> organization.id
 	name: string; // Name fuer Anzeige
 	daten: string; // JSON-String von NotizenDaten
 	createdAt: string;
@@ -328,13 +329,13 @@ Unterhalb der QHSE-Dokumente, innerhalb jedes Blocks:
 
 **Bewertungstypen im Detail:**
 
-| Typ                          | Farbe im UI     | Word-Format            |
-| ---------------------------- | --------------- | ---------------------- |
-| Abweichung (Hauptabweichung) | `bg-red-100`    | Fett + Gelb hinterlegt |
-| Nebenabweichung              | `bg-orange-100` | Fett + Gelb hinterlegt |
-| Beobachtung                  | `bg-yellow-100` | Fett + Gelb hinterlegt |
-| Verbesserungspotenzial       | `bg-blue-100`   | Fett + Gelb hinterlegt |
-| Positive Feststellung        | `bg-green-100`  | Fett + Gelb hinterlegt |
+| Typ                   | Farbe im UI     | Word-Format            |
+| --------------------- | --------------- | ---------------------- |
+| major_nonconformity   | `bg-red-100`    | Fett + Gelb hinterlegt |
+| minor_nonconformity   | `bg-orange-100` | Fett + Gelb hinterlegt |
+| observation           | `bg-yellow-100` | Fett + Gelb hinterlegt |
+| improvement_potential | `bg-blue-100`   | Fett + Gelb hinterlegt |
+| positive_finding      | `bg-green-100`  | Fett + Gelb hinterlegt |
 
 **Word-Export-Format**: Pro Bewertung eine Zeile:
 
@@ -479,7 +480,7 @@ Die 6 Toggles pro Block werden in folgenden Situationen vollstaendig erhalten:
 | Abhaengigkeit           | Beschreibung                                       |
 | ----------------------- | -------------------------------------------------- |
 | `saved_notes`-Tabelle   | Persistierung der Notizen-Daten                    |
-| better-auth Session     | `userId` fuer Speichern/Laden                      |
+| better-auth Session     | `organizationId` fuer Speichern/Laden              |
 | Drizzle ORM Schema      | Tabellendefinition `saved_notes`                   |
 | Spec 09 (Auditplan)     | Datenuebernahme von "Auditnotizen generieren"      |
 | Spec 08 (Import/Export) | `saved_notes` wird exportiert/importiert           |
@@ -490,7 +491,7 @@ Die 6 Toggles pro Block werden in folgenden Situationen vollstaendig erhalten:
 
 | Paket          | Verwendung                                                         |
 | -------------- | ------------------------------------------------------------------ |
-| SvelteKit      | Routing (`/notizen-generator`), Server-Funktionen                  |
+| SvelteKit      | Routing (`/notes-generator`), Server-Funktionen                    |
 | Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`, `$effect`)      |
 | Bits-UI        | Card, Button, Select, Checkbox, Switch, Badge, Collapsible, Dialog |
 | Tailwind CSS 4 | Formularlayout, 2-Spalten-Header, responsive Design                |

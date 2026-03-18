@@ -1,4 +1,4 @@
-.PHONY: check check-no-test format format-check lint typecheck test dev build
+.PHONY: check check-no-test format format-check lint typecheck test dev build db-push
 
 # Full validation gate (format + typecheck + lint + test)
 check: format-check typecheck lint test
@@ -35,3 +35,7 @@ dev:
 # Production build
 build:
 	bun run build
+
+# Push Drizzle schema changes to Turso (run after modifying src/db/schema.ts)
+db-push:
+	bunx drizzle-kit push

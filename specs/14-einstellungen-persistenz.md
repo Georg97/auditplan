@@ -130,7 +130,7 @@ interface DbSchema {
 // Settings werden als JSON-Objekt gespeichert
 interface SettingsTable {
 	id: string;
-	userId: string;
+	organizationId: string;
 	data: string; // JSON.stringify(AppSettings)
 	createdAt: Date;
 	updatedAt: Date;
@@ -401,11 +401,11 @@ Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke ne
 
 ### Externe Abhaengigkeiten
 
-| Paket            | Verwendung                                              |
-| ---------------- | ------------------------------------------------------- |
-| `@libsql/client` | Turso-Datenbankverbindung                               |
-| `drizzle-orm`    | ORM fuer Datenbankoperationen                           |
-| `better-auth`    | Benutzer-Authentifizierung (userId fuer alle Daten)     |
-| `bits-ui`        | UI-Komponenten (Dialog, Tabs, Select, Checkbox, Button) |
-| Tailwind CSS 4   | Theming via CSS-Variablen, responsive Layouts           |
-| SvelteKit        | Server-Actions, Load-Funktionen, Routing                |
+| Paket            | Verwendung                                                  |
+| ---------------- | ----------------------------------------------------------- |
+| `@libsql/client` | Turso-Datenbankverbindung                                   |
+| `drizzle-orm`    | ORM fuer Datenbankoperationen                               |
+| `better-auth`    | Benutzer-Authentifizierung (organizationId fuer alle Daten) |
+| `bits-ui`        | UI-Komponenten (Dialog, Tabs, Select, Checkbox, Button)     |
+| Tailwind CSS 4   | Theming via CSS-Variablen, responsive Layouts               |
+| SvelteKit        | Server-Actions, Load-Funktionen, Routing                    |

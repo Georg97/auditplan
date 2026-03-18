@@ -15,7 +15,7 @@
 interface ExportDaten {
 	version: string; // Schema-Version, z.B. "1.0"
 	exportiertAm: string; // ISO-DateTime
-	benutzer: string; // userId oder Anzeigename
+	benutzer: string; // organizationId oder Anzeigename
 
 	// Alle exportierbaren Datenschluessel
 	audits: AuditRow[];
@@ -183,7 +183,7 @@ Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Besc
 | Abhaengigkeit            | Beschreibung                                                 |
 | ------------------------ | ------------------------------------------------------------ |
 | Alle 9 Datenbanktabellen | Export liest alle Tabellen, Import schreibt in alle Tabellen |
-| better-auth Session      | `userId` fuer Datenzuordnung                                 |
+| better-auth Session      | `organizationId` fuer Datenzuordnung                         |
 | Drizzle ORM Schema       | Zugriff auf alle relevanten Tabellen                         |
 | Spec 06 (Audits)         | `audits`, `auditors` Tabellen                                |
 | Spec 07 (Kalender)       | `calendar_entries` Tabelle                                   |

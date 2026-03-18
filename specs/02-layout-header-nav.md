@@ -7,7 +7,7 @@ interface NavItem {
 	id: string;
 	label: string; // i18n-Schluessel, z.B. "nav.uebersicht"
 	icon: string; // Emoji oder Icon-Bezeichner
-	href: string; // SvelteKit-Route, z.B. "/uebersicht"
+	href: string; // SvelteKit-Route, z.B. "/overview"
 }
 
 interface SettingsState {
@@ -18,18 +18,18 @@ interface SettingsState {
 
 // Navigationspunkte (12 Eintraege)
 const NAV_ITEMS: NavItem[] = [
-	{ id: 'uebersicht', label: 'nav.uebersicht', icon: '📋', href: '/uebersicht' },
+	{ id: 'overview', label: 'nav.uebersicht', icon: '📋', href: '/overview' },
 	{ id: 'dashboard', label: 'nav.dashboard', icon: '📊', href: '/dashboard' },
-	{ id: 'auditoren', label: 'nav.auditoren', icon: '👥', href: '/auditoren' },
-	{ id: 'auditor-neu', label: 'nav.auditor_neu', icon: '➕', href: '/auditor-neu' },
-	{ id: 'suchen', label: 'nav.suchen', icon: '🔍', href: '/suchen' },
-	{ id: 'kalender', label: 'nav.kalender', icon: '📅', href: '/kalender' },
+	{ id: 'auditor-management', label: 'nav.auditoren', icon: '👥', href: '/auditor-management' },
+	{ id: 'add-auditor', label: 'nav.auditor_neu', icon: '➕', href: '/add-auditor' },
+	{ id: 'search-manage', label: 'nav.suchen', icon: '🔍', href: '/search-manage' },
+	{ id: 'calendar', label: 'nav.kalender', icon: '📅', href: '/calendar' },
 	{ id: 'import-export', label: 'nav.import_export', icon: '📁', href: '/import-export' },
-	{ id: 'auditplan', label: 'nav.auditplan', icon: '📝', href: '/auditplan' },
-	{ id: 'auditbericht', label: 'nav.auditbericht', icon: '📄', href: '/auditbericht' },
-	{ id: 'auditnotizen', label: 'nav.auditnotizen', icon: '🗒️', href: '/auditnotizen' },
-	{ id: 'fragen-dokumente', label: 'nav.fragen_dokumente', icon: '❓', href: '/fragen-dokumente' },
-	{ id: 'massnahmenplan', label: 'nav.massnahmenplan', icon: '⚡', href: '/massnahmenplan' }
+	{ id: 'plan-generator', label: 'nav.auditplan', icon: '📝', href: '/plan-generator' },
+	{ id: 'report-generator', label: 'nav.auditbericht', icon: '📄', href: '/report-generator' },
+	{ id: 'notes-generator', label: 'nav.auditnotizen', icon: '🗒️', href: '/notes-generator' },
+	{ id: 'audit-questions', label: 'nav.fragen_dokumente', icon: '❓', href: '/audit-questions' },
+	{ id: 'action-plan', label: 'nav.massnahmenplan', icon: '⚡', href: '/action-plan' }
 ];
 ```
 

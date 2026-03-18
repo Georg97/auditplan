@@ -7,7 +7,7 @@
 
 interface SavedDocument {
 	id: string;
-	userId: string;
+	organizationId: string;
 	name: string;
 	type: 'auditfragen' | 'dokument';
 	content: Record<string, unknown>; // JSON-Inhalt des Generators
@@ -19,7 +19,7 @@ interface SavedDocument {
 
 interface SavedNote {
 	id: string;
-	userId: string;
+	organizationId: string;
 	name: string;
 	content: Record<string, unknown>; // JSON-Inhalt des Notizen-Generators
 	createdAt: Date;
@@ -30,7 +30,7 @@ interface SavedNote {
 
 interface SavedPlan {
 	id: string;
-	userId: string;
+	organizationId: string;
 	name: string;
 	content: Record<string, unknown>; // JSON-Inhalt des Plan-Generators
 	createdAt: Date;
@@ -61,8 +61,8 @@ interface OverviewRemoteFunctions {
 
 ## UI-Beschreibung
 
-**Route:** `src/routes/(app)/uebersicht/+page.svelte`
-**Remote Functions:** `src/routes/(app)/uebersicht/overview.remote.ts`
+**Route:** `src/routes/(app)/overview/+page.svelte`
+**Remote Functions:** `src/routes/(app)/overview/overview.remote.ts`
 
 Diese Seite ist die Standard-Startseite der Anwendung nach dem Login.
 
@@ -180,9 +180,9 @@ Wenn ein Abschnitt keine Eintraege hat:
 
 1. Klick auf "Bearbeiten" -> Navigation zur entsprechenden Generator-Seite
 2. Die `id` des Eintrags wird als URL-Parameter mitgegeben:
-   - Dokument: `/fragen-dokumente?edit={id}`
-   - Notiz: `/auditnotizen?edit={id}`
-   - Plan: `/auditplan?edit={id}`
+   - Dokument: `/audit-questions?edit={id}`
+   - Notiz: `/notes-generator?edit={id}`
+   - Plan: `/plan-generator?edit={id}`
 3. Die Generator-Seite laedt den Eintrag per Remote Function und befuellt das Formular
 
 ### Loeschen

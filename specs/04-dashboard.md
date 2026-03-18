@@ -5,11 +5,11 @@
 ```typescript
 // --- Audit-Status ---
 
-type AuditStatus = 'geplant' | 'in_bearbeitung' | 'abgeschlossen' | 'ueberfaellig';
+type AuditStatus = 'planned' | 'in_progress' | 'completed' | 'overdue';
 
 // --- Massnahmen-Prioritaet ---
 
-type ActionPriority = 'hoch' | 'mittel' | 'niedrig';
+type ActionPriority = 'high' | 'medium' | 'low';
 
 // --- Statistik-Karten ---
 
@@ -78,7 +78,7 @@ interface DashboardData {
 
 interface DashboardRemoteFunctions {
 	getDashboardData: () => Promise<DashboardData>;
-	getFilteredAudits: (status: AuditStatus | 'alle') => Promise<AuditListItem[]>;
+	getFilteredAudits: (status: AuditStatus | 'all') => Promise<AuditListItem[]>;
 }
 ```
 
@@ -178,12 +178,12 @@ Jede Statistik-Karte:
 
 Horizontale Reihe, `gap: 0.5rem`:
 
-| Button         | Filter-Wert        |
-| -------------- | ------------------ |
-| Alle           | `"alle"`           |
-| Geplant        | `"geplant"`        |
-| In Bearbeitung | `"in_bearbeitung"` |
-| Abgeschlossen  | `"abgeschlossen"`  |
+| Button         | Filter-Wert     |
+| -------------- | --------------- |
+| Alle           | `"alle"`        |
+| Geplant        | `"planned"`     |
+| In Bearbeitung | `"in_progress"` |
+| Abgeschlossen  | `"completed"`   |
 
 Aktiver Filter: Gradient-Hintergrund (`#667eea` -> `#764ba2`), weisser Text.
 Inaktiver Filter: Weisser Hintergrund, grauer Rand, dunkler Text.
@@ -230,14 +230,14 @@ Jeder Eintrag als Zeile mit:
 ### Statistik-Karten-Klick
 
 1. Klick auf eine Statistik-Karte -> Navigation zur relevanten Detailansicht
-   - "Gesamte Audits" -> `/suchen` (alle Audits)
-   - "Auditoren" -> `/auditoren`
-   - "Geplant" -> `/suchen?status=geplant`
-   - "Abgeschlossen" -> `/suchen?status=abgeschlossen`
-   - "In Bearbeitung" -> `/suchen?status=in_bearbeitung`
-   - "Offene Massnahmen" -> `/massnahmenplan?filter=offen`
-   - "Ueberfaellige Massnahmen" -> `/massnahmenplan?filter=ueberfaellig`
-   - "Anstehende Audits" -> `/kalender`
+   - "Gesamte Audits" -> `/search-manage` (alle Audits)
+   - "Auditoren" -> `/auditor-management`
+   - "Geplant" -> `/search-manage?status=planned`
+   - "Abgeschlossen" -> `/search-manage?status=completed`
+   - "In Bearbeitung" -> `/search-manage?status=in_progress`
+   - "Offene Massnahmen" -> `/action-plan?filter=offen`
+   - "Ueberfaellige Massnahmen" -> `/action-plan?filter=ueberfaellig`
+   - "Anstehende Audits" -> `/calendar`
 
 ### Audit-Filter
 

@@ -7,11 +7,11 @@
 // Enums & Konstanten
 // ──────────────────────────────────────────────
 
-type AuditTyp = 'Internes' | 'Externes' | 'Zertifizierung' | 'Überwachung' | 'Rezertifizierung';
+type AuditTyp = 'internal' | 'external' | 'certification' | 'surveillance' | 'recertification';
 
-type AuditFormat = 'Vor Ort' | 'Remote' | 'Hybrid';
+type AuditFormat = 'on_site' | 'remote' | 'hybrid';
 
-type AuditStatus = 'geplant' | 'laufend' | 'abgeschlossen' | 'abgesagt';
+type AuditStatus = 'planned' | 'in_progress' | 'completed' | 'cancelled';
 
 // ──────────────────────────────────────────────
 // Drizzle-Schema (Turso / SQLite)
@@ -23,7 +23,7 @@ type AuditStatus = 'geplant' | 'laufend' | 'abgeschlossen' | 'abgesagt';
  */
 interface AuditRow {
 	id: string; // UUID, Primary Key
-	userId: string; // FK -> user.id (better-auth)
+	organizationId: string; // FK -> organization.id (organization-based tenancy)
 
 	// 1. Grundinformationen
 	auditName: string; // NOT NULL
@@ -91,7 +91,7 @@ interface NormOption {
 
 interface AuditorRow {
 	id: string;
-	userId: string;
+	organizationId: string;
 	name: string;
 	email: string | null;
 	aktiv: boolean;
@@ -113,7 +113,7 @@ interface AuditSuchParams {
 // ──────────────────────────────────────────────
 
 interface AuditFormState {
-	audit: Omit<AuditRow, 'id' | 'userId' | 'createdAt' | 'updatedAt'>;
+	audit: Omit<AuditRow, 'id' | 'organizationId' | 'createdAt' | 'updatedAt'>;
 	dateien: File[]; // Neue Uploads (noch nicht gespeichert)
 	vorhandeneDateien: AuditDateiRow[]; // Bereits gespeicherte Dateien
 	fehler: Record<string, string>; // Validierungsfehler pro Feld
@@ -151,12 +151,12 @@ Die Seite gliedert sich in zwei Bereiche:
 
 **Status-Farbkodierung** (Tailwind-Klassen):
 
-| Status        | Hintergrund     | Text              |
-| ------------- | --------------- | ----------------- |
-| geplant       | `bg-blue-100`   | `text-blue-800`   |
-| laufend       | `bg-yellow-100` | `text-yellow-800` |
-| abgeschlossen | `bg-green-100`  | `text-green-800`  |
-| abgesagt      | `bg-red-100`    | `text-red-800`    |
+| Status      | Hintergrund     | Text              |
+| ----------- | --------------- | ----------------- |
+| planned     | `bg-blue-100`   | `text-blue-800`   |
+| in_progress | `bg-yellow-100` | `text-yellow-800` |
+| completed   | `bg-green-100`  | `text-green-800`  |
+| cancelled   | `bg-red-100`    | `text-red-800`    |
 
 ### 3. Audit-Formular (6 Sektionen)
 
@@ -261,7 +261,7 @@ Unterhalb des Upload-Feldes: Liste bereits hochgeladener Dateien mit Dateiname, 
 ### Validierung
 
 - Client-seitig: Pflichtfelder pruefen, E-Mail-Format, Dateigroesse (max 5 MB), Dateityp-Whitelist.
-- Server-seitig: Identische Pruefungen plus Auth-Check (`userId` muss mit Session uebereinstimmen).
+- Server-seitig: Identische Pruefungen plus Auth-Check (`organizationId` muss mit Session uebereinstimmen).
 - Fehlermeldungen erscheinen inline unter dem jeweiligen Feld.
 
 ## Abhaengigkeiten
@@ -271,7 +271,7 @@ Unterhalb des Upload-Feldes: Liste bereits hochgeladener Dateien mit Dateiname, 
 | Abhaengigkeit           | Beschreibung                                               |
 | ----------------------- | ---------------------------------------------------------- |
 | `auditors`-Tabelle      | Dynamisches Dropdown fuer "Leitender Auditor" (Sektion 5)  |
-| better-auth Session     | `userId` fuer alle CRUD-Operationen                        |
+| better-auth Session     | `organizationId` fuer alle CRUD-Operationen                |
 | Drizzle ORM Schema      | Tabellendefinitionen `audits`, `audit_dateien`, `auditors` |
 | Spec 07 (Kalender)      | Audits koennen als Kalendereintraege referenziert werden   |
 | Spec 08 (Import/Export) | Audits werden beim Export/Import beruecksichtigt           |
