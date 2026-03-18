@@ -5,17 +5,7 @@
 	import { useCode } from './code.svelte.js';
 	import { box } from 'svelte-toolbelt';
 
-	let {
-		ref = $bindable(null),
-		variant = 'default',
-		lang = 'typescript',
-		code,
-		class: className,
-		hideLines = false,
-		highlight = [],
-		children,
-		...rest
-	}: CodeRootProps = $props();
+	let { ref = $bindable(null), variant = 'default', lang = 'typescript', code, class: className, hideLines = false, highlight = [], children, ...rest }: CodeRootProps = $props();
 
 	const codeState = useCode({
 		code: box.with(() => code),

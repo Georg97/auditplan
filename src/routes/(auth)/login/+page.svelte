@@ -6,6 +6,7 @@
 	import Input from '$lib/components/ui/input/input.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { authClient } from '$lib/auth-client';
+	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import Layers from '@lucide/svelte/icons/layers';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
@@ -40,6 +41,7 @@
 					toast.error(error.message || 'Sign up failed');
 				} else {
 					toast.success('Account created!', { description: 'Welcome to dabsstack.' });
+					goto('/');
 				}
 			} else {
 				const { error } = await authClient.signIn.email({
@@ -50,6 +52,7 @@
 					toast.error(error.message || 'Sign in failed');
 				} else {
 					toast.success('Welcome back!');
+					goto('/');
 				}
 			}
 		} catch {
@@ -85,7 +88,10 @@
 	<!-- ========== LEFT: Brand Panel ========== -->
 	<div class="relative hidden overflow-hidden lg:flex lg:w-[45%] xl:w-[50%]">
 		<!-- Layered gradient background -->
-		<div class="absolute inset-0 bg-background dark:bg-transparent" style="background: linear-gradient(145deg, oklch(0.96 0.003 265), oklch(0.94 0.005 255), oklch(0.96 0.004 275));"></div>
+		<div
+			class="bg-background absolute inset-0 dark:bg-transparent"
+			style="background: linear-gradient(145deg, oklch(0.96 0.003 265), oklch(0.94 0.005 255), oklch(0.96 0.004 275));"
+		></div>
 		<div class="absolute inset-0 hidden dark:block" style="background: linear-gradient(145deg, oklch(0.11 0.006 265), oklch(0.15 0.005 255), oklch(0.12 0.008 275));"></div>
 
 		<!-- Animated orbs -->
@@ -111,15 +117,18 @@
 		<!-- Diagonal decorative lines -->
 		<div class="pointer-events-none absolute inset-0 opacity-[0.04]">
 			<div class="absolute top-0 right-0 h-full w-px origin-top-right rotate-[15deg]" style="background: linear-gradient(to bottom, transparent, var(--brand), transparent);"></div>
-			<div class="absolute top-0 right-24 h-full w-px origin-top-right rotate-[15deg]" style="background: linear-gradient(to bottom, transparent, var(--accent-mid) 60%, transparent);"></div>
+			<div
+				class="absolute top-0 right-24 h-full w-px origin-top-right rotate-[15deg]"
+				style="background: linear-gradient(to bottom, transparent, var(--accent-mid) 60%, transparent);"
+			></div>
 		</div>
 
 		<!-- Content -->
 		<div class="relative z-10 flex flex-col justify-between p-12 xl:p-16">
 			<!-- Logo -->
 			<a href="/" class="group flex items-center gap-3" style="font-family: var(--font-display);">
-				<div class="from-brand to-accent-deep flex size-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg shadow-brand/10">
-					<Layers class="size-5 text-primary-foreground" />
+				<div class="from-brand to-accent-deep shadow-brand/10 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg">
+					<Layers class="text-primary-foreground size-5" />
 				</div>
 				<span class="text-xl font-semibold tracking-tight">
 					<span class="group-hover:text-brand transition-colors">dabs</span><span class="text-muted-foreground">stack</span>
@@ -128,21 +137,13 @@
 
 			<!-- Center message -->
 			<div class="max-w-sm">
-				<h1
-					class="animate-fade-up text-4xl leading-[1.1] font-bold tracking-tight xl:text-5xl"
-					style="font-family: var(--font-display);"
-				>
+				<h1 class="animate-fade-up text-4xl leading-[1.1] font-bold tracking-tight xl:text-5xl" style="font-family: var(--font-display);">
 					Build
-					<span class="from-brand via-accent-mid to-accent-deep bg-gradient-to-r bg-clip-text text-transparent">
-						something
-					</span>
+					<span class="from-brand via-accent-mid to-accent-deep bg-gradient-to-r bg-clip-text text-transparent"> something </span>
 					<br />
-					<span class="italic text-muted-foreground">remarkable</span>.
+					<span class="text-muted-foreground italic">remarkable</span>.
 				</h1>
-				<p
-					class="animate-fade-up text-muted-foreground mt-5 text-base leading-relaxed xl:text-lg"
-					style="animation-delay: 0.1s;"
-				>
+				<p class="animate-fade-up text-muted-foreground mt-5 text-base leading-relaxed xl:text-lg" style="animation-delay: 0.1s;">
 					Your full-stack starting point. Sign in to access your projects and start shipping.
 				</p>
 			</div>
@@ -162,7 +163,7 @@
 		<!-- Mobile logo -->
 		<a href="/" class="mb-10 flex items-center gap-2.5 lg:hidden" style="font-family: var(--font-display);">
 			<div class="from-brand to-accent-deep flex size-9 items-center justify-center rounded-xl bg-gradient-to-br">
-				<Layers class="size-4.5 text-primary-foreground" />
+				<Layers class="text-primary-foreground size-4.5" />
 			</div>
 			<span class="text-lg font-semibold tracking-tight">
 				<span>dabs</span><span class="text-muted-foreground">stack</span>
@@ -172,12 +173,9 @@
 		<div class="w-full max-w-sm">
 			<!-- Header -->
 			<div class="animate-fade-up mb-8">
-				<h2
-					class="text-2xl font-bold tracking-tight sm:text-3xl"
-					style="font-family: var(--font-display);"
-				>
+				<h2 class="text-2xl font-bold tracking-tight sm:text-3xl" style="font-family: var(--font-display);">
 					{#if mode === 'signin'}
-						Welcome <span class="italic text-muted-foreground">back</span>
+						Welcome <span class="text-muted-foreground italic">back</span>
 					{:else}
 						Create your <span class="from-brand to-accent-mid bg-gradient-to-r bg-clip-text text-transparent">account</span>
 					{/if}
@@ -195,7 +193,7 @@
 			<div class="animate-fade-up" style="animation-delay: 0.1s;">
 				<Button
 					variant="outline"
-					class="group h-11 w-full border-border bg-accent/50 text-sm hover:border-brand/20 hover:bg-brand/[0.04]"
+					class="group border-border bg-accent/50 hover:border-brand/20 hover:bg-brand/[0.04] h-11 w-full text-sm"
 					onclick={handleGoogle}
 					disabled={googleLoading}
 				>
@@ -215,9 +213,9 @@
 
 			<!-- Divider -->
 			<div class="animate-fade-up relative my-7 flex items-center" style="animation-delay: 0.15s;">
-				<Separator class="flex-1 bg-border" />
+				<Separator class="bg-border flex-1" />
 				<span class="text-muted-foreground/40 mx-4 text-xs tracking-widest uppercase">or</span>
-				<Separator class="flex-1 bg-border" />
+				<Separator class="bg-border flex-1" />
 			</div>
 
 			<!-- Email form -->
@@ -236,7 +234,7 @@
 										name="name"
 										bind:value={name}
 										required
-										class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-border pl-10"
+										class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 border-border h-11 pl-10"
 									/>
 								</div>
 							</Field.Field>
@@ -254,7 +252,7 @@
 								name="email"
 								bind:value={email}
 								required
-								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-border pl-10"
+								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 border-border h-11 pl-10"
 							/>
 						</div>
 					</Field.Field>
@@ -275,7 +273,7 @@
 								name="password"
 								bind:value={password}
 								required
-								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 h-11 border-border pr-10 pl-10"
+								class="bg-secondary/30 placeholder:text-muted-foreground/30 focus:border-brand/30 focus:ring-brand/20 border-border h-11 pr-10 pl-10"
 							/>
 							<button
 								type="button"
@@ -310,21 +308,15 @@
 			<p class="animate-fade-up text-muted-foreground mt-7 text-center text-sm" style="animation-delay: 0.25s;">
 				{#if mode === 'signin'}
 					Don't have an account?
-					<button class="text-brand hover:text-brand/80 ml-1 font-medium transition-colors" onclick={toggleMode}>
-						Sign up
-					</button>
+					<button class="text-brand hover:text-brand/80 ml-1 font-medium transition-colors" onclick={toggleMode}> Sign up </button>
 				{:else}
 					Already have an account?
-					<button class="text-brand hover:text-brand/80 ml-1 font-medium transition-colors" onclick={toggleMode}>
-						Sign in
-					</button>
+					<button class="text-brand hover:text-brand/80 ml-1 font-medium transition-colors" onclick={toggleMode}> Sign in </button>
 				{/if}
 			</p>
 
 			<!-- Terms -->
-			<p class="text-muted-foreground/30 mt-6 text-center text-[11px] leading-relaxed">
-				By continuing, you agree to our Terms of Service and Privacy Policy.
-			</p>
+			<p class="text-muted-foreground/30 mt-6 text-center text-[11px] leading-relaxed">By continuing, you agree to our Terms of Service and Privacy Policy.</p>
 		</div>
 	</div>
 </div>

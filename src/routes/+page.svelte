@@ -78,7 +78,7 @@
 		onUpdated({ form }) {
 			if (form.valid) {
 				toast.success('Message sent!', {
-					description: 'Thanks for reaching out. We\'ll get back to you soon.'
+					description: "Thanks for reaching out. We'll get back to you soon."
 				});
 			} else {
 				toast.error('Submission failed', {
@@ -135,7 +135,7 @@
 
 <div class="grain min-h-screen overflow-hidden">
 	<!-- ========== NAV ========== -->
-	<header class="bg-background/60 fixed top-0 z-50 w-full border-b border-border backdrop-blur-2xl">
+	<header class="bg-background/60 border-border fixed top-0 z-50 w-full border-b backdrop-blur-2xl">
 		<nav class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
 			<a href="/" class="group font-display flex items-center gap-2 text-base font-semibold tracking-tight sm:gap-2.5 sm:text-lg" style="font-family: var(--font-display);">
 				<div class="from-brand to-accent-deep flex size-7 items-center justify-center rounded-lg bg-gradient-to-br sm:size-8">
@@ -150,14 +150,20 @@
 				</div>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<div class="bg-secondary/50 hidden items-center gap-2 rounded-full border border-border px-3 py-1.5 sm:flex">
+						<div class="bg-secondary/50 border-border hidden items-center gap-2 rounded-full border px-3 py-1.5 sm:flex">
 							<span class="text-muted-foreground text-xs">Effects</span>
 							<Switch bind:checked={showEffects} />
 						</div>
 					</Tooltip.Trigger>
 					<Tooltip.Content>Toggle visual effects</Tooltip.Content>
 				</Tooltip.Root>
-				<Button variant="ghost" size="sm" href="https://github.com/Georg97/dabsstack" target="_blank" class="text-muted-foreground hover:text-foreground size-8 p-0 sm:size-auto sm:p-2">
+				<Button
+					variant="ghost"
+					size="sm"
+					href="https://github.com/Georg97/dabsstack"
+					target="_blank"
+					class="text-muted-foreground hover:text-foreground size-8 p-0 sm:size-auto sm:p-2"
+				>
 					<Github class="size-4" />
 				</Button>
 				{#if data.user}
@@ -189,15 +195,19 @@
 	</header>
 
 	<!-- ========== SECTION NAV ========== -->
-	<nav class="fixed left-6 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
+	<nav class="fixed top-1/2 left-6 z-40 hidden -translate-y-1/2 xl:block">
 		<div class="flex flex-col items-start gap-1">
 			{#each sections as section}
 				<a
 					href="#{section.id}"
-					class="group flex items-center gap-3 rounded-full py-1.5 pr-3 pl-2 text-xs transition-all duration-300 {activeSection === section.id ? 'text-brand bg-brand/10' : 'text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent/50'}"
+					class="group flex items-center gap-3 rounded-full py-1.5 pr-3 pl-2 text-xs transition-all duration-300 {activeSection === section.id
+						? 'text-brand bg-brand/10'
+						: 'text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent/50'}"
 				>
 					<span
-						class="block size-1.5 rounded-full transition-all duration-300 {activeSection === section.id ? 'bg-brand scale-125' : 'bg-muted-foreground/30 group-hover:bg-muted-foreground/50'}"
+						class="block size-1.5 rounded-full transition-all duration-300 {activeSection === section.id
+							? 'bg-brand scale-125'
+							: 'bg-muted-foreground/30 group-hover:bg-muted-foreground/50'}"
 					></span>
 					{section.label}
 				</a>
@@ -263,13 +273,7 @@
 							Get Started
 							<ArrowRight class="ml-1.5 size-4" />
 						</Button>
-						<Button
-							variant="outline"
-							size="lg"
-							href="https://github.com/Georg97/dabsstack"
-							target="_blank"
-							class="border-border text-base hover:border-border hover:bg-accent/50"
-						>
+						<Button variant="outline" size="lg" href="https://github.com/Georg97/dabsstack" target="_blank" class="border-border hover:border-border hover:bg-accent/50 text-base">
 							<Github class="mr-1.5 size-4" />
 							Source Code
 						</Button>
@@ -279,7 +283,7 @@
 					<div class="animate-fade-up mt-8" style="animation-delay: 0.4s;">
 						<button
 							onclick={copyCommand}
-							class="group bg-secondary/40 hover:border-brand/20 hover:bg-secondary/60 flex w-full max-w-md cursor-pointer items-center gap-3 rounded-xl border border-border px-5 py-3.5 font-mono text-sm transition-all"
+							class="group bg-secondary/40 hover:border-brand/20 hover:bg-secondary/60 border-border flex w-full max-w-md cursor-pointer items-center gap-3 rounded-xl border px-5 py-3.5 font-mono text-sm transition-all"
 						>
 							<Terminal class="text-brand size-4 shrink-0" />
 							<code class="text-muted-foreground flex-1 text-left">
@@ -298,7 +302,7 @@
 				<div class="animate-fade-up relative hidden lg:block" style="animation-delay: 0.3s;">
 					<div class="grid grid-cols-2 gap-3">
 						<!-- Card 1: Component preview -->
-						<Card.Card class="bg-card/60 col-span-2 overflow-hidden border-border backdrop-blur-sm">
+						<Card.Card class="bg-card/60 border-border col-span-2 overflow-hidden backdrop-blur-sm">
 							<Card.CardHeader class="pb-3">
 								<div class="flex items-center gap-2">
 									<div class="bg-accent-deep size-2.5 rounded-full"></div>
@@ -330,7 +334,7 @@
 							</Card.CardHeader>
 							<Card.CardContent class="space-y-2 pb-4">
 								<Button size="sm" class="from-brand to-accent-mid text-primary-foreground w-full border-0 bg-gradient-to-r">Primary</Button>
-								<Button size="sm" variant="outline" class="w-full border-border">Outline</Button>
+								<Button size="sm" variant="outline" class="border-border w-full">Outline</Button>
 								<Button size="sm" variant="secondary" class="w-full">Secondary</Button>
 							</Card.CardContent>
 						</Card.Card>
@@ -350,7 +354,7 @@
 						</Card.Card>
 
 						<!-- Card 4: Wide card with avatars -->
-						<Card.Card class="bg-card/60 col-span-2 border-border backdrop-blur-sm">
+						<Card.Card class="bg-card/60 border-border col-span-2 backdrop-blur-sm">
 							<Card.CardContent class="flex items-center justify-between py-4">
 								<div class="flex items-center gap-3">
 									<div class="flex -space-x-2">
@@ -386,9 +390,9 @@
 	<!-- ========== SEPARATOR WITH LABEL ========== -->
 	<div class="mx-auto max-w-6xl px-6 lg:px-8">
 		<div class="relative flex items-center py-4">
-			<Separator class="flex-1 bg-border" />
+			<Separator class="bg-border flex-1" />
 			<span class="text-muted-foreground/50 mx-4 shrink-0 text-[10px] font-medium tracking-[0.2em] uppercase">The Stack</span>
-			<Separator class="flex-1 bg-border" />
+			<Separator class="bg-border flex-1" />
 		</div>
 	</div>
 
@@ -409,7 +413,7 @@
 			</div>
 
 			<Tabs.Root value="SvelteKit" class="relative">
-				<Tabs.List class="bg-secondary/30 mb-8 flex w-full justify-start gap-1 rounded-xl border border-border p-1.5 backdrop-blur-sm sm:w-fit">
+				<Tabs.List class="bg-secondary/30 border-border mb-8 flex w-full justify-start gap-1 rounded-xl border p-1.5 backdrop-blur-sm sm:w-fit">
 					{#each stackItems as item}
 						<Tabs.Trigger
 							value={item.name}
@@ -422,14 +426,14 @@
 
 				{#each stackItems as item}
 					<Tabs.Content value={item.name}>
-						<Card.Card class="bg-card/40 overflow-hidden border-border backdrop-blur-sm">
-							<div class="grid divide-x divide-border md:grid-cols-[1fr_1.5fr]">
+						<Card.Card class="bg-card/40 border-border overflow-hidden backdrop-blur-sm">
+							<div class="divide-border grid divide-x md:grid-cols-[1fr_1.5fr]">
 								<Card.CardHeader class="flex flex-col justify-center p-8">
-									<div class="bg-secondary/50 mb-4 flex size-14 items-center justify-center rounded-2xl border border-border">
+									<div class="bg-secondary/50 border-border mb-4 flex size-14 items-center justify-center rounded-2xl border">
 										<item.icon class="size-7 {item.color}" />
 									</div>
 									<Card.CardTitle class="text-2xl" style="font-family: var(--font-display);">{item.name}</Card.CardTitle>
-									<Badge variant="outline" class="text-muted-foreground mt-2 w-fit border-border text-xs">v{item.version}</Badge>
+									<Badge variant="outline" class="text-muted-foreground border-border mt-2 w-fit text-xs">v{item.version}</Badge>
 								</Card.CardHeader>
 								<Card.CardContent class="flex items-center p-8">
 									<p class="text-muted-foreground text-lg leading-relaxed">
@@ -459,7 +463,7 @@
 
 		<div class="grid gap-4 md:grid-cols-3 md:grid-rows-2">
 			<!-- Large card: Performance -->
-			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 overflow-hidden border-border backdrop-blur-sm transition-all duration-500 md:row-span-2">
+			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 border-border overflow-hidden backdrop-blur-sm transition-all duration-500 md:row-span-2">
 				<Card.CardHeader class="relative p-8 pb-4">
 					{#if showEffects}
 						<div
@@ -517,7 +521,7 @@
 			</Card.Card>
 
 			<!-- Bottom spanning: Component count -->
-			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 overflow-hidden border-border backdrop-blur-sm transition-all duration-500 md:col-span-2">
+			<Card.Card class="group bg-card/50 hover:border-brand/20 hover:bg-card/70 border-border overflow-hidden backdrop-blur-sm transition-all duration-500 md:col-span-2">
 				<Card.CardContent class="flex flex-col items-start justify-between gap-6 p-6 sm:flex-row sm:items-center">
 					<div>
 						<p class="text-brand text-4xl font-bold" style="font-family: var(--font-display);">50+</p>
@@ -542,15 +546,18 @@
 	<!-- ========== REMOTE QUERIES SHOWCASE ========== -->
 	<div class="mx-auto max-w-6xl px-6 lg:px-8">
 		<div class="relative flex items-center py-4">
-			<Separator class="flex-1 bg-border" />
+			<Separator class="bg-border flex-1" />
 			<span class="text-muted-foreground/50 mx-4 shrink-0 text-[10px] font-medium tracking-[0.2em] uppercase">Live Demo</span>
-			<Separator class="flex-1 bg-border" />
+			<Separator class="bg-border flex-1" />
 		</div>
 	</div>
 
 	<section id="queries" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		{#if showEffects}
-			<div class="pointer-events-none absolute top-1/2 right-0 size-[400px] -translate-y-1/2 rounded-full opacity-[0.05] blur-[100px]" style="background: var(--accent-deep);"></div>
+			<div
+				class="pointer-events-none absolute top-1/2 right-0 size-[400px] -translate-y-1/2 rounded-full opacity-[0.05] blur-[100px]"
+				style="background: var(--accent-deep);"
+			></div>
 		{/if}
 
 		<div class="relative">
@@ -569,7 +576,7 @@
 
 			<div class="grid gap-6 md:grid-cols-2">
 				<!-- SSR: getTags() -->
-				<Card.Card class="group bg-card/50 hover:border-accent-mid/20 hover:bg-card/70 overflow-hidden border-border backdrop-blur-sm transition-all duration-500">
+				<Card.Card class="group bg-card/50 hover:border-accent-mid/20 hover:bg-card/70 border-border overflow-hidden backdrop-blur-sm transition-all duration-500">
 					<Card.CardHeader class="p-6 pb-4">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-3">
@@ -586,7 +593,7 @@
 					</Card.CardHeader>
 					<Card.CardContent class="p-6 pt-0">
 						<p class="text-muted-foreground mb-4 text-sm">Resolved on the server before the page renders. Zero client-side loading.</p>
-						<div class="bg-secondary/30 rounded-lg border border-border p-4">
+						<div class="bg-secondary/30 border-border rounded-lg border p-4">
 							<p class="text-muted-foreground/60 mb-2.5 text-xs tracking-wider uppercase">Response</p>
 							<div class="flex flex-wrap gap-1.5">
 								{#each await getTags() as tag}
@@ -598,7 +605,7 @@
 				</Card.Card>
 
 				<!-- Client: getRandomMsg() -->
-				<Card.Card class="group bg-card/50 hover:border-accent-deep/20 hover:bg-card/70 overflow-hidden border-border backdrop-blur-sm transition-all duration-500">
+				<Card.Card class="group bg-card/50 hover:border-accent-deep/20 hover:bg-card/70 border-border overflow-hidden backdrop-blur-sm transition-all duration-500">
 					<Card.CardHeader class="p-6 pb-4">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-3">
@@ -615,7 +622,7 @@
 					</Card.CardHeader>
 					<Card.CardContent class="p-6 pt-0">
 						<p class="text-muted-foreground mb-4 text-sm">Called at runtime with reactive loading & error states. Errors are simulated randomly.</p>
-						<div class="bg-secondary/30 rounded-lg border border-border p-4">
+						<div class="bg-secondary/30 border-border rounded-lg border p-4">
 							<p class="text-muted-foreground/60 mb-2.5 text-xs tracking-wider uppercase">Response</p>
 							<div class="flex min-h-[2.5rem] items-center">
 								{#if randomQuery?.error}
@@ -636,7 +643,7 @@
 						<Button
 							variant="outline"
 							size="sm"
-							class="hover:border-accent-deep/20 hover:text-accent-deep mt-4 border-border"
+							class="hover:border-accent-deep/20 hover:text-accent-deep border-border mt-4"
 							onclick={() => {
 								randomQuery.refresh();
 							}}
@@ -653,9 +660,9 @@
 	<!-- ========== FORM SHOWCASE ========== -->
 	<div class="mx-auto max-w-6xl px-6 lg:px-8">
 		<div class="relative flex items-center py-4">
-			<Separator class="flex-1 bg-border" />
+			<Separator class="bg-border flex-1" />
 			<span class="text-muted-foreground/50 mx-4 shrink-0 text-[10px] font-medium tracking-[0.2em] uppercase">Forms</span>
-			<Separator class="flex-1 bg-border" />
+			<Separator class="bg-border flex-1" />
 		</div>
 	</div>
 
@@ -690,7 +697,7 @@
 			</div>
 
 			<!-- Right: Form -->
-			<Card.Card class="bg-card/50 overflow-hidden border-border backdrop-blur-sm">
+			<Card.Card class="bg-card/50 border-border overflow-hidden backdrop-blur-sm">
 				<Card.CardHeader class="p-6 pb-0">
 					<div class="mb-1 flex items-center gap-2">
 						<div class="bg-accent-deep size-2.5 rounded-full"></div>
@@ -798,7 +805,7 @@
 	</section>
 
 	<!-- ========== FOOTER ========== -->
-	<footer class="border-t border-border">
+	<footer class="border-border border-t">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-8 lg:px-8">
 			<div class="text-muted-foreground/60 flex items-center gap-2 text-sm">
 				<div class="from-brand/40 to-accent-deep/40 flex size-5 items-center justify-center rounded bg-gradient-to-br">

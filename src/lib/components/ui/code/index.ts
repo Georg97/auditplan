@@ -16,10 +16,4 @@ export const codeVariants = tv({
 
 export type CodeVariant = VariantProps<typeof codeVariants>['variant'];
 
-export {
-	Root,
-	CopyButton,
-	Overflow,
-	type CodeRootProps as RootProps,
-	type CodeCopyButtonProps as CopyButtonProps
-};
+export { Root, CopyButton, Overflow, type CodeRootProps as RootProps, type CodeCopyButtonProps as CopyButtonProps };

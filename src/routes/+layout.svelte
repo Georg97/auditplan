@@ -1,11 +1,12 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import { TooltipProvider } from '$lib/components/ui/tooltip';
 	import { Toaster } from '$lib/components/ui/sonner';
-	import { ModeWatcher } from 'mode-watcher';
+	import { ModeWatcher, mode } from 'mode-watcher';
 
 	let { children } = $props();
+
+	const favicon = $derived(mode.current === 'dark' ? '/logo_dark.png' : '/logo_light.png');
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
