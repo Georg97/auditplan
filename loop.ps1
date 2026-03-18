@@ -13,6 +13,7 @@ if (-not (Test-Path $LogDir)) {
     New-Item -ItemType Directory -Path $LogDir | Out-Null
 }
 
+$LoopStart = Get-Date
 $Iteration = 0
 $TotalInputTokens = 0
 $TotalOutputTokens = 0
@@ -93,18 +94,8 @@ while ($true) {
 }
 
 # Final summary
-Write-Host ""
-Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "  Ralph Loop Summary" -ForegroundColor Cyan
-Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "  Iterations:          $Iteration"
-Write-Host "  Model:               $Model"
-Write-Host ""
-Write-Host "  Total input tokens:  $($TotalInputTokens.ToString('N0'))"
-Write-Host "  Total output tokens: $($TotalOutputTokens.ToString('N0'))"
-Write-Host "  Total cache read:    $($TotalCacheRead.ToString('N0'))"
-Write-Host "  Total cache create:  $($TotalCacheCreation.ToString('N0'))"
-Write-Host ""
+$LoopEnd = Get-Date
+$LoopDuration = $LoopEnd - $LoopStart
 
 # Cost estimate (Opus 4.6 pricing as of 2025)
 # Input: $5/MTok, Output: $25/MTok, Cache read: $0.50/MTok, Cache write: $6.25/MTok
@@ -114,9 +105,43 @@ $CacheReadCost = ($TotalCacheRead / 1000000) * 0.50
 $CacheCreateCost = ($TotalCacheCreation / 1000000) * 6.25
 $TotalCost = $InputCost + $OutputCost + $CacheReadCost + $CacheCreateCost
 
-Write-Host "  Estimated API cost:  `$$($TotalCost.ToString('F2')) (Opus pricing)" -ForegroundColor Yellow
-Write-Host "    Input:             `$$($InputCost.ToString('F4'))"
-Write-Host "    Output:            `$$($OutputCost.ToString('F4'))"
-Write-Host "    Cache read:        `$$($CacheReadCost.ToString('F4'))"
-Write-Host "    Cache create:      `$$($CacheCreateCost.ToString('F4'))"
-Write-Host "============================================" -ForegroundColor Cyan
+# Determine next run number
+$ExistingLogs = Get-ChildItem -Path $LogDir -Filter "loop-run-*.log" -ErrorAction SilentlyContinue
+$RunNumber = 1
+if ($ExistingLogs) {
+    $RunNumber = ($ExistingLogs | ForEach-Object {
+        if ($_.BaseName -match 'loop-run-(\d+)') { [int]$Matches[1] }
+    } | Measure-Object -Maximum).Maximum + 1
+}
+$RunLogFile = Join-Path $LogDir "loop-run-${RunNumber}.log"
+
+# Build summary content
+$Summary = @"
+============================================
+  Ralph Loop Run #$RunNumber
+============================================
+  Started:             $($LoopStart.ToString('yyyy-MM-dd HH:mm:ss'))
+  Ended:               $($LoopEnd.ToString('yyyy-MM-dd HH:mm:ss'))
+  Duration:            $($LoopDuration.ToString('hh\:mm\:ss'))
+
+  Iterations:          $Iteration
+  Model:               $Model
+
+  Total input tokens:  $($TotalInputTokens.ToString('N0'))
+  Total output tokens: $($TotalOutputTokens.ToString('N0'))
+  Total cache read:    $($TotalCacheRead.ToString('N0'))
+  Total cache create:  $($TotalCacheCreation.ToString('N0'))
+
+  Estimated API cost:  `$$($TotalCost.ToString('F2')) (Opus pricing)
+    Input:             `$$($InputCost.ToString('F4'))
+    Output:            `$$($OutputCost.ToString('F4'))
+    Cache read:        `$$($CacheReadCost.ToString('F4'))
+    Cache create:      `$$($CacheCreateCost.ToString('F4'))
+============================================
+"@
+
+# Write to log file
+$Summary | Out-File -FilePath $RunLogFile -Encoding utf8
+Write-Host ""
+Write-Host $Summary -ForegroundColor Cyan
+Write-Host "  Log written to: $RunLogFile" -ForegroundColor DarkGray
