@@ -212,3 +212,4 @@
 - Prettier SyntaxError on `columns: [...]` in specs/01-architektur.md code blocks is a harmless warning — prettier still reports all files pass.
 - `copy-button` component depends on `ButtonPropsWithoutHTML` which was removed in newer shadcn button — fixed to use `ButtonVariant`/`ButtonSize` directly.
 - TanStack Table v8 `createSvelteTable()` returns a Svelte store — use `$table` in templates. Use getter properties (`get data() { return data }`) for reactive options instead of `$derived`.
+- SvelteKit remote functions: `$app/server` exports `query`, `command`, `form`, `prerender` — NOT `mutation`. Use `command('unchecked', async (arg) => {...})` for commands with parameters. `query()` callbacks take no arguments.
