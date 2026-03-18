@@ -38,7 +38,8 @@ Execute based on the task tag:
 
 - Read ONLY the spec file + the interface/type files.
 - **DO NOT read any implementation files.** Tests must be written from the spec, not from existing code.
-- Write Vitest tests in `src/**/*.test.ts`. For server functions, test the logic directly. For components, test with `@testing-library/svelte` if feasible, otherwise test underlying logic/stores.
+- Write Vitest tests in `src/**/*.test.ts`. Test server functions, Zod schemas, utility functions, and data transformations.
+- **Do NOT write component render tests.** Svelte 5 runes + jsdom has known issues. Focus on logic testing only.
 - Write tests with rich comments explaining **why** each test exists. These serve as living documentation for future iterations.
 - Test names must be spec assertions: `test_X_does_Y_when_Z`
 - Verification: `make check-no-test` (tests may fail against stubs — that's expected)
@@ -68,6 +69,34 @@ Execute based on the task tag:
 - Write a comprehensive test verifying a user-facing flow end-to-end.
 - Verification: `make check`
 
+## Step 3.5: E2E VERIFY (after [IMPL] and [WIRE] tasks with UI changes)
+
+Use the Playwright MCP tools to verify your UI implementation in a real browser. Playwright runs its own isolated Chromium — it does NOT touch the user's browser.
+
+1. **Start the dev server** (if not already running): `bun run dev &` (background process on port 5173)
+2. **Log in**: Navigate to `http://localhost:5173/login`, enter test credentials from env vars `TEST_USER_EMAIL` / `TEST_USER_PASSWORD`, submit the form
+3. **Navigate** to the page you just implemented or modified
+4. **Verify** key UI elements:
+   - Page renders without errors
+   - Key text/labels are visible (use `browser_snapshot` to inspect the accessibility tree)
+   - Interactive elements work (buttons, forms, navigation)
+   - Data loads correctly from the server
+5. **If something looks wrong**: take a `browser_screenshot`, diagnose the issue, fix it, and re-verify
+6. **Close the browser** when done with `browser_close`
+
+**Important:**
+- Use `browser_snapshot` (accessibility tree) over `browser_screenshot` (image) to save tokens — only screenshot when debugging visual issues
+- Don't spend more than 2-3 minutes on E2E verification per iteration
+- If the dev server fails to start (e.g. port in use), skip E2E and note it in the commit message
+
+## Step 3.9: FINAL CHECKUP (before committing)
+
+After REPAIR passes, do a quick browser walkthrough of the page you modified:
+1. Navigate to the relevant page (log in if needed)
+2. Take a `browser_snapshot` to confirm the page renders correctly
+3. If anything is broken, fix it before committing
+4. Close the browser with `browser_close`
+
 ## Step 4: REPAIR
 
 Run `make check`. If tests OUTSIDE your current task fail:
@@ -96,10 +125,27 @@ git push
 - **Specs are truth.** If your implementation contradicts a spec, the spec wins. If a spec is wrong, update it AND implement correctly.
 - **SvelteKit conventions.** Use file-based routing. Server code in `+page.server.ts` or `.remote.ts` files. Client state with Svelte 5 runes. Styling with Tailwind utility classes and ShadCN components from `$lib/components/ui/`.
 - **Use bun.** `bun add` for new dependencies, `bun run` for scripts. Never npm/yarn/pnpm.
-- **German UI.** The application interface is in German. Specs are in German. Code comments and commit messages may be English.
+- **German UI via i18n.** ALL user-facing text MUST use `i18nRune.t('key')`. No hardcoded German strings in components. Translation keys in `static/locales/de.json`.
 - **Svelte 5 patterns.** Use `let { prop } = $props()` for props. Use `$state()` for reactive state. Use `$derived()` for computed values. Use `$effect()` for side effects. Import ShadCN components from `$lib/components/ui/`.
 - **Context management.** This is a large project (~29 modules). NEVER load all route files at once. Load only the spec + the files mentioned in the task. If you need to understand a pattern, look at ONE existing implementation, not all of them.
 - **If stuck:** Document the blocker in fix_plan.md with details, then skip to the next task.
 - **Do NOT place status reports in CLAUDE.md.** Only build/test knowledge and learnings.
 - **NEVER ask questions or wait for human input.** You are running unattended. Make decisions autonomously based on the specs. If something is ambiguous, make the reasonable choice, document your reasoning in the commit message, and move on.
 - **NEVER use interactive commands.** All commands must run non-interactively. No prompts, no confirmations, no interactive editors.
+
+## Prohibitions (CRITICAL — violating these wastes iterations)
+
+- **NEVER use localStorage** for data persistence. All data goes through Drizzle ORM + Turso via remote functions (query/mutation). The requirements.md mentions localStorage — IGNORE that, use the server DB.
+- **NEVER use `window.confirm()`** — use ShadCN `alert-dialog` component instead.
+- **NEVER hand-write a UI component** that exists in shadcn-svelte or shadcn-svelte-extras. Install it: `bunx shadcn-svelte@next add <name>` or `bunx jsrepo add <name>`.
+- **NEVER write component render tests** — test server logic, Zod schemas, and utilities only. Svelte 5 runes + jsdom has known issues.
+- **NEVER use manual fetch/POST** for form submissions — ALL forms use SuperForms + Zod.
+- **NEVER create custom table implementations** — ALL data tables use TanStack Table (`@tanstack/svelte-table`) with the DataTable.svelte wrapper.
+- **NEVER use custom `navigateToPage()` functions** — use SvelteKit `<a href>` and `goto()` from `$app/navigation`.
+- **NEVER hardcode German text in components** — use `i18nRune.t('key')` for ALL user-facing strings.
+- **TypeScript enum/union values MUST be English internal keys** — not German display text. Use `type AuditStatus = 'planned' | 'in_progress' | 'completed'`, NOT `'geplant' | 'in Bearbeitung' | 'abgeschlossen'`. Display text comes from `i18n.t('audit.status.planned')`.
+- **Searchable multiselects MUST use ShadCN `popover` + `command`** components (combobox pattern). NEVER build a custom dropdown from scratch.
+- **NEVER create a page or form action without auth check.** The `(app)/+layout.server.ts` has a global auth guard, but form actions in `+page.server.ts` MUST still verify `locals.user` before mutating data.
+- **NEVER create a DB table without `organizationId` column** (except auth/org tables). Every query MUST filter by the user's active `organizationId` — users must only see their organization's data. This is organization-based tenancy, NOT per-user isolation.
+- **NEVER use `{@html}`** without sanitizing via `isomorphic-dompurify` (already installed). User-generated content is untrusted.
+- **NEVER log sensitive data** (passwords, tokens, secrets) to console — remove all `console.log` of form data before committing.

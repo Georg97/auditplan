@@ -15,18 +15,20 @@
 
 ## Phase 1: SETUP
 
-- [ ] S01 [SETUP] Bestehende Demo-Inhalte entfernen — +page.svelte Demo-Code und data.remote.ts Beispieldaten durch leere Platzhalter ersetzen — Specs: 01-architektur
-- [ ] S02 [SETUP] Datenbankschema erstellen — Drizzle-Tabellen für Auditoren, Audits, Kalendereinträge, Maßnahmen, Auditpläne, Auditnotizen, Auditfragen, Einstellungen in src/db/schema.ts — Specs: 01-architektur, 14-einstellungen-persistenz
-- [ ] S03 [SETUP] i18n-System aufsetzen — Übersetzungsdateien-Struktur in src/lib/i18n/, Sprachkontext, 10 Sprachen (DE vollständig, Rest als Stubs) — Specs: 01-architektur
-- [ ] S04 [SETUP] App-Layout erstellen — Authentifiziertes Layout mit Header-Slot und Nav-Slot unter src/routes/(app)/+layout.svelte, unauthentifiziertes Layout beibehalten — Specs: 02-layout-header-nav
-- [ ] S05 [SETUP] SvelteKit-Routen-Scaffolding — Alle 12 Seiten als leere +page.svelte unter (app)/ Route-Gruppe: overview, dashboard, auditor-management, add-auditor, search-manage, calendar, import-export, plan-generator, report-generator, notes-generator, audit-questions, action-plan — Specs: 02-layout-header-nav
-- [ ] S06 [SETUP] Shared UI-Komponenten erweitern — ShadCN erweitern um: Dialog/Modal, Select, Textarea, Checkbox, RadioGroup, DatePicker, Multiselect — Specs: 01-architektur
-- [ ] S07 [SETUP] Server-Funktionen-Scaffolding — Remote-Functions-Dateien (.remote.ts) für Auditoren, Audits, Kalender, Maßnahmen, Pläne, Notizen, Auditfragen, Einstellungen — Specs: 01-architektur
-- [ ] S08 [SETUP] TypeScript-Typen erstellen — Basis-Interfaces in src/lib/types/ für alle Domänobjekte (Auditor, Audit, CalendarEntry, Action, AuditPlan, AuditNotes, AuditQuestion, Settings) — Specs: 01-architektur
-- [ ] S09 [SETUP] Wissensdatenbank-Datendateien — Statische TS-Dateien in src/lib/data/ mit organisationseinheitOptionen, abteilungBeschreibungen, zusammenfassungBeschreibungen, zusammenfassungDefaultText, ISO-Normkapiteln (alle 5 Normen), auditQuestionsData — Specs: 13-wissensdatenbank
-- [ ] S10 [SETUP] Word-Export-Bibliothek einrichten — docx als Dependency (bun add docx), Basis-Hilfsfunktionen in src/lib/word/ — Specs: 12-word-export
-- [ ] S11 [SETUP] Drag-and-Drop-Utility — Wiederverwendbare Svelte-Action oder Komponente für Block-Sortierung in src/lib/components/ — Specs: 14-einstellungen-persistenz
-- [ ] S12 [SETUP] Datei-Upload-Utility — Wiederverwendbare Upload-Komponente mit Validierung (Formate, 5MB), Base64-Konvertierung in src/lib/components/ — Specs: 14-einstellungen-persistenz
+- [ ] S01 [SETUP] Bestehende Demo-Inhalte entfernen — +page.svelte Demo-Code und data.remote.ts Beispieldaten durch leere Platzhalter ersetzen, Demo-Seite durch Redirect zu /overview ersetzen — Specs: 01-architektur
+- [ ] S02 [SETUP] ShadCN-Komponenten installieren — Via CLI installieren (NICHT manuell erstellen): `bunx shadcn-svelte@next add dialog select checkbox radio-group textarea popover command table alert-dialog sheet progress scroll-area dropdown-menu` — Specs: 01-architektur
+- [ ] S03 [SETUP] TanStack Table + DataTable-Wrapper — Reusable DataTable.svelte Komponente in src/lib/components/ erstellen, die @tanstack/svelte-table mit ShadCN table-Styling kombiniert — Specs: 01-architektur
+- [ ] S04 [SETUP] i18n-System aufsetzen — i18next installieren (bereits vorhanden), I18nRune Klasse in src/lib/i18n/i18n.svelte.ts erstellen, static/locales/de.json mit initialen Schlüsseln für Navigation + gemeinsame Labels, 9 weitere Locale-Stubs (en/fr/es/it/nl/pt/pl/ru/tr.json), i18n-Context in (app)/+layout.svelte via setContext() — Specs: 01-architektur
+- [ ] S05 [SETUP] Datenbankschema erstellen — Drizzle-Tabellen für Auditoren, Audits, Kalendereinträge, Maßnahmen, Auditpläne, Auditnotizen, Auditfragen, Einstellungen in src/db/schema.ts. JEDE Fachdaten-Tabelle MUSS organizationId-Spalte haben (Org-basierte Mandantenfähigkeit). better-auth Organization Plugin einrichten in src/lib/auth.ts — Specs: 01-architektur, 14-einstellungen-persistenz
+- [ ] S06 [SETUP] App-Layout erstellen — (app)/+layout.server.ts mit Auth-Guard (redirect zu /login wenn !locals.user), (app)/+layout.svelte mit Header-Slot, Nav-Slot, i18n-Context + SettingsState via setContext() — Specs: 02-layout-header-nav, 01-architektur
+- [ ] S07 [SETUP] SvelteKit-Routen-Scaffolding — Alle 12 Seiten als leere +page.svelte unter (app)/ Route-Gruppe: overview, dashboard, auditor-management, add-auditor, search-manage, calendar, import-export, plan-generator, report-generator, notes-generator, audit-questions, action-plan — Specs: 02-layout-header-nav
+- [ ] S08 [SETUP] Server-Funktionen-Scaffolding — Remote-Functions-Dateien (.remote.ts) mit query()/mutation() Stubs für Auditoren, Audits, Kalender, Maßnahmen, Pläne, Notizen, Auditfragen, Einstellungen — Specs: 01-architektur
+- [ ] S09 [SETUP] TypeScript-Typen + Zod-Schemas — Basis-Interfaces UND Zod-Validierungsschemas in src/lib/types/ für alle Domänobjekte (Auditor, Audit, CalendarEntry, Action, AuditPlan, AuditNotes, AuditQuestion, Settings) — Specs: 01-architektur
+- [ ] S10 [SETUP] Shared State Klassen — SettingsState in src/lib/state/settings.svelte.ts (Theme, Kompaktansicht, Benachrichtigungen, Locale) — Specs: 01-architektur, 14-einstellungen-persistenz
+- [ ] S11 [SETUP] Wissensdatenbank-Datendateien — Statische TS-Dateien in src/lib/data/ mit organisationseinheitOptionen, abteilungBeschreibungen, zusammenfassungBeschreibungen, zusammenfassungDefaultText, ISO-Normkapiteln (alle 5 Normen), auditQuestionsData — Specs: 13-wissensdatenbank
+- [ ] S12 [SETUP] Word-Export-Bibliothek einrichten — docx als Dependency (bun add docx), Basis-Hilfsfunktionen in src/lib/word/ — Specs: 12-word-export
+- [ ] S13 [SETUP] Drag-and-Drop-Utility — Wiederverwendbare Svelte-Action oder Komponente für Block-Sortierung in src/lib/components/ — Specs: 14-einstellungen-persistenz
+- [ ] S14 [SETUP] Datei-Upload-Utility — Wiederverwendbare Upload-Komponente mit Validierung (Formate, 5MB), Base64-Konvertierung in src/lib/components/ — Specs: 14-einstellungen-persistenz
 
 ## Phase 2: Header & Navigation
 
