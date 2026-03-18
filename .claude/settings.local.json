@@ -5,7 +5,8 @@
       "Bash(find /c/Users/GeorgHirsch/development/github/Georg97/auditplan/src -type f \\\\\\(-name *.svelte -o -name *.ts -o -name *.tsx -o -name *.css \\\\\\))",
       "Bash(xargs grep:*)",
       "Bash(find /c/Users/GeorgHirsch/development/github/Georg97/auditplan/src/routes -type f -name *.svelte)",
-      "Bash(find /c/Users/GeorgHirsch/development/github/Georg97/auditplan/src -name *.d.ts -o -name *theme* -o -name *dark*)"
+      "Bash(find /c/Users/GeorgHirsch/development/github/Georg97/auditplan/src -name *.d.ts -o -name *theme* -o -name *dark*)",
+      "WebFetch(domain:ghuntley.com)"
     ]
   }
 }
