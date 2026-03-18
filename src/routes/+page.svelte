@@ -34,7 +34,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { toast } from 'svelte-sonner';
 	import { authClient } from '$lib/auth-client';
-	import { getRandomMsg, getTags } from './data.remote';
+	import { getRandomMsg, getTags } from '$lib/rpc/data.remote';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
