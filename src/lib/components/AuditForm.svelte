@@ -3,7 +3,8 @@
 	import { goto } from '$app/navigation';
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import type { I18nRune } from '$lib/i18n/i18n.svelte';
-	import type { AuditCreate } from '$lib/types';
+	import type { AuditCreate, Auditor } from '$lib/types';
+	import { getAuditors } from '$lib/rpc/auditors.remote';
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Checkbox } from '$lib/components/ui/checkbox';
@@ -86,6 +87,19 @@
 	let formatValue = $derived(($form.format as string | null | undefined) ?? undefined);
 	function onFormatChange(val: string | undefined) {
 		$form.format = (val as typeof $form.format) ?? null;
+	}
+
+	// Load auditors for lead auditor select
+	let auditors = $state<Auditor[]>([]);
+	$effect(() => {
+		getAuditors()
+			.then((a) => (auditors = a))
+			.catch(() => (auditors = []));
+	});
+
+	let leadAuditorValue = $derived($form.leadAuditorId || undefined);
+	function onLeadAuditorChange(val: string | undefined) {
+		$form.leadAuditorId = val ?? '';
 	}
 </script>
 
@@ -256,10 +270,28 @@
 				<Accordion.Content class="px-6 pb-6">
 					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<div class="space-y-1.5 sm:col-span-2">
-							<Label for="leadAuditorId">{i18n.t('audit.fields.leadAuditor')} *</Label>
-							<Input id="leadAuditorId" name="leadAuditorId" bind:value={$form.leadAuditorId} placeholder="Auditor-ID" aria-invalid={$errors.leadAuditorId ? 'true' : undefined} />
+							<Label>{i18n.t('audit.fields.leadAuditor')} *</Label>
+							{#if auditors.length > 0}
+								<Select.Root type="single" value={leadAuditorValue} onValueChange={onLeadAuditorChange} name="leadAuditorId">
+									<Select.Trigger class="w-full" aria-invalid={$errors.leadAuditorId ? 'true' : undefined}>
+										{#if leadAuditorValue}
+											{@const selected = auditors.find((a) => a.id === leadAuditorValue)}
+											{selected ? `${selected.firstName} ${selected.lastName}` : leadAuditorValue}
+										{:else}
+											<span class="text-muted-foreground">—</span>
+										{/if}
+									</Select.Trigger>
+									<Select.Content>
+										{#each auditors as auditor (auditor.id)}
+											<Select.Item value={auditor.id}>{auditor.firstName} {auditor.lastName}</Select.Item>
+										{/each}
+									</Select.Content>
+								</Select.Root>
+							{:else}
+								<Input name="leadAuditorId" bind:value={$form.leadAuditorId} placeholder="Auditor-ID" aria-invalid={$errors.leadAuditorId ? 'true' : undefined} />
+							{/if}
+							<input type="hidden" name="leadAuditorId" value={$form.leadAuditorId ?? ''} />
 							{#if $errors.leadAuditorId}<p class="text-destructive text-xs">{$errors.leadAuditorId}</p>{/if}
-							<p class="text-muted-foreground text-xs">Wird in V04 durch Auditor-Dropdown ersetzt</p>
 						</div>
 						<div class="space-y-1.5 sm:col-span-2">
 							<Label for="auditTeam">{i18n.t('audit.fields.auditTeam')}</Label>
