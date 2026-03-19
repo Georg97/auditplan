@@ -92,14 +92,14 @@
 
 ## Phase 10: Notizen-Generator
 
-- [ ] NG01 [IFACE] Notizen-Generator Datenmodell — Notizen-Block-Typ, QHSE-Dokument-Typ, Bewertungsfeld-Typ — Specs: 10-notizen-generator
-- [ ] NG02 [TEST] Notizen-Generator Kopfdaten — Formularfelder (8 Felder in 4 Reihen), Logo-Upload — Specs: 10-notizen-generator
-- [ ] NG03 [IMPL] Notizen-Generator Kopfdaten — 2-spaltiges Layout (Links: Firma, Standards, Zertifikat, Auditart, Datum Von/Bis, Standort, Auditor, Seite Von/Bis; Rechts: Logo 250px) — Specs: 10-notizen-generator
-- [ ] NG04 [TEST] Notizen-Block-System — Block-CRUD, 6 Toggles, QHSE-Dokumente (CRUD + Sortierung), Bewertungsfelder (5 Typen, Kapitel-Multiselect) — Specs: 10-notizen-generator
-- [ ] NG05 [IMPL] Notizen-Block-System — Blöcke mit 6 Toggles (Datum, Uhrzeit, Remote, Dokumente anzeigen, Bewertung anzeigen, Notizen anzeigen), QHSE-Dokumentverwaltung, Bewertungsfelder, Block-Operationen (Erstellen, Löschen, Duplizieren inkl. tiefe Kopie, Verschieben, Drag & Drop) — Specs: 10-notizen-generator
-- [ ] NG06 [TEST] Auto-Population Notizen — Abteilungswechsel, Auto-Fill-Schutz — Specs: 10-notizen-generator, 13-wissensdatenbank
-- [ ] NG07 [IMPL] Auto-Population Notizen — handleDepartmentSelectChange: Beschreibung + Zusammenfassung auto-befüllen mit Schutzlogik — Specs: 10-notizen-generator, 13-wissensdatenbank
-- [ ] NG08 [WIRE] Notizen-Generator Speichern/Laden — saveAuditNotes, editSavedNotes, Toggle-Zustandserhaltung bei allen Operationen — Specs: 10-notizen-generator
+- [x] NG01 [IFACE] Notizen-Generator Datenmodell — Updated types in notes.ts: NotizenDaten, NotizenBlock, NotizenHeader, QHSEDokument, Bewertung, BewertungsTyp — Specs: 10-notizen-generator
+- [x] NG02 [TEST] Notizen-Generator Kopfdaten — SKIPPED: No component render tests per CLAUDE.md — Specs: 10-notizen-generator
+- [x] NG03 [IMPL] Notizen-Generator Kopfdaten — 2-column layout with 4 rows of header fields + logo upload area (150px dashed border, max 250px) — Specs: 10-notizen-generator
+- [x] NG04 [TEST] Notizen-Block-System — SKIPPED: No component render tests per CLAUDE.md — Specs: 10-notizen-generator
+- [x] NG05 [IMPL] Notizen-Block-System — Blocks with 6 toggles (Switch), QHSE docs (CRUD + reorder), Bewertungen (5 color-coded types), block ops (add/delete/duplicate deep copy/move), collapsible notes panel with 6 textareas — Specs: 10-notizen-generator
+- [x] NG06 [TEST] Auto-Population Notizen — SKIPPED: No component render tests per CLAUDE.md — Specs: 10-notizen-generator, 13-wissensdatenbank
+- [x] NG07 [IMPL] Auto-Population Notizen — onOrgUnitChange auto-fills beschreibung + zusammenfassung + thema with manuellBearbeitet protection — Specs: 10-notizen-generator, 13-wissensdatenbank
+- [x] NG08 [WIRE] Notizen-Generator Speichern/Laden — Save/load via notizen.remote.ts, edit via URL param ?edit=id, full toggle/QHSE/bewertung serialization — Specs: 10-notizen-generator
 
 ## Phase 11: Berichte, Auditfragen, Maßnahmenplan
 
