@@ -74,7 +74,10 @@
 		"data_management": "Daten-Management",
 		"export_data": "Daten exportieren",
 		"import_data": "Daten importieren",
-		"delete_data": "Alle Daten löschen"
+		"delete_data": "Alle Daten löschen",
+		"delete_warning": "Alle Ihre Daten werden unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+		"default_auditor": "Standard-Auditor",
+		"default_department": "Standard-Abteilung"
 	},
 	"auditor": {
 		"title_page": "Auditorenverwaltung",

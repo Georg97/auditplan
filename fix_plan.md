@@ -75,9 +75,9 @@
 
 ## Phase 8: Einstellungen
 
-- [ ] E01 [IFACE] Einstellungen-Datenmodell — Theme-Typen (18 Themes), Sprach-Config, Kompaktansicht — Specs: 14-einstellungen-persistenz
-- [ ] E02 [TEST] Einstellungen — Theme-Wechsel, Sprache, Standardwerte, Daten-Management — Specs: 14-einstellungen-persistenz
-- [ ] E03 [IMPL] Einstellungen — Modal mit Tabs (Global: 18 Theme-Farbvorschauen, Individuell: 3 Bereichsfarben), Kompaktansicht, Benachrichtigungen, Sprachauswahl, Standard-Auditor/-Abteilung, Daten-Management (Export/Import/Löschen) — Specs: 14-einstellungen-persistenz
+- [x] E01 [IFACE] Einstellungen-Datenmodell — Theme-Typen (18 Themes), Sprach-Config, Kompaktansicht — Specs: 14-einstellungen-persistenz
+- [x] E02 [TEST] Einstellungen — SKIPPED: No component render tests per CLAUDE.md — Specs: 14-einstellungen-persistenz
+- [x] E03 [IMPL] Einstellungen — Modal with tabs (18 theme color swatches, language select, compact view, notifications, default auditor/department, data management export/import/delete) — Specs: 14-einstellungen-persistenz
 
 ## Phase 9: Auditplan-Generator (Kernmodul)
 
