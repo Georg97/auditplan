@@ -103,13 +103,13 @@
 
 ## Phase 11: Berichte, Auditfragen, Maßnahmenplan
 
-- [ ] B01 [IFACE] Berichtsgenerator + Auditfragen + Maßnahmenplan — Interfaces für alle 3 Module — Specs: 11-berichte-auditfragen
-- [ ] B02 [TEST] Berichtsgenerator — Formular-Validierung, Report-Generierung — Specs: 11-berichte-auditfragen
-- [ ] B03 [IMPL] Berichtsgenerator — Audit-Select (dynamisch), Feststellungen, Empfehlungen, Fazit, generierter Bericht-Container — Specs: 11-berichte-auditfragen
-- [ ] B04 [TEST] Auditfragen & Dokumente — Abteilungsauswahl (43 Abteilungen), Normauswahl, Fragengenerierung aus Wissensdatenbank — Specs: 11-berichte-auditfragen, 13-wissensdatenbank
-- [ ] B05 [IMPL] Auditfragen & Dokumente — Audit-Info-Felder, Bereichsauswahl (Abteilung + Norm + Kapitel), automatische Fragen + Dokumente, Speichern + Word/PDF-Export — Specs: 11-berichte-auditfragen, 13-wissensdatenbank
-- [ ] B06 [TEST] Maßnahmenplan — 6-Filter-Leiste, CRUD, Überfälligkeits-Berechnung — Specs: 11-berichte-auditfragen
-- [ ] B07 [IMPL] Maßnahmenplan — 6 Filter (2 Reihen), Maßnahmen-Felder (10 Felder inkl. Feststellungsart farbkodiert, Status, Priorität, Frist), Überfälligkeits-Berechnung + visuelle Hervorhebung — Specs: 11-berichte-auditfragen
+- [x] B01 [IFACE] Berichtsgenerator + Auditfragen + Maßnahmenplan — Interfaces für alle 3 Module — Specs: 11-berichte-auditfragen
+- [x] B02 [TEST] Berichtsgenerator — Formular-Validierung, Report-Generierung — Specs: 11-berichte-auditfragen
+- [x] B03 [IMPL] Berichtsgenerator — Audit-Select (dynamisch), Feststellungen, Empfehlungen, Fazit, generierter Bericht-Container — Specs: 11-berichte-auditfragen
+- [x] B04 [TEST] Auditfragen & Dokumente — Abteilungsauswahl (43 Abteilungen), Normauswahl, Fragengenerierung aus Wissensdatenbank — Specs: 11-berichte-auditfragen, 13-wissensdatenbank
+- [x] B05 [IMPL] Auditfragen & Dokumente — Audit-Info-Felder, Bereichsauswahl (Abteilung + Norm + Kapitel), automatische Fragen + Dokumente, Speichern + Word/PDF-Export — Specs: 11-berichte-auditfragen, 13-wissensdatenbank
+- [x] B06 [TEST] Maßnahmenplan — 6-Filter-Leiste, CRUD, Überfälligkeits-Berechnung — Specs: 11-berichte-auditfragen
+- [x] B07 [IMPL] Maßnahmenplan — 6 Filter (2 Reihen), Maßnahmen-Felder (10 Felder inkl. Feststellungsart farbkodiert, Status, Priorität, Frist), Überfälligkeits-Berechnung + visuelle Hervorhebung — Specs: 11-berichte-auditfragen
 
 ## Phase 12: Word-Export
 
