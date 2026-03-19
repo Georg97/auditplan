@@ -65,7 +65,7 @@
 - [x] K01 [IFACE] Kalender-Datenmodell + Server-Funktionen — Eintrag-Typ, View-Modi-Enum — Specs: 07-kalender
 - [x] K02 [TEST] Kalender — Monats/Wochen/Tagesansicht, Eintrag-CRUD, Navigation — Specs: 07-kalender
 - [x] K03 [IMPL] Kalender — 3 Ansichten (Monat: 7-Spalten-Grid, Woche: Stundenslots, Tag: Detail), Navigation (Zurück/Weiter/Heute), Modal für Einträge, Audit-Tage blau (#e8eaff) — Specs: 07-kalender
-- [ ] K04 [WIRE] Kalender mit Audits verbinden — Audit-Termine automatisch im Kalender anzeigen — Specs: 07-kalender, 06-audit-verwaltung
+- [x] K04 [WIRE] Kalender mit Audits verbinden — Audit-Termine automatisch im Kalender anzeigen — Specs: 07-kalender, 06-audit-verwaltung
 
 ## Phase 7: Import/Export
 

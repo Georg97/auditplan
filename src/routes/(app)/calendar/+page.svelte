@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import type { I18nRune } from '$lib/i18n/i18n.svelte';
-	import type { CalendarEntry, CalendarEntryCreate, CalendarView } from '$lib/types';
+	import type { CalendarEntry, CalendarEntryCreate, CalendarView, Audit, Auditor } from '$lib/types';
 	import { getCalendarEntries, addCalendarEntry, updateCalendarEntry, deleteCalendarEntry } from '$lib/rpc/calendar.remote';
 	import { getAuditors } from '$lib/rpc/auditors.remote';
-	import type { Auditor } from '$lib/types';
+	import { getAudits } from '$lib/rpc/audits.remote';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import * as Select from '$lib/components/ui/select';
@@ -176,11 +176,35 @@
 		}
 	}
 
+	function auditToCalendarEntry(audit: Audit): CalendarEntry {
+		return {
+			id: `audit-${audit.id}`,
+			organizationId: '',
+			title: `${i18n.t(`audit.type.${audit.auditType}`)}: ${audit.auditName}`,
+			description: audit.notes ?? null,
+			date: audit.startDate,
+			startTime: audit.startTime ?? null,
+			endTime: audit.endTime ?? null,
+			allDay: !audit.startTime,
+			company: audit.company,
+			auditorId: audit.leadAuditorId,
+			auditId: audit.id,
+			color: '#667eea',
+			createdAt: new Date(),
+			updatedAt: new Date()
+		};
+	}
+
 	async function loadEntries() {
 		loading = true;
 		try {
 			const range = getDateRange();
-			entries = await getCalendarEntries(range);
+			const [calEntries, audits] = await Promise.all([getCalendarEntries(range), getAudits()]);
+			const auditEntries = audits.filter((a) => a.startDate >= range.start && a.startDate <= range.end).map(auditToCalendarEntry);
+			// Merge: calendar entries + audit-derived entries (avoid duplicates by auditId)
+			const auditIds = new Set(calEntries.filter((e) => e.auditId).map((e) => e.auditId));
+			const uniqueAuditEntries = auditEntries.filter((ae) => !auditIds.has(ae.auditId));
+			entries = [...calEntries, ...uniqueAuditEntries];
 		} catch {
 			entries = [];
 		} finally {
