@@ -1,0 +1,167 @@
+{
+	"nav": {
+		"overview": "Overview",
+		"dashboard": "Dashboard",
+		"auditorManagement": "Auditor Management",
+		"addAuditor": "Add Auditor",
+		"searchManage": "Search & Manage",
+		"calendar": "Calendar",
+		"importExport": "Import / Export",
+		"planGenerator": "Audit Plan Generator",
+		"reportGenerator": "Report Generator",
+		"notesGenerator": "Notes Generator",
+		"auditQuestions": "Audit Questions & Documents",
+		"actionPlan": "Action Plan"
+	},
+	"common": {
+		"save": "Save",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"edit": "Edit",
+		"add": "Add",
+		"search": "Search",
+		"filter": "Filter",
+		"export": "Export",
+		"import": "Import",
+		"download": "Download",
+		"upload": "Upload",
+		"close": "Close",
+		"confirm": "Confirm",
+		"back": "Back",
+		"next": "Next",
+		"loading": "Loading...",
+		"noResults": "No results.",
+		"all": "All",
+		"yes": "Yes",
+		"no": "No",
+		"actions": "Actions",
+		"name": "Name",
+		"email": "Email",
+		"phone": "Phone",
+		"date": "Date",
+		"time": "Time",
+		"status": "Status",
+		"notes": "Notes",
+		"description": "Description",
+		"created": "Created",
+		"updated": "Updated"
+	},
+	"settings": {
+		"title": "Settings",
+		"theme": "Theme",
+		"language": "Language",
+		"compactView": "Compact View",
+		"notifications": "Notifications",
+		"dataManagement": "Data Management"
+	},
+	"audit": {
+		"status": {
+			"planned": "Planned",
+			"in_progress": "In Progress",
+			"completed": "Completed",
+			"cancelled": "Cancelled"
+		},
+		"type": {
+			"internal": "Internal Audit",
+			"external": "External Audit",
+			"certification": "Certification Audit",
+			"surveillance": "Surveillance Audit",
+			"recertification": "Recertification Audit"
+		}
+	},
+	"auditor": {
+		"title": "Auditors",
+		"addTitle": "Add Auditor",
+		"editTitle": "Edit Auditor",
+		"personalData": "Personal Data",
+		"address": "Address",
+		"qualifications": "Qualifications",
+		"availability": "Availability",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"company": "Company",
+		"role": "Role"
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"totalAudits": "Total Audits",
+		"totalAuditors": "Total Auditors",
+		"openActions": "Open Actions",
+		"upcomingAudits": "Upcoming Audits",
+		"criticalActions": "Critical Actions",
+		"completionRate": "Completion Rate"
+	},
+	"overview": {
+		"title": "Overview",
+		"savedPlans": "Saved Audit Plans",
+		"savedNotes": "Saved Audit Notes",
+		"savedQuestions": "Saved Audit Questions"
+	},
+	"calendar": {
+		"title": "Calendar",
+		"month": "Month",
+		"week": "Week",
+		"day": "Day",
+		"today": "Today",
+		"addEntry": "Add Entry"
+	},
+	"importExport": {
+		"title": "Import / Export",
+		"exportJson": "Export JSON",
+		"importJson": "Import JSON",
+		"exportCsv": "Export CSV"
+	},
+	"plan": {
+		"title": "Audit Plan Generator",
+		"client": "Client",
+		"locations": "Locations",
+		"scope": "Scope",
+		"normBasis": "Norm Basis",
+		"auditType": "Audit Type",
+		"auditGoal": "Audit Goal",
+		"team": "Audit Team",
+		"blocks": "Audit Blocks"
+	},
+	"notes": {
+		"title": "Notes Generator",
+		"company": "Company",
+		"standards": "Standards",
+		"certificate": "Certificate",
+		"auditType": "Audit Type"
+	},
+	"report": {
+		"title": "Report Generator",
+		"findings": "Findings",
+		"recommendations": "Recommendations",
+		"conclusion": "Conclusion"
+	},
+	"questions": {
+		"title": "Audit Questions & Documents",
+		"department": "Department",
+		"norm": "Norm",
+		"chapter": "Chapter",
+		"generateQuestions": "Generate Questions"
+	},
+	"actions": {
+		"title": "Action Plan",
+		"finding": "Finding",
+		"measure": "Measure",
+		"responsible": "Responsible",
+		"deadline": "Deadline",
+		"priority": {
+			"high": "High",
+			"medium": "Medium",
+			"low": "Low"
+		},
+		"findingType": {
+			"major": "Major Non-Conformity",
+			"minor": "Minor Non-Conformity",
+			"observation": "Observation",
+			"improvement": "Improvement Potential"
+		}
+	},
+	"header": {
+		"settings": "Settings",
+		"logout": "Log Out"
+	}
+}

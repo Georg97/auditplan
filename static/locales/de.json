@@ -1,0 +1,167 @@
+{
+	"nav": {
+		"overview": "Übersicht",
+		"dashboard": "Dashboard",
+		"auditorManagement": "Auditor-Verwaltung",
+		"addAuditor": "Auditor hinzufügen",
+		"searchManage": "Suchen & Verwalten",
+		"calendar": "Kalender",
+		"importExport": "Import / Export",
+		"planGenerator": "Auditplan-Generator",
+		"reportGenerator": "Berichts-Generator",
+		"notesGenerator": "Notizen-Generator",
+		"auditQuestions": "Auditfragen & Dokumente",
+		"actionPlan": "Maßnahmenplan"
+	},
+	"common": {
+		"save": "Speichern",
+		"cancel": "Abbrechen",
+		"delete": "Löschen",
+		"edit": "Bearbeiten",
+		"add": "Hinzufügen",
+		"search": "Suchen",
+		"filter": "Filtern",
+		"export": "Exportieren",
+		"import": "Importieren",
+		"download": "Herunterladen",
+		"upload": "Hochladen",
+		"close": "Schließen",
+		"confirm": "Bestätigen",
+		"back": "Zurück",
+		"next": "Weiter",
+		"loading": "Laden...",
+		"noResults": "Keine Ergebnisse.",
+		"all": "Alle",
+		"yes": "Ja",
+		"no": "Nein",
+		"actions": "Aktionen",
+		"name": "Name",
+		"email": "E-Mail",
+		"phone": "Telefon",
+		"date": "Datum",
+		"time": "Uhrzeit",
+		"status": "Status",
+		"notes": "Notizen",
+		"description": "Beschreibung",
+		"created": "Erstellt",
+		"updated": "Aktualisiert"
+	},
+	"settings": {
+		"title": "Einstellungen",
+		"theme": "Design",
+		"language": "Sprache",
+		"compactView": "Kompaktansicht",
+		"notifications": "Benachrichtigungen",
+		"dataManagement": "Daten-Management"
+	},
+	"audit": {
+		"status": {
+			"planned": "Geplant",
+			"in_progress": "In Bearbeitung",
+			"completed": "Abgeschlossen",
+			"cancelled": "Abgesagt"
+		},
+		"type": {
+			"internal": "Internes Audit",
+			"external": "Externes Audit",
+			"certification": "Zertifizierungsaudit",
+			"surveillance": "Überwachungsaudit",
+			"recertification": "Rezertifizierungsaudit"
+		}
+	},
+	"auditor": {
+		"title": "Auditoren",
+		"addTitle": "Auditor hinzufügen",
+		"editTitle": "Auditor bearbeiten",
+		"personalData": "Persönliche Daten",
+		"address": "Adresse",
+		"qualifications": "Qualifikationen",
+		"availability": "Verfügbarkeit",
+		"firstName": "Vorname",
+		"lastName": "Nachname",
+		"company": "Unternehmen",
+		"role": "Rolle"
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"totalAudits": "Audits gesamt",
+		"totalAuditors": "Auditoren gesamt",
+		"openActions": "Offene Maßnahmen",
+		"upcomingAudits": "Anstehende Audits",
+		"criticalActions": "Kritische Maßnahmen",
+		"completionRate": "Abschlussrate"
+	},
+	"overview": {
+		"title": "Übersicht",
+		"savedPlans": "Gespeicherte Auditpläne",
+		"savedNotes": "Gespeicherte Auditnotizen",
+		"savedQuestions": "Gespeicherte Auditfragen"
+	},
+	"calendar": {
+		"title": "Kalender",
+		"month": "Monat",
+		"week": "Woche",
+		"day": "Tag",
+		"today": "Heute",
+		"addEntry": "Eintrag hinzufügen"
+	},
+	"importExport": {
+		"title": "Import / Export",
+		"exportJson": "JSON exportieren",
+		"importJson": "JSON importieren",
+		"exportCsv": "CSV exportieren"
+	},
+	"plan": {
+		"title": "Auditplan-Generator",
+		"client": "Auftraggeber",
+		"locations": "Standorte",
+		"scope": "Geltungsbereich",
+		"normBasis": "Normgrundlage",
+		"auditType": "Auditart",
+		"auditGoal": "Auditziel",
+		"team": "Auditteam",
+		"blocks": "Audit-Blöcke"
+	},
+	"notes": {
+		"title": "Notizen-Generator",
+		"company": "Firma",
+		"standards": "Standards",
+		"certificate": "Zertifikat",
+		"auditType": "Auditart"
+	},
+	"report": {
+		"title": "Berichts-Generator",
+		"findings": "Feststellungen",
+		"recommendations": "Empfehlungen",
+		"conclusion": "Fazit"
+	},
+	"questions": {
+		"title": "Auditfragen & Dokumente",
+		"department": "Abteilung",
+		"norm": "Norm",
+		"chapter": "Kapitel",
+		"generateQuestions": "Fragen generieren"
+	},
+	"actions": {
+		"title": "Maßnahmenplan",
+		"finding": "Feststellung",
+		"measure": "Maßnahme",
+		"responsible": "Verantwortlich",
+		"deadline": "Frist",
+		"priority": {
+			"high": "Hoch",
+			"medium": "Mittel",
+			"low": "Niedrig"
+		},
+		"findingType": {
+			"major": "Hauptabweichung",
+			"minor": "Nebenabweichung",
+			"observation": "Beobachtung",
+			"improvement": "Verbesserungspotenzial"
+		}
+	},
+	"header": {
+		"settings": "Einstellungen",
+		"logout": "Abmelden"
+	}
+}

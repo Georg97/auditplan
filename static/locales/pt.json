@@ -1,0 +1,167 @@
+{
+	"nav": {
+		"overview": "Visão geral",
+		"dashboard": "Painel",
+		"auditorManagement": "Gestão de auditores",
+		"addAuditor": "Adicionar auditor",
+		"searchManage": "Pesquisar e gerir",
+		"calendar": "Calendário",
+		"importExport": "Importar / Exportar",
+		"planGenerator": "Gerador de plano de auditoria",
+		"reportGenerator": "Gerador de relatórios",
+		"notesGenerator": "Gerador de notas",
+		"auditQuestions": "Perguntas e documentos de auditoria",
+		"actionPlan": "Plano de ação"
+	},
+	"common": {
+		"save": "Guardar",
+		"cancel": "Cancelar",
+		"delete": "Eliminar",
+		"edit": "Editar",
+		"add": "Adicionar",
+		"search": "Pesquisar",
+		"filter": "Filtrar",
+		"export": "Exportar",
+		"import": "Importar",
+		"download": "Descarregar",
+		"upload": "Carregar",
+		"close": "Fechar",
+		"confirm": "Confirmar",
+		"back": "Voltar",
+		"next": "Seguinte",
+		"loading": "A carregar...",
+		"noResults": "Sem resultados.",
+		"all": "Todos",
+		"yes": "Sim",
+		"no": "Não",
+		"actions": "Ações",
+		"name": "Nome",
+		"email": "E-mail",
+		"phone": "Telefone",
+		"date": "Data",
+		"time": "Hora",
+		"status": "Estado",
+		"notes": "Notas",
+		"description": "Descrição",
+		"created": "Criado",
+		"updated": "Atualizado"
+	},
+	"settings": {
+		"title": "Definições",
+		"theme": "Tema",
+		"language": "Idioma",
+		"compactView": "Vista compacta",
+		"notifications": "Notificações",
+		"dataManagement": "Gestão de dados"
+	},
+	"audit": {
+		"status": {
+			"planned": "Planeado",
+			"in_progress": "Em curso",
+			"completed": "Concluído",
+			"cancelled": "Cancelado"
+		},
+		"type": {
+			"internal": "Auditoria interna",
+			"external": "Auditoria externa",
+			"certification": "Auditoria de certificação",
+			"surveillance": "Auditoria de vigilância",
+			"recertification": "Auditoria de recertificação"
+		}
+	},
+	"auditor": {
+		"title": "Auditores",
+		"addTitle": "Adicionar auditor",
+		"editTitle": "Editar auditor",
+		"personalData": "Dados pessoais",
+		"address": "Morada",
+		"qualifications": "Qualificações",
+		"availability": "Disponibilidade",
+		"firstName": "Nome próprio",
+		"lastName": "Apelido",
+		"company": "Empresa",
+		"role": "Função"
+	},
+	"dashboard": {
+		"title": "Painel",
+		"totalAudits": "Total de auditorias",
+		"totalAuditors": "Total de auditores",
+		"openActions": "Ações em aberto",
+		"upcomingAudits": "Próximas auditorias",
+		"criticalActions": "Ações críticas",
+		"completionRate": "Taxa de conclusão"
+	},
+	"overview": {
+		"title": "Visão geral",
+		"savedPlans": "Planos de auditoria guardados",
+		"savedNotes": "Notas de auditoria guardadas",
+		"savedQuestions": "Perguntas de auditoria guardadas"
+	},
+	"calendar": {
+		"title": "Calendário",
+		"month": "Mês",
+		"week": "Semana",
+		"day": "Dia",
+		"today": "Hoje",
+		"addEntry": "Adicionar entrada"
+	},
+	"importExport": {
+		"title": "Importar / Exportar",
+		"exportJson": "Exportar JSON",
+		"importJson": "Importar JSON",
+		"exportCsv": "Exportar CSV"
+	},
+	"plan": {
+		"title": "Gerador de plano de auditoria",
+		"client": "Cliente",
+		"locations": "Localizações",
+		"scope": "Âmbito",
+		"normBasis": "Base normativa",
+		"auditType": "Tipo de auditoria",
+		"auditGoal": "Objetivo da auditoria",
+		"team": "Equipa de auditoria",
+		"blocks": "Blocos de auditoria"
+	},
+	"notes": {
+		"title": "Gerador de notas",
+		"company": "Empresa",
+		"standards": "Normas",
+		"certificate": "Certificado",
+		"auditType": "Tipo de auditoria"
+	},
+	"report": {
+		"title": "Gerador de relatórios",
+		"findings": "Constatações",
+		"recommendations": "Recomendações",
+		"conclusion": "Conclusão"
+	},
+	"questions": {
+		"title": "Perguntas e documentos de auditoria",
+		"department": "Departamento",
+		"norm": "Norma",
+		"chapter": "Capítulo",
+		"generateQuestions": "Gerar perguntas"
+	},
+	"actions": {
+		"title": "Plano de ação",
+		"finding": "Constatação",
+		"measure": "Medida",
+		"responsible": "Responsável",
+		"deadline": "Prazo",
+		"priority": {
+			"high": "Alta",
+			"medium": "Média",
+			"low": "Baixa"
+		},
+		"findingType": {
+			"major": "Não conformidade maior",
+			"minor": "Não conformidade menor",
+			"observation": "Observação",
+			"improvement": "Potencial de melhoria"
+		}
+	},
+	"header": {
+		"settings": "Definições",
+		"logout": "Terminar sessão"
+	}
+}

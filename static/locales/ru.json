@@ -1,0 +1,167 @@
+{
+	"nav": {
+		"overview": "Обзор",
+		"dashboard": "Панель управления",
+		"auditorManagement": "Управление аудиторами",
+		"addAuditor": "Добавить аудитора",
+		"searchManage": "Поиск и управление",
+		"calendar": "Календарь",
+		"importExport": "Импорт / Экспорт",
+		"planGenerator": "Генератор плана аудита",
+		"reportGenerator": "Генератор отчётов",
+		"notesGenerator": "Генератор заметок",
+		"auditQuestions": "Вопросы и документы аудита",
+		"actionPlan": "План действий"
+	},
+	"common": {
+		"save": "Сохранить",
+		"cancel": "Отмена",
+		"delete": "Удалить",
+		"edit": "Редактировать",
+		"add": "Добавить",
+		"search": "Поиск",
+		"filter": "Фильтр",
+		"export": "Экспорт",
+		"import": "Импорт",
+		"download": "Скачать",
+		"upload": "Загрузить",
+		"close": "Закрыть",
+		"confirm": "Подтвердить",
+		"back": "Назад",
+		"next": "Далее",
+		"loading": "Загрузка...",
+		"noResults": "Нет результатов.",
+		"all": "Все",
+		"yes": "Да",
+		"no": "Нет",
+		"actions": "Действия",
+		"name": "Имя",
+		"email": "Эл. почта",
+		"phone": "Телефон",
+		"date": "Дата",
+		"time": "Время",
+		"status": "Статус",
+		"notes": "Заметки",
+		"description": "Описание",
+		"created": "Создано",
+		"updated": "Обновлено"
+	},
+	"settings": {
+		"title": "Настройки",
+		"theme": "Тема",
+		"language": "Язык",
+		"compactView": "Компактный вид",
+		"notifications": "Уведомления",
+		"dataManagement": "Управление данными"
+	},
+	"audit": {
+		"status": {
+			"planned": "Запланирован",
+			"in_progress": "В процессе",
+			"completed": "Завершён",
+			"cancelled": "Отменён"
+		},
+		"type": {
+			"internal": "Внутренний аудит",
+			"external": "Внешний аудит",
+			"certification": "Сертификационный аудит",
+			"surveillance": "Надзорный аудит",
+			"recertification": "Ресертификационный аудит"
+		}
+	},
+	"auditor": {
+		"title": "Аудиторы",
+		"addTitle": "Добавить аудитора",
+		"editTitle": "Редактировать аудитора",
+		"personalData": "Личные данные",
+		"address": "Адрес",
+		"qualifications": "Квалификации",
+		"availability": "Доступность",
+		"firstName": "Имя",
+		"lastName": "Фамилия",
+		"company": "Компания",
+		"role": "Роль"
+	},
+	"dashboard": {
+		"title": "Панель управления",
+		"totalAudits": "Всего аудитов",
+		"totalAuditors": "Всего аудиторов",
+		"openActions": "Открытые действия",
+		"upcomingAudits": "Предстоящие аудиты",
+		"criticalActions": "Критические действия",
+		"completionRate": "Процент выполнения"
+	},
+	"overview": {
+		"title": "Обзор",
+		"savedPlans": "Сохранённые планы аудита",
+		"savedNotes": "Сохранённые заметки аудита",
+		"savedQuestions": "Сохранённые вопросы аудита"
+	},
+	"calendar": {
+		"title": "Календарь",
+		"month": "Месяц",
+		"week": "Неделя",
+		"day": "День",
+		"today": "Сегодня",
+		"addEntry": "Добавить запись"
+	},
+	"importExport": {
+		"title": "Импорт / Экспорт",
+		"exportJson": "Экспорт JSON",
+		"importJson": "Импорт JSON",
+		"exportCsv": "Экспорт CSV"
+	},
+	"plan": {
+		"title": "Генератор плана аудита",
+		"client": "Клиент",
+		"locations": "Местоположения",
+		"scope": "Область применения",
+		"normBasis": "Нормативная база",
+		"auditType": "Тип аудита",
+		"auditGoal": "Цель аудита",
+		"team": "Команда аудита",
+		"blocks": "Блоки аудита"
+	},
+	"notes": {
+		"title": "Генератор заметок",
+		"company": "Компания",
+		"standards": "Стандарты",
+		"certificate": "Сертификат",
+		"auditType": "Тип аудита"
+	},
+	"report": {
+		"title": "Генератор отчётов",
+		"findings": "Выводы",
+		"recommendations": "Рекомендации",
+		"conclusion": "Заключение"
+	},
+	"questions": {
+		"title": "Вопросы и документы аудита",
+		"department": "Отдел",
+		"norm": "Норма",
+		"chapter": "Глава",
+		"generateQuestions": "Сгенерировать вопросы"
+	},
+	"actions": {
+		"title": "План действий",
+		"finding": "Выявление",
+		"measure": "Мера",
+		"responsible": "Ответственный",
+		"deadline": "Срок",
+		"priority": {
+			"high": "Высокий",
+			"medium": "Средний",
+			"low": "Низкий"
+		},
+		"findingType": {
+			"major": "Существенное несоответствие",
+			"minor": "Незначительное несоответствие",
+			"observation": "Наблюдение",
+			"improvement": "Потенциал улучшения"
+		}
+	},
+	"header": {
+		"settings": "Настройки",
+		"logout": "Выйти"
+	}
+}

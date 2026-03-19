@@ -1,0 +1,167 @@
+{
+	"nav": {
+		"overview": "Aperçu",
+		"dashboard": "Tableau de bord",
+		"auditorManagement": "Gestion des auditeurs",
+		"addAuditor": "Ajouter un auditeur",
+		"searchManage": "Rechercher et gérer",
+		"calendar": "Calendrier",
+		"importExport": "Import / Export",
+		"planGenerator": "Générateur de plan d'audit",
+		"reportGenerator": "Générateur de rapport",
+		"notesGenerator": "Générateur de notes",
+		"auditQuestions": "Questions et documents d'audit",
+		"actionPlan": "Plan d'action"
+	},
+	"common": {
+		"save": "Enregistrer",
+		"cancel": "Annuler",
+		"delete": "Supprimer",
+		"edit": "Modifier",
+		"add": "Ajouter",
+		"search": "Rechercher",
+		"filter": "Filtrer",
+		"export": "Exporter",
+		"import": "Importer",
+		"download": "Télécharger",
+		"upload": "Téléverser",
+		"close": "Fermer",
+		"confirm": "Confirmer",
+		"back": "Retour",
+		"next": "Suivant",
+		"loading": "Chargement...",
+		"noResults": "Aucun résultat.",
+		"all": "Tous",
+		"yes": "Oui",
+		"no": "Non",
+		"actions": "Actions",
+		"name": "Nom",
+		"email": "E-mail",
+		"phone": "Téléphone",
+		"date": "Date",
+		"time": "Heure",
+		"status": "Statut",
+		"notes": "Notes",
+		"description": "Description",
+		"created": "Créé",
+		"updated": "Mis à jour"
+	},
+	"settings": {
+		"title": "Paramètres",
+		"theme": "Thème",
+		"language": "Langue",
+		"compactView": "Vue compacte",
+		"notifications": "Notifications",
+		"dataManagement": "Gestion des données"
+	},
+	"audit": {
+		"status": {
+			"planned": "Planifié",
+			"in_progress": "En cours",
+			"completed": "Terminé",
+			"cancelled": "Annulé"
+		},
+		"type": {
+			"internal": "Audit interne",
+			"external": "Audit externe",
+			"certification": "Audit de certification",
+			"surveillance": "Audit de surveillance",
+			"recertification": "Audit de recertification"
+		}
+	},
+	"auditor": {
+		"title": "Auditeurs",
+		"addTitle": "Ajouter un auditeur",
+		"editTitle": "Modifier l'auditeur",
+		"personalData": "Données personnelles",
+		"address": "Adresse",
+		"qualifications": "Qualifications",
+		"availability": "Disponibilité",
+		"firstName": "Prénom",
+		"lastName": "Nom de famille",
+		"company": "Entreprise",
+		"role": "Rôle"
+	},
+	"dashboard": {
+		"title": "Tableau de bord",
+		"totalAudits": "Total des audits",
+		"totalAuditors": "Total des auditeurs",
+		"openActions": "Actions ouvertes",
+		"upcomingAudits": "Audits à venir",
+		"criticalActions": "Actions critiques",
+		"completionRate": "Taux d'achèvement"
+	},
+	"overview": {
+		"title": "Aperçu",
+		"savedPlans": "Plans d'audit enregistrés",
+		"savedNotes": "Notes d'audit enregistrées",
+		"savedQuestions": "Questions d'audit enregistrées"
+	},
+	"calendar": {
+		"title": "Calendrier",
+		"month": "Mois",
+		"week": "Semaine",
+		"day": "Jour",
+		"today": "Aujourd'hui",
+		"addEntry": "Ajouter une entrée"
+	},
+	"importExport": {
+		"title": "Import / Export",
+		"exportJson": "Exporter JSON",
+		"importJson": "Importer JSON",
+		"exportCsv": "Exporter CSV"
+	},
+	"plan": {
+		"title": "Générateur de plan d'audit",
+		"client": "Client",
+		"locations": "Sites",
+		"scope": "Périmètre",
+		"normBasis": "Base normative",
+		"auditType": "Type d'audit",
+		"auditGoal": "Objectif de l'audit",
+		"team": "Équipe d'audit",
+		"blocks": "Blocs d'audit"
+	},
+	"notes": {
+		"title": "Générateur de notes",
+		"company": "Entreprise",
+		"standards": "Normes",
+		"certificate": "Certificat",
+		"auditType": "Type d'audit"
+	},
+	"report": {
+		"title": "Générateur de rapport",
+		"findings": "Constatations",
+		"recommendations": "Recommandations",
+		"conclusion": "Conclusion"
+	},
+	"questions": {
+		"title": "Questions et documents d'audit",
+		"department": "Département",
+		"norm": "Norme",
+		"chapter": "Chapitre",
+		"generateQuestions": "Générer des questions"
+	},
+	"actions": {
+		"title": "Plan d'action",
+		"finding": "Constatation",
+		"measure": "Mesure",
+		"responsible": "Responsable",
+		"deadline": "Échéance",
+		"priority": {
+			"high": "Élevée",
+			"medium": "Moyenne",
+			"low": "Faible"
+		},
+		"findingType": {
+			"major": "Non-conformité majeure",
+			"minor": "Non-conformité mineure",
+			"observation": "Observation",
+			"improvement": "Potentiel d'amélioration"
+		}
+	},
+	"header": {
+		"settings": "Paramètres",
+		"logout": "Déconnexion"
+	}
+}

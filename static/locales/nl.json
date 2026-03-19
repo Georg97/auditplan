@@ -1,0 +1,167 @@
+{
+	"nav": {
+		"overview": "Overzicht",
+		"dashboard": "Dashboard",
+		"auditorManagement": "Auditorbeheer",
+		"addAuditor": "Auditor toevoegen",
+		"searchManage": "Zoeken en beheren",
+		"calendar": "Kalender",
+		"importExport": "Importeren / Exporteren",
+		"planGenerator": "Auditplangenerator",
+		"reportGenerator": "Rapportgenerator",
+		"notesGenerator": "Notitisgenerator",
+		"auditQuestions": "Auditvragen en documenten",
+		"actionPlan": "Actieplan"
+	},
+	"common": {
+		"save": "Opslaan",
+		"cancel": "Annuleren",
+		"delete": "Verwijderen",
+		"edit": "Bewerken",
+		"add": "Toevoegen",
+		"search": "Zoeken",
+		"filter": "Filteren",
+		"export": "Exporteren",
+		"import": "Importeren",
+		"download": "Downloaden",
+		"upload": "Uploaden",
+		"close": "Sluiten",
+		"confirm": "Bevestigen",
+		"back": "Terug",
+		"next": "Volgende",
+		"loading": "Laden...",
+		"noResults": "Geen resultaten.",
+		"all": "Alle",
+		"yes": "Ja",
+		"no": "Nee",
+		"actions": "Acties",
+		"name": "Naam",
+		"email": "E-mail",
+		"phone": "Telefoon",
+		"date": "Datum",
+		"time": "Tijd",
+		"status": "Status",
+		"notes": "Notities",
+		"description": "Beschrijving",
+		"created": "Aangemaakt",
+		"updated": "Bijgewerkt"
+	},
+	"settings": {
+		"title": "Instellingen",
+		"theme": "Thema",
+		"language": "Taal",
+		"compactView": "Compacte weergave",
+		"notifications": "Meldingen",
+		"dataManagement": "Gegevensbeheer"
+	},
+	"audit": {
+		"status": {
+			"planned": "Gepland",
+			"in_progress": "In uitvoering",
+			"completed": "Afgerond",
+			"cancelled": "Geannuleerd"
+		},
+		"type": {
+			"internal": "Interne audit",
+			"external": "Externe audit",
+			"certification": "Certificeringsaudit",
+			"surveillance": "Surveillance-audit",
+			"recertification": "Hercertificeringsaudit"
+		}
+	},
+	"auditor": {
+		"title": "Auditoren",
+		"addTitle": "Auditor toevoegen",
+		"editTitle": "Auditor bewerken",
+		"personalData": "Persoonlijke gegevens",
+		"address": "Adres",
+		"qualifications": "Kwalificaties",
+		"availability": "Beschikbaarheid",
+		"firstName": "Voornaam",
+		"lastName": "Achternaam",
+		"company": "Bedrijf",
+		"role": "Rol"
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"totalAudits": "Totaal audits",
+		"totalAuditors": "Totaal auditoren",
+		"openActions": "Openstaande acties",
+		"upcomingAudits": "Aankomende audits",
+		"criticalActions": "Kritieke acties",
+		"completionRate": "Voltooiingspercentage"
+	},
+	"overview": {
+		"title": "Overzicht",
+		"savedPlans": "Opgeslagen auditplannen",
+		"savedNotes": "Opgeslagen auditnotities",
+		"savedQuestions": "Opgeslagen auditvragen"
+	},
+	"calendar": {
+		"title": "Kalender",
+		"month": "Maand",
+		"week": "Week",
+		"day": "Dag",
+		"today": "Vandaag",
+		"addEntry": "Item toevoegen"
+	},
+	"importExport": {
+		"title": "Importeren / Exporteren",
+		"exportJson": "JSON exporteren",
+		"importJson": "JSON importeren",
+		"exportCsv": "CSV exporteren"
+	},
+	"plan": {
+		"title": "Auditplangenerator",
+		"client": "Klant",
+		"locations": "Locaties",
+		"scope": "Scope",
+		"normBasis": "Normbasis",
+		"auditType": "Audittype",
+		"auditGoal": "Auditdoel",
+		"team": "Auditteam",
+		"blocks": "Auditblokken"
+	},
+	"notes": {
+		"title": "Notitisgenerator",
+		"company": "Bedrijf",
+		"standards": "Normen",
+		"certificate": "Certificaat",
+		"auditType": "Audittype"
+	},
+	"report": {
+		"title": "Rapportgenerator",
+		"findings": "Bevindingen",
+		"recommendations": "Aanbevelingen",
+		"conclusion": "Conclusie"
+	},
+	"questions": {
+		"title": "Auditvragen en documenten",
+		"department": "Afdeling",
+		"norm": "Norm",
+		"chapter": "Hoofdstuk",
+		"generateQuestions": "Vragen genereren"
+	},
+	"actions": {
+		"title": "Actieplan",
+		"finding": "Bevinding",
+		"measure": "Maatregel",
+		"responsible": "Verantwoordelijke",
+		"deadline": "Deadline",
+		"priority": {
+			"high": "Hoog",
+			"medium": "Gemiddeld",
+			"low": "Laag"
+		},
+		"findingType": {
+			"major": "Grote afwijking",
+			"minor": "Kleine afwijking",
+			"observation": "Observatie",
+			"improvement": "Verbeterpotentieel"
+		}
+	},
+	"header": {
+		"settings": "Instellingen",
+		"logout": "Uitloggen"
+	}
+}

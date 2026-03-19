@@ -1,0 +1,167 @@
+{
+	"nav": {
+		"overview": "Genel Bakış",
+		"dashboard": "Gösterge Paneli",
+		"auditorManagement": "Denetçi Yönetimi",
+		"addAuditor": "Denetçi Ekle",
+		"searchManage": "Ara ve Yönet",
+		"calendar": "Takvim",
+		"importExport": "İçe Aktar / Dışa Aktar",
+		"planGenerator": "Denetim Planı Oluşturucu",
+		"reportGenerator": "Rapor Oluşturucu",
+		"notesGenerator": "Not Oluşturucu",
+		"auditQuestions": "Denetim Soruları ve Belgeler",
+		"actionPlan": "Eylem Planı"
+	},
+	"common": {
+		"save": "Kaydet",
+		"cancel": "İptal",
+		"delete": "Sil",
+		"edit": "Düzenle",
+		"add": "Ekle",
+		"search": "Ara",
+		"filter": "Filtrele",
+		"export": "Dışa Aktar",
+		"import": "İçe Aktar",
+		"download": "İndir",
+		"upload": "Yükle",
+		"close": "Kapat",
+		"confirm": "Onayla",
+		"back": "Geri",
+		"next": "İleri",
+		"loading": "Yükleniyor...",
+		"noResults": "Sonuç bulunamadı.",
+		"all": "Tümü",
+		"yes": "Evet",
+		"no": "Hayır",
+		"actions": "İşlemler",
+		"name": "Ad",
+		"email": "E-posta",
+		"phone": "Telefon",
+		"date": "Tarih",
+		"time": "Saat",
+		"status": "Durum",
+		"notes": "Notlar",
+		"description": "Açıklama",
+		"created": "Oluşturulma",
+		"updated": "Güncellenme"
+	},
+	"settings": {
+		"title": "Ayarlar",
+		"theme": "Tema",
+		"language": "Dil",
+		"compactView": "Kompakt Görünüm",
+		"notifications": "Bildirimler",
+		"dataManagement": "Veri Yönetimi"
+	},
+	"audit": {
+		"status": {
+			"planned": "Planlanmış",
+			"in_progress": "Devam Ediyor",
+			"completed": "Tamamlanmış",
+			"cancelled": "İptal Edilmiş"
+		},
+		"type": {
+			"internal": "İç Denetim",
+			"external": "Dış Denetim",
+			"certification": "Belgelendirme Denetimi",
+			"surveillance": "Gözetim Denetimi",
+			"recertification": "Yeniden Belgelendirme Denetimi"
+		}
+	},
+	"auditor": {
+		"title": "Denetçiler",
+		"addTitle": "Denetçi Ekle",
+		"editTitle": "Denetçi Düzenle",
+		"personalData": "Kişisel Bilgiler",
+		"address": "Adres",
+		"qualifications": "Nitelikler",
+		"availability": "Uygunluk",
+		"firstName": "Ad",
+		"lastName": "Soyad",
+		"company": "Şirket",
+		"role": "Rol"
+	},
+	"dashboard": {
+		"title": "Gösterge Paneli",
+		"totalAudits": "Toplam Denetim",
+		"totalAuditors": "Toplam Denetçi",
+		"openActions": "Açık Eylemler",
+		"upcomingAudits": "Yaklaşan Denetimler",
+		"criticalActions": "Kritik Eylemler",
+		"completionRate": "Tamamlanma Oranı"
+	},
+	"overview": {
+		"title": "Genel Bakış",
+		"savedPlans": "Kayıtlı Denetim Planları",
+		"savedNotes": "Kayıtlı Denetim Notları",
+		"savedQuestions": "Kayıtlı Denetim Soruları"
+	},
+	"calendar": {
+		"title": "Takvim",
+		"month": "Ay",
+		"week": "Hafta",
+		"day": "Gün",
+		"today": "Bugün",
+		"addEntry": "Giriş Ekle"
+	},
+	"importExport": {
+		"title": "İçe Aktar / Dışa Aktar",
+		"exportJson": "JSON Dışa Aktar",
+		"importJson": "JSON İçe Aktar",
+		"exportCsv": "CSV Dışa Aktar"
+	},
+	"plan": {
+		"title": "Denetim Planı Oluşturucu",
+		"client": "Müşteri",
+		"locations": "Konumlar",
+		"scope": "Kapsam",
+		"normBasis": "Norm Temeli",
+		"auditType": "Denetim Türü",
+		"auditGoal": "Denetim Hedefi",
+		"team": "Denetim Ekibi",
+		"blocks": "Denetim Blokları"
+	},
+	"notes": {
+		"title": "Not Oluşturucu",
+		"company": "Şirket",
+		"standards": "Standartlar",
+		"certificate": "Sertifika",
+		"auditType": "Denetim Türü"
+	},
+	"report": {
+		"title": "Rapor Oluşturucu",
+		"findings": "Bulgular",
+		"recommendations": "Tavsiyeler",
+		"conclusion": "Sonuç"
+	},
+	"questions": {
+		"title": "Denetim Soruları ve Belgeler",
+		"department": "Departman",
+		"norm": "Norm",
+		"chapter": "Bölüm",
+		"generateQuestions": "Soru Oluştur"
+	},
+	"actions": {
+		"title": "Eylem Planı",
+		"finding": "Bulgu",
+		"measure": "Önlem",
+		"responsible": "Sorumlu",
+		"deadline": "Son Tarih",
+		"priority": {
+			"high": "Yüksek",
+			"medium": "Orta",
+			"low": "Düşük"
+		},
+		"findingType": {
+			"major": "Büyük Uygunsuzluk",
+			"minor": "Küçük Uygunsuzluk",
+			"observation": "Gözlem",
+			"improvement": "İyileştirme Potansiyeli"
+		}
+	},
+	"header": {
+		"settings": "Ayarlar",
+		"logout": "Çıkış Yap"
+	}
+}
