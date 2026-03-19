@@ -267,9 +267,22 @@
 	},
 	"importExport": {
 		"title": "Import / Export",
-		"exportJson": "JSON exportieren",
-		"importJson": "JSON importieren",
-		"exportCsv": "CSV exportieren"
+		"exportJson": "Daten exportieren",
+		"exportJsonDesc": "Exportiert alle Ihre Daten als JSON-Datei. Diese Datei kann später zum Wiederherstellen verwendet werden.",
+		"exportJsonButton": "JSON exportieren",
+		"importJson": "Daten importieren",
+		"importJsonDesc": "Importiert Daten aus einer zuvor exportierten JSON-Datei. Bestehende Daten werden ergänzt.",
+		"importJsonButton": "JSON importieren",
+		"exportCsv": "CSV Export",
+		"exportCsvDesc": "Exportiert die Audit-Daten als CSV-Datei für die Verwendung in Excel oder anderen Tabellenkalkulationen.",
+		"exportCsvButton": "CSV exportieren",
+		"exportSuccess": "Backup erfolgreich erstellt",
+		"importSuccess": "Import erfolgreich abgeschlossen",
+		"importError": "Die ausgewählte Datei ist kein gültiges Backup-Format.",
+		"csvSuccess": "CSV-Datei erfolgreich erstellt",
+		"error": "Export/Import fehlgeschlagen. Bitte versuchen Sie es erneut.",
+		"importedRecords": "{{count}} Datensätze importiert",
+		"skippedKeys": "Übersprungene Schlüssel"
 	},
 	"plan": {
 		"title": "Auditplan-Generator",

@@ -69,9 +69,9 @@
 
 ## Phase 7: Import/Export
 
-- [ ] IE01 [IFACE] Import/Export-Funktionen — Export-JSON-Schema, CSV-Generierung, Import-Validierung — Specs: 08-import-export
-- [ ] IE02 [TEST] Import/Export — JSON-Roundtrip, CSV-Format mit BOM, Fehlerbehandlung — Specs: 08-import-export
-- [ ] IE03 [IMPL] Import/Export — 3 Karten-Layout (Export JSON, Import JSON, CSV Export), Dateidownload/-upload — Specs: 08-import-export
+- [x] IE01 [IFACE] Import/Export-Funktionen — Export-JSON-Schema, CSV-Generierung, Import-Validierung — Specs: 08-import-export
+- [x] IE02 [TEST] Import/Export — JSON-Roundtrip, CSV-Format mit BOM, Fehlerbehandlung — Specs: 08-import-export
+- [x] IE03 [IMPL] Import/Export — 3 Karten-Layout (Export JSON, Import JSON, CSV Export), Dateidownload/-upload — Specs: 08-import-export
 
 ## Phase 8: Einstellungen
 
