@@ -4,6 +4,7 @@
 	import { SettingsState } from '$lib/state/settings.svelte';
 	import Header from '$lib/components/layout/Header.svelte';
 	import NavBar from '$lib/components/layout/NavBar.svelte';
+	import SettingsDialog from '$lib/components/SettingsDialog.svelte';
 
 	let { children } = $props();
 
@@ -18,7 +19,6 @@
 
 	function handleSettingsClick() {
 		settingsOpen = !settingsOpen;
-		// TODO: Open settings modal (to be implemented in settings task)
 	}
 </script>
 
@@ -29,3 +29,5 @@
 		{@render children()}
 	</main>
 </div>
+
+<SettingsDialog bind:open={settingsOpen} />

@@ -52,7 +52,59 @@
 		"language": "Sprache",
 		"compactView": "Kompaktansicht",
 		"notifications": "Benachrichtigungen",
-		"dataManagement": "Daten-Management"
+		"defaultAuditor": "Standard-Auditor",
+		"defaultDepartment": "Standard-Abteilung",
+		"dataManagement": "Daten-Management",
+		"exportData": "Daten exportieren",
+		"exportDataDesc": "Alle Ihre Daten als JSON-Datei exportieren",
+		"importData": "Daten importieren",
+		"importDataDesc": "Daten aus einer JSON-Datei importieren",
+		"deleteAllData": "Alle Daten löschen",
+		"deleteAllDataDesc": "Alle gespeicherten Daten dauerhaft entfernen",
+		"deleteConfirmTitle": "Alle Daten löschen",
+		"deleteConfirmDescription": "Möchten Sie wirklich alle Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+		"deleteSuccess": "Alle Daten wurden gelöscht",
+		"tabs": {
+			"global": "Global",
+			"individual": "Individuell",
+			"data": "Daten"
+		},
+		"themes": {
+			"default": "Standard",
+			"ocean": "Ozean",
+			"forest": "Wald",
+			"sunset": "Sonnenuntergang",
+			"midnight": "Mitternacht",
+			"rose": "Rose",
+			"amber": "Bernstein",
+			"emerald": "Smaragd",
+			"violet": "Violett",
+			"slate": "Schiefer",
+			"stone": "Stein",
+			"zinc": "Zink",
+			"neutral": "Neutral",
+			"red": "Rot",
+			"orange": "Orange",
+			"sky": "Himmelblau",
+			"teal": "Petrol",
+			"indigo": "Indigo"
+		},
+		"languages": {
+			"de": "Deutsch",
+			"en": "Englisch",
+			"fr": "Französisch",
+			"es": "Spanisch",
+			"it": "Italienisch",
+			"nl": "Niederländisch",
+			"pt": "Portugiesisch",
+			"pl": "Polnisch",
+			"ru": "Russisch",
+			"tr": "Türkisch"
+		},
+		"placeholders": {
+			"defaultAuditor": "z.B. Max Mustermann",
+			"defaultDepartment": "z.B. Qualitätsmanagement"
+		}
 	},
 	"audit": {
 		"title": "Audit-Suche & Verwaltung",
