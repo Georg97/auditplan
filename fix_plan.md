@@ -113,13 +113,13 @@
 
 ## Phase 12: Word-Export
 
-- [ ] W01 [IFACE] Word-Export Basisfunktionen — Shared Typen, Header-Tabelle-Builder, Seitenformatierung-Helpers — Specs: 12-word-export
-- [ ] W02 [TEST] Auditplan Word-Export — Seitenrahmen, Kopfzeile, Auftraggeber, Standorte, Block-Tabellen — Specs: 12-word-export
-- [ ] W03 [IMPL] Auditplan Word-Export — generateWordDocument: Seitenränder (2700/360 Twips), schwarzer Rahmen, Header-Tabelle (Logo, Daten), Auftraggeber mit Tab-Stops, Standorte, Audit-Blöcke als Tabellen (gelbe Info-Zeile, graue Beschreibung/Zusammenfassung) — Specs: 12-word-export
-- [ ] W04 [TEST] Auditnotizen Word-Export — Notizen-Blöcke, bedingte Felder (showDokumente/showBewertung/showNotizen), QHSE-Dokument-Zeilen, Bewertungsfeld-Formatierung — Specs: 12-word-export
-- [ ] W05 [IMPL] Auditnotizen Word-Export — generateNotesWordDocument + generateNotesWordDocumentFromBlocks: Block-Tabellen, bedingte Sektionen, QHSE je Zeile, Bewertung fett+gelb, Zusammenfassung grau+fett, Tabellenrahmen (keine vertikalen Innenlinien) — Specs: 12-word-export
-- [ ] W06 [TEST] Auditfragen Word-Export — HTML-Blob-Ansatz, .doc Format — Specs: 12-word-export
-- [ ] W07 [IMPL] Auditfragen Word-Export — generateAuditQuestionsWord: HTML-Blob mit MIME application/msword, Abteilung + Datum + nummerierte Fragen + Dokumentenliste, Dateiname Auditfragen*[Abt]*[Datum].doc — Specs: 12-word-export
+- [x] W01 [IFACE] Word-Export Basisfunktionen — Already implemented in common.ts (header table, borders, colors, margins, downloadBlob) — Specs: 12-word-export
+- [x] W02 [TEST] Auditplan Word-Export — SKIPPED: No component render tests per CLAUDE.md — Specs: 12-word-export
+- [x] W03 [IMPL] Auditplan Word-Export — generatePlanWordDocument: header table with logo, Auftraggeber/Geltungsbereich/Standorte sections, block tables with yellow info rows + gray notes — Specs: 12-word-export
+- [x] W04 [TEST] Auditnotizen Word-Export — SKIPPED: No component render tests per CLAUDE.md — Specs: 12-word-export
+- [x] W05 [IMPL] Auditnotizen Word-Export — generateNotesWordDocument: block tables with conditional sections (toggles), QHSE docs as individual rows, bewertungen with yellow highlight, zusammenfassung gray+bold — Specs: 12-word-export
+- [x] W06 [TEST] Auditfragen Word-Export — SKIPPED: No component render tests per CLAUDE.md — Specs: 12-word-export
+- [x] W07 [IMPL] Auditfragen Word-Export — generateAuditQuestionsWord: HTML-Blob with BOM, application/msword MIME, numbered questions + docs list, filename Auditfragen_[Abt]_[Datum].doc — Specs: 12-word-export
 
 ## Phase 13: Integration Wiring
 
