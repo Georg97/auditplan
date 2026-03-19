@@ -33,7 +33,7 @@
 ## Phase 2: Header & Navigation
 
 - [x] H01 [IFACE] Sidebar + Layout — Komponenten-Props und Typen für AppSidebar.svelte (NavItem[], aktive Route, User-Info), Mobile-Header mit SidebarTrigger — Specs: 02-layout-header-nav
-- [ ] H02 [TEST] Sidebar Navigation — Tests für NavItem-Daten, Active-State-Logik (pathname matching), i18n-Key-Auflösung — Specs: 02-layout-header-nav
+- [x] H02 [TEST] Sidebar Navigation — Tests für NavItem-Daten, Active-State-Logik (pathname matching), i18n-Key-Auflösung — Specs: 02-layout-header-nav
 - [ ] H03 [IMPL] Sidebar + Layout — ShadCN Sidebar-basiertes Layout: AppSidebar mit Logo (logo_dark/logo_light), 12 Nav-Items mit Lucide Icons, Sidebar-Footer (Settings + User + Theme-Toggle), Mobile-Header mit Hamburger → Sheet-Overlay, Content-Bereich mit max-w-7xl. Frontend-Design-Skill für polierte Sidebar-UI verwenden — Specs: 02-layout-header-nav
 - [ ] H04 [WIRE] App-Shell-Integration — SidebarProvider + AppSidebar + SidebarInset in (app)/+layout.svelte, Route-basierte aktive Navigation via $page.url.pathname, Settings-Button → Dialog-Stub, collapsible Sidebar auf Desktop — Specs: 02-layout-header-nav
 
