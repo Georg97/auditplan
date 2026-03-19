@@ -2,7 +2,6 @@
 	/* eslint-disable svelte/no-navigation-without-resolve */
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
 	import * as Field from '$lib/components/ui/field';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import { Separator } from '$lib/components/ui/separator';
