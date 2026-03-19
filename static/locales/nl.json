@@ -1,0 +1,216 @@
+{
+	"app": {
+		"name": "ISO Audit Manager",
+		"loading": "Laden..."
+	},
+	"nav": {
+		"overview": "Übersicht",
+		"dashboard": "Dashboard",
+		"auditorManagement": "Auditorenverwaltung",
+		"addAuditor": "Auditor hinzufügen",
+		"searchManage": "Suchen & Verwalten",
+		"calendar": "Kalender",
+		"importExport": "Import / Export",
+		"planGenerator": "Auditplan-Generator",
+		"reportGenerator": "Berichtsgenerator",
+		"notesGenerator": "Notizen-Generator",
+		"auditQuestions": "Auditfragen & Dokumente",
+		"actionPlan": "Maßnahmenplan",
+		"settings": "Einstellungen"
+	},
+	"common": {
+		"save": "Speichern",
+		"cancel": "Abbrechen",
+		"delete": "Löschen",
+		"edit": "Bearbeiten",
+		"add": "Hinzufügen",
+		"search": "Suchen",
+		"filter": "Filtern",
+		"export": "Exportieren",
+		"import": "Importieren",
+		"download": "Herunterladen",
+		"upload": "Hochladen",
+		"close": "Schließen",
+		"confirm": "Bestätigen",
+		"back": "Zurück",
+		"next": "Weiter",
+		"yes": "Ja",
+		"no": "Nein",
+		"all": "Alle",
+		"none": "Keine",
+		"loading": "Laden...",
+		"noResults": "Keine Ergebnisse gefunden.",
+		"error": "Fehler",
+		"success": "Erfolgreich",
+		"required": "Pflichtfeld",
+		"optional": "Optional",
+		"actions": "Aktionen",
+		"name": "Name",
+		"email": "E-Mail",
+		"phone": "Telefon",
+		"date": "Datum",
+		"time": "Uhrzeit",
+		"status": "Status",
+		"priority": "Priorität",
+		"description": "Beschreibung",
+		"notes": "Notizen",
+		"type": "Typ",
+		"created": "Erstellt",
+		"updated": "Aktualisiert"
+	},
+	"audit": {
+		"status": {
+			"planned": "Geplant",
+			"in_progress": "In Bearbeitung",
+			"completed": "Abgeschlossen",
+			"cancelled": "Abgebrochen"
+		},
+		"priority": {
+			"high": "Hoch",
+			"medium": "Mittel",
+			"low": "Niedrig"
+		}
+	},
+	"auditor": {
+		"title": "Auditorenverwaltung",
+		"addNew": "Neuen Auditor hinzufügen",
+		"firstName": "Vorname",
+		"lastName": "Nachname",
+		"company": "Unternehmen",
+		"position": "Position",
+		"qualifications": "Qualifikationen",
+		"availability": "Verfügbarkeit",
+		"address": "Adresse",
+		"street": "Straße",
+		"city": "Stadt",
+		"zip": "PLZ",
+		"country": "Land"
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"totalAudits": "Audits gesamt",
+		"totalAuditors": "Auditoren gesamt",
+		"upcomingAudits": "Anstehende Audits",
+		"overdueActions": "Überfällige Maßnahmen",
+		"openActions": "Offene Maßnahmen",
+		"completedAudits": "Abgeschlossene Audits",
+		"auditsByStatus": "Audits nach Status",
+		"criticalActions": "Kritische Maßnahmen"
+	},
+	"overview": {
+		"title": "Übersicht",
+		"savedPlans": "Gespeicherte Auditpläne",
+		"savedNotes": "Gespeicherte Notizen",
+		"savedQuestions": "Gespeicherte Auditfragen"
+	},
+	"calendar": {
+		"title": "Kalender",
+		"month": "Monat",
+		"week": "Woche",
+		"day": "Tag",
+		"today": "Heute",
+		"newEntry": "Neuer Eintrag"
+	},
+	"importExport": {
+		"title": "Import / Export",
+		"exportJson": "Als JSON exportieren",
+		"importJson": "JSON importieren",
+		"exportCsv": "Als CSV exportieren"
+	},
+	"planGenerator": {
+		"title": "Auditplan-Generator",
+		"client": "Auftraggeber",
+		"locations": "Standorte",
+		"scope": "Geltungsbereich",
+		"normBasis": "Normgrundlage",
+		"auditType": "Auditart",
+		"auditGoal": "Auditziel",
+		"auditLanguages": "Auditsprachen",
+		"team": "Auditteam",
+		"method": "Auditmethode",
+		"blocks": "Audit-Blöcke",
+		"addBlock": "Block hinzufügen"
+	},
+	"notesGenerator": {
+		"title": "Notizen-Generator",
+		"company": "Firma",
+		"standards": "Standards",
+		"certificate": "Zertifikat-Nr.",
+		"auditType": "Auditart",
+		"dateFrom": "Datum von",
+		"dateTo": "Datum bis",
+		"location": "Standort",
+		"auditor": "Auditor",
+		"blocks": "Notiz-Blöcke",
+		"addBlock": "Block hinzufügen"
+	},
+	"reportGenerator": {
+		"title": "Berichtsgenerator",
+		"selectAudit": "Audit auswählen",
+		"findings": "Feststellungen",
+		"recommendations": "Empfehlungen",
+		"conclusion": "Fazit"
+	},
+	"auditQuestions": {
+		"title": "Auditfragen & Dokumente",
+		"department": "Abteilung",
+		"norm": "Norm",
+		"chapter": "Kapitel",
+		"questions": "Fragen",
+		"documents": "Dokumente"
+	},
+	"actionPlan": {
+		"title": "Maßnahmenplan",
+		"finding": "Feststellung",
+		"findingType": "Feststellungsart",
+		"measure": "Maßnahme",
+		"responsible": "Verantwortlich",
+		"deadline": "Frist",
+		"overdue": "Überfällig"
+	},
+	"settings": {
+		"title": "Einstellungen",
+		"theme": "Design",
+		"language": "Sprache",
+		"compactView": "Kompaktansicht",
+		"notifications": "Benachrichtigungen",
+		"defaultAuditor": "Standard-Auditor",
+		"defaultDepartment": "Standard-Abteilung",
+		"dataManagement": "Datenverwaltung",
+		"exportAll": "Alle Daten exportieren",
+		"importAll": "Daten importieren",
+		"deleteAll": "Alle Daten löschen"
+	},
+	"auth": {
+		"login": "Anmelden",
+		"logout": "Abmelden",
+		"register": "Registrieren",
+		"email": "E-Mail",
+		"password": "Passwort"
+	},
+	"findingType": {
+		"major_nonconformity": "Hauptabweichung",
+		"minor_nonconformity": "Nebenabweichung",
+		"observation": "Beobachtung",
+		"improvement": "Verbesserungspotential",
+		"positive": "Positive Feststellung"
+	},
+	"auditart": {
+		"initial_certification": "Erstzertifizierung",
+		"surveillance_1": "1. Überwachungsaudit",
+		"surveillance_2": "2. Überwachungsaudit",
+		"recertification": "Rezertifizierung",
+		"transfer": "Transferaudit",
+		"extension": "Erweiterungsaudit",
+		"reduction": "Einschränkungsaudit",
+		"special": "Sonderaudit",
+		"internal": "Internes Audit",
+		"supplier": "Lieferantenaudit",
+		"process": "Prozessaudit",
+		"product": "Produktaudit",
+		"system": "Systemaudit",
+		"pre_audit": "Voraudit",
+		"follow_up": "Nachaudit",
+		"combined": "Kombiniertes Audit"
+	}
+}

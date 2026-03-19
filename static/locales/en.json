@@ -1,0 +1,216 @@
+{
+	"app": {
+		"name": "ISO Audit Manager",
+		"loading": "Loading..."
+	},
+	"nav": {
+		"overview": "Overview",
+		"dashboard": "Dashboard",
+		"auditorManagement": "Auditor Management",
+		"addAuditor": "Add Auditor",
+		"searchManage": "Search & Manage",
+		"calendar": "Calendar",
+		"importExport": "Import / Export",
+		"planGenerator": "Audit Plan Generator",
+		"reportGenerator": "Report Generator",
+		"notesGenerator": "Notes Generator",
+		"auditQuestions": "Audit Questions & Documents",
+		"actionPlan": "Action Plan",
+		"settings": "Settings"
+	},
+	"common": {
+		"save": "Save",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"edit": "Edit",
+		"add": "Add",
+		"search": "Search",
+		"filter": "Filter",
+		"export": "Export",
+		"import": "Import",
+		"download": "Download",
+		"upload": "Upload",
+		"close": "Close",
+		"confirm": "Confirm",
+		"back": "Back",
+		"next": "Next",
+		"yes": "Yes",
+		"no": "No",
+		"all": "All",
+		"none": "None",
+		"loading": "Loading...",
+		"noResults": "No results found.",
+		"error": "Error",
+		"success": "Success",
+		"required": "Required",
+		"optional": "Optional",
+		"actions": "Actions",
+		"name": "Name",
+		"email": "Email",
+		"phone": "Phone",
+		"date": "Date",
+		"time": "Time",
+		"status": "Status",
+		"priority": "Priority",
+		"description": "Description",
+		"notes": "Notes",
+		"type": "Type",
+		"created": "Created",
+		"updated": "Updated"
+	},
+	"audit": {
+		"status": {
+			"planned": "Planned",
+			"in_progress": "In Progress",
+			"completed": "Completed",
+			"cancelled": "Cancelled"
+		},
+		"priority": {
+			"high": "High",
+			"medium": "Medium",
+			"low": "Low"
+		}
+	},
+	"auditor": {
+		"title": "Auditor Management",
+		"addNew": "Add New Auditor",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"company": "Company",
+		"position": "Position",
+		"qualifications": "Qualifications",
+		"availability": "Availability",
+		"address": "Address",
+		"street": "Street",
+		"city": "City",
+		"zip": "ZIP Code",
+		"country": "Country"
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"totalAudits": "Total Audits",
+		"totalAuditors": "Total Auditors",
+		"upcomingAudits": "Upcoming Audits",
+		"overdueActions": "Overdue Actions",
+		"openActions": "Open Actions",
+		"completedAudits": "Completed Audits",
+		"auditsByStatus": "Audits by Status",
+		"criticalActions": "Critical Actions"
+	},
+	"overview": {
+		"title": "Overview",
+		"savedPlans": "Saved Audit Plans",
+		"savedNotes": "Saved Notes",
+		"savedQuestions": "Saved Audit Questions"
+	},
+	"calendar": {
+		"title": "Calendar",
+		"month": "Month",
+		"week": "Week",
+		"day": "Day",
+		"today": "Today",
+		"newEntry": "New Entry"
+	},
+	"importExport": {
+		"title": "Import / Export",
+		"exportJson": "Export as JSON",
+		"importJson": "Import JSON",
+		"exportCsv": "Export as CSV"
+	},
+	"planGenerator": {
+		"title": "Audit Plan Generator",
+		"client": "Client",
+		"locations": "Locations",
+		"scope": "Scope",
+		"normBasis": "Normative Basis",
+		"auditType": "Audit Type",
+		"auditGoal": "Audit Goal",
+		"auditLanguages": "Audit Languages",
+		"team": "Audit Team",
+		"method": "Audit Method",
+		"blocks": "Audit Blocks",
+		"addBlock": "Add Block"
+	},
+	"notesGenerator": {
+		"title": "Notes Generator",
+		"company": "Company",
+		"standards": "Standards",
+		"certificate": "Certificate No.",
+		"auditType": "Audit Type",
+		"dateFrom": "Date From",
+		"dateTo": "Date To",
+		"location": "Location",
+		"auditor": "Auditor",
+		"blocks": "Note Blocks",
+		"addBlock": "Add Block"
+	},
+	"reportGenerator": {
+		"title": "Report Generator",
+		"selectAudit": "Select Audit",
+		"findings": "Findings",
+		"recommendations": "Recommendations",
+		"conclusion": "Conclusion"
+	},
+	"auditQuestions": {
+		"title": "Audit Questions & Documents",
+		"department": "Department",
+		"norm": "Standard",
+		"chapter": "Chapter",
+		"questions": "Questions",
+		"documents": "Documents"
+	},
+	"actionPlan": {
+		"title": "Action Plan",
+		"finding": "Finding",
+		"findingType": "Finding Type",
+		"measure": "Action",
+		"responsible": "Responsible",
+		"deadline": "Deadline",
+		"overdue": "Overdue"
+	},
+	"settings": {
+		"title": "Settings",
+		"theme": "Theme",
+		"language": "Language",
+		"compactView": "Compact View",
+		"notifications": "Notifications",
+		"defaultAuditor": "Default Auditor",
+		"defaultDepartment": "Default Department",
+		"dataManagement": "Data Management",
+		"exportAll": "Export All Data",
+		"importAll": "Import Data",
+		"deleteAll": "Delete All Data"
+	},
+	"auth": {
+		"login": "Sign In",
+		"logout": "Sign Out",
+		"register": "Register",
+		"email": "Email",
+		"password": "Password"
+	},
+	"findingType": {
+		"major_nonconformity": "Major Nonconformity",
+		"minor_nonconformity": "Minor Nonconformity",
+		"observation": "Observation",
+		"improvement": "Improvement Potential",
+		"positive": "Positive Finding"
+	},
+	"auditart": {
+		"initial_certification": "Initial Certification",
+		"surveillance_1": "1st Surveillance Audit",
+		"surveillance_2": "2nd Surveillance Audit",
+		"recertification": "Recertification",
+		"transfer": "Transfer Audit",
+		"extension": "Extension Audit",
+		"reduction": "Reduction Audit",
+		"special": "Special Audit",
+		"internal": "Internal Audit",
+		"supplier": "Supplier Audit",
+		"process": "Process Audit",
+		"product": "Product Audit",
+		"system": "System Audit",
+		"pre_audit": "Pre-Audit",
+		"follow_up": "Follow-up Audit",
+		"combined": "Combined Audit"
+	}
+}
