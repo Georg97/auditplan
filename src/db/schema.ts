@@ -543,6 +543,36 @@ export const auditPlanBlockZeilenElemente = sqliteTable(
 	(table) => [index('apBlockElemente_zeileId_idx').on(table.zeileId)]
 );
 
+// ── Audit Plan Auditzeiten ──────────────────────────────────────────
+export const auditPlanAuditzeiten = sqliteTable(
+	'audit_plan_auditzeiten',
+	{
+		id: text('id').primaryKey(),
+		auditPlanId: text('audit_plan_id')
+			.notNull()
+			.references(() => auditPlans.id, { onDelete: 'cascade' }),
+		auditor: text('auditor').notNull().default(''),
+		standort: text('standort').notNull().default(''),
+		position: integer('position').notNull().default(0)
+	},
+	(table) => [index('apAuditzeiten_planId_idx').on(table.auditPlanId)]
+);
+
+export const auditPlanAuditzeitZeilen = sqliteTable(
+	'audit_plan_auditzeit_zeilen',
+	{
+		id: text('id').primaryKey(),
+		auditzeitId: text('auditzeit_id')
+			.notNull()
+			.references(() => auditPlanAuditzeiten.id, { onDelete: 'cascade' }),
+		startzeit: text('startzeit').notNull().default(''),
+		endzeit: text('endzeit').notNull().default(''),
+		aktivitaet: text('aktivitaet').notNull().default(''),
+		position: integer('position').notNull().default(0)
+	},
+	(table) => [index('apAuditzeitZeilen_auditzeitId_idx').on(table.auditzeitId)]
+);
+
 // ── Audit Notes ─────────────────────────────────────────────────────
 export const auditNotes = sqliteTable(
 	'audit_notes',
