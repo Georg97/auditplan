@@ -55,6 +55,12 @@ export default ts.config(
 		}
 	},
 	{
+		files: ['src/routes/(app)/calendar/**/*.svelte'],
+		rules: {
+			'svelte/prefer-svelte-reactivity': 'off'
+		}
+	},
+	{
 		ignores: ['build/', '.svelte-kit/', 'dist/', 'node_modules/', 'loop_logs/', '.vercel/']
 	}
 );
