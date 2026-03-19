@@ -49,7 +49,7 @@ export default ts.config(
 		}
 	},
 	{
-		files: ['src/lib/components/layout/**/*.svelte', 'src/routes/**/*.svelte'],
+		files: ['src/lib/components/**/*.svelte', 'src/routes/**/*.svelte'],
 		rules: {
 			'svelte/no-navigation-without-resolve': 'off'
 		}

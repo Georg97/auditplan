@@ -55,6 +55,9 @@
 		"dataManagement": "Daten-Management"
 	},
 	"audit": {
+		"title": "Audit-Suche & Verwaltung",
+		"addTitle": "Neues Audit anlegen",
+		"editTitle": "Audit bearbeiten",
 		"status": {
 			"planned": "Geplant",
 			"in_progress": "In Bearbeitung",
@@ -67,6 +70,59 @@
 			"certification": "Zertifizierungsaudit",
 			"surveillance": "Überwachungsaudit",
 			"recertification": "Rezertifizierungsaudit"
+		},
+		"format": {
+			"on_site": "Vor Ort",
+			"remote": "Remote",
+			"hybrid": "Hybrid"
+		},
+		"sections": {
+			"basicInfo": "Grundinformationen",
+			"scheduling": "Zeitplanung",
+			"organization": "Organisation & Standort",
+			"norms": "Norm & Geltungsbereich",
+			"personnel": "Personal",
+			"notesDocuments": "Notizen & Dokumente"
+		},
+		"fields": {
+			"auditName": "Auditname",
+			"auditType": "Audittyp",
+			"startDate": "Startdatum",
+			"endDate": "Enddatum",
+			"startTime": "Uhrzeit von",
+			"endTime": "Uhrzeit bis",
+			"company": "Unternehmen",
+			"department": "Abteilung",
+			"location": "Standort",
+			"format": "Format",
+			"norms": "Normen",
+			"scope": "Geltungsbereich",
+			"leadAuditor": "Leitender Auditor",
+			"auditTeam": "Auditteam",
+			"contactPerson": "Ansprechpartner",
+			"contactEmail": "Kontakt-E-Mail",
+			"documentLinks": "Dokumente/Links"
+		},
+		"searchPlaceholder": "Audits durchsuchen... (Name, Auditor, Abteilung)",
+		"newAudit": "Neues Audit anlegen",
+		"emptyState": "Keine Audits vorhanden.",
+		"emptyStateAction": "Legen Sie Ihr erstes Audit an.",
+		"deleteConfirmTitle": "Audit löschen",
+		"deleteConfirmDescription": "Audit '{{name}}' wirklich löschen? Alle zugehörigen Dateien werden ebenfalls entfernt.",
+		"deleteSuccess": "Audit erfolgreich gelöscht",
+		"saveSuccess": "Audit erfolgreich gespeichert",
+		"files": "Dateien",
+		"placeholders": {
+			"auditName": "z.B. ISO 9001 Audit Q1 2026",
+			"company": "Firmenname",
+			"department": "Abteilung",
+			"location": "Standort",
+			"scope": "Geltungsbereich beschreiben...",
+			"auditTeam": "Ein Name pro Zeile",
+			"contactPerson": "Name des Ansprechpartners",
+			"contactEmail": "kontakt@example.com",
+			"notes": "Zusätzliche Anmerkungen...",
+			"documentLinks": "Ein Link pro Zeile"
 		}
 	},
 	"auditor": {
