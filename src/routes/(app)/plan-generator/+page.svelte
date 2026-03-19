@@ -13,6 +13,8 @@
 	import FileDown from '@lucide/svelte/icons/file-down';
 	import StickyNote from '@lucide/svelte/icons/sticky-note';
 	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
+	import { generateAuditplanWord } from '$lib/word/auditplan-word';
+	import { generateAuditNotizenWord } from '$lib/word/auditnotizen-word';
 
 	const i18n = getContext<I18nRune>('i18n');
 
@@ -42,9 +44,40 @@
 		toast.success(i18n.t('planGenerator.savedSuccess'));
 	}
 
-	function handleGenerateWord() {
-		// TODO: Trigger Word export endpoint
-		toast.success(i18n.t('planGenerator.generateWord'));
+	async function handleGenerateWord() {
+		try {
+			const blob = await generateAuditplanWord({
+				firma: grunddaten.auftraggeber,
+				standard: selectedNorms.join(', '),
+				auditart: selectedAuditarten.join(', '),
+				datum: auditzeiten[0]?.zeilen[0]?.startzeit,
+				standort: standorte.map((s) => s.name).join(', '),
+				auditor: teamMitglieder.find((m) => m.rolle === 'lead_auditor')?.externalName,
+				logoBase64: logoBase64,
+				auftraggeber: { name: grunddaten.auftraggeber },
+				standorte: standorte.map((s) => ({ name: s.name })),
+				blocks: blocks.map((b) => ({
+					uhrzeit: b.zeilen[0]?.uhrzeitVon && b.zeilen[0]?.uhrzeitBis ? `${b.zeilen[0].uhrzeitVon} - ${b.zeilen[0].uhrzeitBis}` : '',
+					abteilung: b.zeilen[0]?.organisationseinheit ?? '',
+					auditor: b.zeilen[0]?.auditor ?? '',
+					beschreibung: b.zeilen[0]?.notizen?.beschreibung ?? '',
+					vorstellung: b.zeilen[0]?.notizen?.vorstellung ?? '',
+					allgemein: b.zeilen[0]?.notizen?.allgemein ?? '',
+					notizen: b.zeilen[0]?.notizen?.notizen ?? '',
+					dokumente: b.zeilen[0]?.notizen?.dokumente ?? '',
+					zusammenfassung: b.zeilen[0]?.notizen?.zusammenfassung ?? ''
+				}))
+			});
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `Auditplan_${planName || 'export'}.docx`;
+			a.click();
+			URL.revokeObjectURL(url);
+			toast.success(i18n.t('planGenerator.generateWord'));
+		} catch {
+			toast.error(i18n.t('common.error'));
+		}
 	}
 
 	function handleGeneratePdf() {
@@ -52,9 +85,38 @@
 		toast.success(i18n.t('planGenerator.generatePdf'));
 	}
 
-	function handleGenerateNotes() {
-		// TODO: Navigate to notes generator with pre-filled data
-		toast.success(i18n.t('planGenerator.generateNotes'));
+	async function handleGenerateNotes() {
+		try {
+			const blob = await generateAuditNotizenWord({
+				firma: grunddaten.auftraggeber,
+				standard: selectedNorms.join(', '),
+				auditart: selectedAuditarten.join(', '),
+				datum: auditzeiten[0]?.zeilen[0]?.startzeit,
+				standort: standorte.map((s) => s.name).join(', '),
+				auditor: teamMitglieder.find((m) => m.rolle === 'lead_auditor')?.externalName,
+				logoBase64: logoBase64,
+				blocks: blocks.map((b) => ({
+					uhrzeit: b.zeilen[0]?.uhrzeitVon && b.zeilen[0]?.uhrzeitBis ? `${b.zeilen[0].uhrzeitVon} - ${b.zeilen[0].uhrzeitBis}` : '',
+					abteilung: b.zeilen[0]?.organisationseinheit ?? '',
+					auditor: b.zeilen[0]?.auditor ?? '',
+					beschreibung: b.zeilen[0]?.notizen?.beschreibung ?? '',
+					vorstellung: b.zeilen[0]?.notizen?.vorstellung ?? '',
+					allgemein: b.zeilen[0]?.notizen?.allgemein ?? '',
+					notizen: b.zeilen[0]?.notizen?.notizen ?? '',
+					dokumente: b.zeilen[0]?.notizen?.dokumente ?? '',
+					zusammenfassung: b.zeilen[0]?.notizen?.zusammenfassung ?? ''
+				}))
+			});
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `Auditnotizen_${Date.now()}.docx`;
+			a.click();
+			URL.revokeObjectURL(url);
+			toast.success(i18n.t('planGenerator.generateNotes'));
+		} catch {
+			toast.error(i18n.t('common.error'));
+		}
 	}
 
 	function handleReset() {

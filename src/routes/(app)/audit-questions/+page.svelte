@@ -13,6 +13,7 @@
 	import { alleNormkapitel } from '$lib/data/normkapitel';
 	import { auditQuestionsData, type AuditQuestionEntry, type AuditDocumentEntry } from '$lib/data/audit-questions';
 	import { ISO_NORMS } from '$lib/types/audit-plan';
+	import { generateAuditfragenWord, auditfragenFilename } from '$lib/word/auditfragen-word';
 
 	const i18n = getContext<I18nRune>('i18n');
 
@@ -68,7 +69,29 @@
 	}
 
 	function handleExportWord() {
-		// TODO: Trigger Word export endpoint
+		if (questions.length === 0) {
+			toast.error(i18n.t('auditQuestions.noQuestionsFound'));
+			return;
+		}
+		const blob = generateAuditfragenWord({
+			abteilung: selectedDepartment,
+			datum: auditdatum || new Date().toISOString().slice(0, 10),
+			questions: questions.map((q, idx) => ({
+				nummer: idx + 1,
+				frage: q.frage,
+				normRef: q.normRef
+			})),
+			documents: documents.map((d) => ({
+				name: d.name,
+				beschreibung: d.beschreibung
+			}))
+		});
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = auditfragenFilename(selectedDepartment || 'Export', auditdatum || new Date().toISOString().slice(0, 10));
+		a.click();
+		URL.revokeObjectURL(url);
 		toast.success(i18n.t('auditQuestions.generateWord'));
 	}
 
