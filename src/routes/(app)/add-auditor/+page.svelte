@@ -12,6 +12,7 @@
 	import { toast } from 'svelte-sonner';
 	import Save from '@lucide/svelte/icons/save';
 	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
+	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 
 	const i18n = getContext<I18nRune>('i18n');
 
@@ -22,7 +23,6 @@
 		onResult({ result }) {
 			if (result.type === 'success') {
 				toast.success(i18n.t('auditor.saveSuccess'));
-				// eslint-disable-next-line svelte/no-navigation-without-resolve -- static path, no params
 				goto('/auditor-management');
 			}
 		}
@@ -54,9 +54,15 @@
 </script>
 
 <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-	<h1 class="text-foreground mb-8 text-2xl font-bold" style="font-family: var(--font-display)">
-		{isEditMode ? i18n.t('auditor.editTitle') : i18n.t('auditor.addTitle')}
-	</h1>
+	<div class="mb-8">
+		<a href="/auditor-management" class="text-muted-foreground hover:text-foreground mb-3 inline-flex items-center gap-1.5 text-sm transition-colors">
+			<ArrowLeft class="h-4 w-4" />
+			{i18n.t('common.back')}
+		</a>
+		<h1 class="text-foreground text-2xl font-bold" style="font-family: var(--font-display)">
+			{isEditMode ? i18n.t('auditor.editTitle') : i18n.t('auditor.addTitle')}
+		</h1>
+	</div>
 
 	<form method="POST" use:enhance class="space-y-6">
 		<!-- Section 1: Personal Data -->

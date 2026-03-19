@@ -97,10 +97,16 @@
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-	<!-- Page Title -->
-	<h1 class="text-foreground mb-6 text-2xl font-bold" style="font-family: var(--font-display)">
-		{i18n.t('auditor.title')}
-	</h1>
+	<!-- Page Title + Add Button -->
+	<div class="mb-6 flex items-center justify-between">
+		<h1 class="text-foreground text-2xl font-bold" style="font-family: var(--font-display)">
+			{i18n.t('auditor.title')}
+		</h1>
+		<Button href="/add-auditor" class="gap-2">
+			<UserPlus class="h-4 w-4" />
+			{i18n.t('auditor.addFirstAuditor')}
+		</Button>
+	</div>
 
 	<!-- Search Bar -->
 	<div class="relative mb-8 max-w-lg">
