@@ -38,7 +38,8 @@ export default ts.config(
 		files: ['**/*.svelte'],
 		rules: {
 			'svelte/no-navigation-without-resolve': 'off',
-			'svelte/require-each-key': 'off'
+			'svelte/require-each-key': 'off',
+			'svelte/prefer-svelte-reactivity': 'off'
 		}
 	},
 	{
