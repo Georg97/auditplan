@@ -105,15 +105,13 @@ Horizontale Leiste mit folgenden Elementen (von links nach rechts):
 
 #### Monatsansicht
 
-- **7-Spalten-Grid**: `grid-template-columns: repeat(7, 1fr)`.
+- **7-Spalten-Grid**: `grid-cols-7`.
 - **Kopfzeile**: Wochentage (Mo, Di, Mi, Do, Fr, Sa, So) als Labels.
-- **Zellen**: Jede Zelle hat `aspect-ratio: 1` (quadratisch).
+- **Zellen**: Quadratische Zellen (`aspect-square`).
   - Tagesnummer oben links.
-  - Tage ausserhalb des aktuellen Monats: `opacity-40`, hellerer Text.
-  - Heutiger Tag: Farbiger Kreis um die Tagesnummer (z.B. `bg-primary text-primary-foreground rounded-full`).
-  - **Tage mit Audit-Eintraegen**:
-    - Hintergrund: `#e8eaff` (helles Blau).
-    - Linker Rand: `3px solid #667eea` (kraeftiges Blau).
+  - Tage ausserhalb des aktuellen Monats: muted foreground, reduzierte Deckkraft.
+  - Heutiger Tag: Farbiger Kreis um die Tagesnummer (`bg-primary text-primary-foreground rounded-full`).
+  - **Tage mit Audit-Eintraegen**: Highlight days with audits using brand color (light background `bg-brand/10`, left border accent `border-l-2 border-brand`).
   - Bei Klick auf eine Zelle: Modal zum Erstellen eines neuen Eintrags oeffnen (Datum vorausgefuellt).
   - Vorhandene Eintraege werden als kleine Pillen/Badges innerhalb der Zelle angezeigt (Titel, ggf. gekuerzt). Bei Klick auf einen Eintrag: Modal zum Bearbeiten oeffnen.
 
@@ -148,7 +146,7 @@ Bits-UI `Dialog` mit folgenden Feldern:
 
 - **Abbrechen** (sekundaer) -- Modal schliessen ohne Speichern.
 - **Speichern** (primaer) -- Validierung, dann Server-Call.
-- Bei bestehendem Eintrag zusaetzlich: **Loeschen** (destruktiv/rot).
+- Bei bestehendem Eintrag zusaetzlich: **Loeschen** (destructive variant).
 
 ## Interaktionen
 
@@ -213,7 +211,7 @@ Bits-UI `Dialog` mit folgenden Feldern:
 | SvelteKit      | Routing (`/calendar`), Server-Funktionen           |
 | Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`) |
 | Bits-UI        | Dialog, ToggleGroup, Button, Select, AlertDialog   |
-| Tailwind CSS 4 | Grid-Layout, aspect-ratio, Farbkodierung           |
+| Tailwind CSS 4 | Grid-Layout, responsive Styling                    |
 | Drizzle ORM    | SQL-Queries, Schema-Definition                     |
 | Turso          | SQLite-Datenbank (libsql)                          |
 | better-auth    | Authentifizierung, Session-Management              |

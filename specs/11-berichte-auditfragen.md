@@ -8,7 +8,7 @@
 interface AuditReport {
 	id: string;
 	organizationId: string;
-	auditId: string; // Referenz auf gespeichertes Audit
+	auditId: string; // FK → saved_audits.id
 	feststellungen: string; // Textarea, 4 Zeilen
 	empfehlungen: string; // Textarea, 4 Zeilen
 	fazit: string; // Textarea, 3 Zeilen
@@ -38,75 +38,126 @@ interface AuditQuestionsForm {
 
 type AuditNorm = 'ISO 9001' | 'ISO 14001' | 'ISO 45001' | 'ISO 50001' | 'ISO 27001';
 
-interface AuditQuestion {
-	id: number; // Laufende Nummer
-	frage: string;
-	normRef: string; // Normkapitel-Referenz
-}
-
-interface AuditDocument {
-	id: number;
-	name: string;
-	beschreibung?: string;
-}
-
+/**
+ * Tabelle: saved_audit_questions
+ *
+ * Header-Datensatz mit flachen Spalten (KEIN verschachteltes formData-Objekt).
+ * Fragen und Dokumente sind in eigenen Junction-Tabellen normalisiert.
+ */
 interface SavedAuditQuestions {
 	id: string;
 	organizationId: string;
-	formData: AuditQuestionsForm;
-	questions: AuditQuestion[];
-	documents: AuditDocument[];
+
+	// Flache Spalten (frueher im formData-Objekt verschachtelt)
+	firmenname: string;
+	auditdatum: string; // ISO-Datum
+	uhrzeitVon: string; // HH:mm
+	uhrzeitBis: string; // HH:mm
+	abteilung: string; // Select, 43 Abteilungen
+	norm: AuditNorm; // Select
+	normkapitel: string; // Dynamisch basierend auf Norm
+
 	createdAt: Date;
 	updatedAt: Date;
+}
+
+/**
+ * Tabelle: saved_question_entries
+ *
+ * Junction-Tabelle fuer einzelne Auditfragen.
+ * FK → saved_audit_questions.id
+ */
+interface SavedQuestionEntry {
+	id: string;
+	savedAuditQuestionsId: string; // FK → saved_audit_questions.id
+	frage: string;
+	normRef: string; // Normkapitel-Referenz
+	position: number; // Sortierreihenfolge (0-basiert)
+}
+
+/**
+ * Tabelle: saved_question_documents
+ *
+ * Junction-Tabelle fuer Dokumente zu einem Auditfragen-Satz.
+ * FK → saved_audit_questions.id
+ */
+interface SavedQuestionDocument {
+	id: string;
+	savedAuditQuestionsId: string; // FK → saved_audit_questions.id
+	name: string;
+	beschreibung: string | null;
+	position: number; // Sortierreihenfolge (0-basiert)
 }
 
 // --- Massnahmenplan (§15) ---
 
 // Display text comes from i18n
-type Feststellungsart = 'major_nonconformity' | 'minor_nonconformity' | 'recommendation' | 'improvement_potential' | 'positive_finding' | 'observation' | 'note';
+type FindingType = 'major_nonconformity' | 'minor_nonconformity' | 'recommendation' | 'improvement_potential' | 'positive_finding' | 'observation' | 'note';
 
 // Display text comes from i18n
-type MassnahmenStatus = 'open' | 'in_progress' | 'implemented' | 'verified' | 'completed';
+type ActionStatus = 'open' | 'in_progress' | 'implemented' | 'verified' | 'completed';
 
 // Display text comes from i18n
-type Audittyp = 'internal' | 'external' | 'supplier' | 'process_audit' | 'system_audit' | 'follow_up_audit';
+type AuditType = 'internal' | 'external' | 'supplier' | 'process_audit' | 'system_audit' | 'follow_up_audit';
 
 // Display text comes from i18n
-type Prioritaet = 'high' | 'medium' | 'low';
+type Priority = 'high' | 'medium' | 'low';
 
 // Display text comes from i18n
-type MassnahmenNorm = 'ISO 9001' | 'ISO 14001' | 'ISO 45001' | 'ISO 50001' | 'ISO 27001' | 'other' | 'all';
+type ActionNorm = 'ISO 9001' | 'ISO 14001' | 'ISO 45001' | 'ISO 50001' | 'ISO 27001' | 'other' | 'all';
 
+/**
+ * Tabelle: actions
+ *
+ * Massnahmen koennen optional auf ein Audit verweisen (auditId).
+ * organizationId ist Pflicht (Multi-Tenancy).
+ */
 interface Massnahme {
 	id: string;
 	organizationId: string;
-	feststellungsbeschreibung: string; // Textarea
-	feststellungsart: Feststellungsart; // Select, farbcodiert
-	geplanterMassnahme: string; // Textarea
-	status: MassnahmenStatus; // Select
-	verantwortlicher: string; // Dynamisch
-	prioritaet: Prioritaet;
-	frist: string; // ISO-Datum
-	abschlussdatum: string | null; // ISO-Datum
-	norm: MassnahmenNorm; // Select
-	nachweiseNotizen: string; // Textarea
-	audittyp: Audittyp;
+	auditId: string | null; // Optionaler FK → audits.id
+	description: string; // Textarea
+	findingType: FindingType; // Select, farbcodiert
+	plannedAction: string; // Textarea
+	status: ActionStatus; // Select
+	responsible: string; // Dynamisch
+	priority: Priority;
+	dueDate: string; // ISO-Datum
+	completionDate: string | null; // ISO-Datum
+	norm: ActionNorm; // Select
+	evidenceNotes: string; // Textarea
+	auditType: AuditType;
 	createdAt: Date;
 	updatedAt: Date;
 }
 
+/**
+ * Filter fuer Massnahmenplan.
+ * Alle Filter werden als server-seitige SQL WHERE-Clauses umgesetzt
+ * (NICHT client-seitige Array-Filterung).
+ */
 interface MassnahmenFilter {
-	feststellungsart: Feststellungsart | 'all';
-	status: MassnahmenStatus | 'all';
-	audittyp: Audittyp | 'all';
-	verantwortlicher: string | 'all';
-	prioritaet: Prioritaet | 'all';
-	norm: MassnahmenNorm | 'all';
+	findingType: FindingType | 'all';
+	status: ActionStatus | 'all';
+	auditType: AuditType | 'all';
+	responsible: string | 'all';
+	priority: Priority | 'all';
+	norm: ActionNorm | 'all';
+	page: number; // Aktuelle Seite (1-basiert)
+	pageSize: number; // Eintraege pro Seite (Standard: 20)
+}
+
+interface MassnahmenFilterResult {
+	items: Massnahme[];
+	total: number; // Gesamtanzahl (fuer Pagination)
+	page: number;
+	pageSize: number;
+	totalPages: number;
 }
 
 // Ueberfaellig-Berechnung
 interface OverdueCheck {
-	isOverdue: boolean; // frist < today AND status != "completed"
+	isOverdue: boolean; // dueDate < today AND status != "completed"
 }
 ```
 
@@ -172,43 +223,45 @@ Nach dem Absenden wird der generierte Bericht in einem separaten Container unter
 
 **Filterleiste (6 Filter in 2 Reihen):**
 
-| Reihe   | Filter 1                               | Filter 2                                              | Filter 3                       |
-| ------- | -------------------------------------- | ----------------------------------------------------- | ------------------------------ |
-| Reihe 1 | Feststellungsart (7 Optionen + "Alle") | Status (5 Optionen + "Alle")                          | Audittyp (6 Optionen + "Alle") |
-| Reihe 2 | Verantwortlicher (dynamisch + "Alle")  | Prioritaet (4 Optionen: Hoch/Mittel/Niedrig + "Alle") | Norm (7 Optionen + "Alle")     |
+| Reihe   | Filter 1                          | Filter 2                                            | Filter 3                        |
+| ------- | --------------------------------- | --------------------------------------------------- | ------------------------------- |
+| Reihe 1 | FindingType (7 Optionen + "Alle") | Status (5 Optionen + "Alle")                        | AuditType (6 Optionen + "Alle") |
+| Reihe 2 | Responsible (dynamisch + "Alle")  | Priority (4 Optionen: Hoch/Mittel/Niedrig + "Alle") | Norm (7 Optionen + "Alle")      |
 
 **Massnahmen-Eintraege:**
 
 Jede Massnahme wird als Karte dargestellt mit folgenden Feldern:
 
-| Feld                      | Typ         | Besonderheit                                                      |
-| ------------------------- | ----------- | ----------------------------------------------------------------- |
-| Feststellungsbeschreibung | Textarea    | Mehrzeilig                                                        |
-| Feststellungsart          | Select      | Farbcodiert (z.B. Rot fuer Hauptabweichung, Gelb fuer Empfehlung) |
-| Geplante Massnahme        | Textarea    | Mehrzeilig                                                        |
-| Status                    | Select      | 5 Optionen                                                        |
-| Verantwortlicher          | Text/Select | Dynamisch                                                         |
-| Prioritaet                | Select      | Hoch / Mittel / Niedrig                                           |
-| Frist                     | Date-Input  |                                                                   |
-| Abschlussdatum            | Date-Input  | Optional                                                          |
-| Norm                      | Select      | ISO-Norm-Auswahl                                                  |
-| Nachweise/Notizen         | Textarea    | Mehrzeilig                                                        |
+| Feld (i18n Label)         | DB Field       | Typ         | Besonderheit                                                  |
+| ------------------------- | -------------- | ----------- | ------------------------------------------------------------- |
+| Feststellungsbeschreibung | description    | Textarea    | Mehrzeilig                                                    |
+| Feststellungsart          | findingType    | Select      | Farbcodiert via semantische Farbklassen (siehe Tabelle unten) |
+| Geplante Massnahme        | plannedAction  | Textarea    | Mehrzeilig                                                    |
+| Status                    | status         | Select      | 5 Optionen                                                    |
+| Verantwortlicher          | responsible    | Text/Select | Dynamisch                                                     |
+| Prioritaet                | priority       | Select      | Hoch / Mittel / Niedrig                                       |
+| Frist                     | dueDate        | Date-Input  |                                                               |
+| Abschlussdatum            | completionDate | Date-Input  | Optional                                                      |
+| Norm                      | norm           | Select      | ISO-Norm-Auswahl                                              |
+| Nachweise/Notizen         | evidenceNotes  | Textarea    | Mehrzeilig                                                    |
 
-**Farbcodierung Feststellungsart:**
+**Farbcodierung FindingType:**
 
-| Feststellungsart      | Farbe    |
-| --------------------- | -------- |
-| major_nonconformity   | Rot      |
-| minor_nonconformity   | Orange   |
-| recommendation        | Gelb     |
-| improvement_potential | Blau     |
-| positive_finding      | Gruen    |
-| observation           | Grau     |
-| note                  | Hellblau |
+| Feststellungsart      | Semantische Farbe |
+| --------------------- | ----------------- |
+| major_nonconformity   | destructive       |
+| minor_nonconformity   | warning           |
+| recommendation        | warning (muted)   |
+| improvement_potential | info              |
+| positive_finding      | success           |
+| observation           | muted             |
+| note                  | info (muted)      |
+
+Die Farben werden ueber ShadCN-semantische Klassen (`bg-destructive`, `text-destructive`, `bg-muted`, etc.) und Tailwind-Utilities angewendet. Keine hardcodierten Hex-Werte.
 
 **Ueberfaellig-Markierung:**
 
-Wenn `frist < heute` UND `status !== "completed"`, wird die Massnahme visuell hervorgehoben (z.B. roter Rahmen oder roter Hintergrund-Akzent).
+Wenn `dueDate < heute` UND `status !== "completed"`, wird die Massnahme visuell hervorgehoben (destructive accent border or background).
 
 ## Interaktionen
 
@@ -228,11 +281,12 @@ Wenn `frist < heute` UND `status !== "completed"`, wird die Massnahme visuell he
 
 ### Massnahmenplan
 
-1. **Filtern:** Jede Aenderung eines Filters loedt sofort die gefilterten Massnahmen neu (clientseitig oder via Server-Load mit Query-Parametern).
-2. **Massnahme erstellen:** Button "Neue Massnahme" oeffnet ein leeres Formular. Speichern via Server-Action.
-3. **Massnahme bearbeiten:** Klick auf eine bestehende Massnahme oeffnet diese zum Bearbeiten. Aenderungen werden via Server-Action gespeichert.
-4. **Ueberfaellig-Pruefung:** Bei jedem Laden/Filtern wird fuer jede Massnahme geprueft: `frist < new Date()` UND `status !== "completed"`. Ueberfaellige Eintraege erhalten eine visuelle Hervorhebung.
-5. **Dynamischer Verantwortlicher-Filter:** Die Optionen im Filter "Verantwortlicher" werden aus den vorhandenen Massnahmen-Eintraegen abgeleitet.
+1. **Filtern (server-seitig):** Jede Aenderung eines Filters sendet die Filter als Query-Parameter an den Server. Die Filterung erfolgt als SQL WHERE-Clauses auf der Datenbank (NICHT client-seitige Array-Filterung). Der Server gibt ein `MassnahmenFilterResult` mit paginierten Ergebnissen zurueck.
+2. **Pagination:** Ergebnisse werden paginiert (Standard: 20 pro Seite). Navigation ueber Seiten-Buttons unterhalb der Massnahmen-Liste. Bei Filteraenderung wird auf Seite 1 zurueckgesetzt.
+3. **Massnahme erstellen:** Button "Neue Massnahme" oeffnet ein leeres Formular. Speichern via Server-Action.
+4. **Massnahme bearbeiten:** Klick auf eine bestehende Massnahme oeffnet diese zum Bearbeiten. Aenderungen werden via Server-Action gespeichert.
+5. **Ueberfaellig-Pruefung:** Bei jedem Laden/Filtern wird fuer jede Massnahme geprueft: `dueDate < new Date()` UND `status !== "completed"`. Ueberfaellige Eintraege erhalten eine visuelle Hervorhebung.
+6. **Dynamischer Verantwortlicher-Filter:** Die Optionen im Filter "Verantwortlicher" werden via separater Server-Query aus den vorhandenen Massnahmen-Eintraegen abgeleitet (SELECT DISTINCT).
 
 ## Abhaengigkeiten
 

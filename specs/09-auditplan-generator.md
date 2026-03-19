@@ -2,6 +2,8 @@
 
 ## Datenmodell
 
+> **Alle Tabellen sind normalisiert. Child-Tabellen referenzieren Parent via Foreign Key mit CASCADE DELETE.**
+
 ```typescript
 // ══════════════════════════════════════════════
 // ENUMS & KONSTANTEN
@@ -80,242 +82,265 @@ const ORGANISATIONSEINHEITEN: string[] = [
 ];
 
 // ══════════════════════════════════════════════
-// DRIZZLE-SCHEMA (Turso / SQLite)
+// DRIZZLE-SCHEMA (Turso / SQLite) — NORMALISIERT
 // ══════════════════════════════════════════════
+// IDs: crypto.randomUUID() fuer alle Tabellen.
+// organizationId nur auf AuditPlan — Child-Tabellen erben Org-Scope via FK-Kette.
 
 /**
- * Haupttabelle: saved_plans
- * Speichert den gesamten Auditplan als JSON-Blob.
+ * Haupttabelle: audit_plans
+ * Top-Level-Container fuer einen Auditplan.
  */
-interface SavedPlanRow {
-	id: string; // UUID
+interface AuditPlan {
+	id: string; // crypto.randomUUID()
 	organizationId: string; // FK -> organization.id
 	name: string; // Planname fuer Anzeige
-	daten: string; // JSON-String von AuditplanDaten
-	createdAt: string;
-	updatedAt: string;
-}
-
-// ══════════════════════════════════════════════
-// CLIENT-DATENMODELL (vollstaendig)
-// ══════════════════════════════════════════════
-
-/**
- * Gesamtstruktur des Auditplans.
- * Wird als JSON in saved_plans.daten gespeichert.
- */
-interface AuditplanDaten {
-	// ZN (Zertifikatsnummern)
-	zertifikatsnummern: string[];
-
-	// Logo
 	logoBase64: string | null;
 	logoDateiname: string | null;
-
-	// Grunddaten
-	grunddaten: AuditplanGrunddaten;
-
-	// Auditdetails
-	auditdetails: AuditplanDetails;
-
-	// Audit-Team
-	auditTeam: AuditTeamMitglied[];
-
-	// Betriebsorganisation
-	betriebsorganisation: Betriebsorganisation;
-
-	// Auditmethode
-	auditmethode: AuditmethodeBlock;
-
-	// Revisionen
-	revisionen: Revision[];
-	revisionMeta: RevisionMeta;
-
-	// Auditzeiten
-	auditzeiten: AuditzeitenTabelle[];
-
-	// Audit-Bloecke
-	auditBloecke: AuditBlock[];
-
-	// Hinweise und Verteiler
-	hinweiseVerteiler: HinweiseVerteiler;
+	createdBy: string; // FK -> user.id
+	updatedBy: string; // FK -> user.id
+	createdAt: string; // ISO timestamp
+	updatedAt: string; // ISO timestamp
 }
 
-// ──────────────────────────────────────────────
-// Grunddaten
-// ──────────────────────────────────────────────
-
-interface AuditplanGrunddaten {
-	auftraggeber: string; // Textarea, 4 Zeilen
-	standorte: Standort[]; // Dynamische Liste
-	geltungsbereich: string; // Textarea
-	normgrundlage: NormAuswahl;
-}
-
-interface Standort {
-	id: string; // UUID
-	name: string;
-}
-
-interface NormAuswahl {
-	ausgewaehlteNormen: string[]; // IDs aus ISO_NORMEN
-	freitext: string; // Fuer "Andere"
-	suchbegriff: string; // Aktueller Suchfilter im Dropdown
-}
-
-// ──────────────────────────────────────────────
-// Auditdetails
-// ──────────────────────────────────────────────
-
-interface AuditplanDetails {
-	auditart: string[]; // Aus AuditartOption + benutzerdefinierte
-	auditartFreitext: string; // Custom-Eintrag
+/**
+ * Grunddaten des Auditplans.
+ * 1:1-Beziehung zu AuditPlan.
+ */
+interface AuditPlanGrunddaten {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
+	auftraggeber: string; // Multi-line
+	geltungsbereich: string; // Multi-line
 	beauftragter: string;
-	auditziel: string; // Standard-Text, readonly bis Checkbox aktiviert
-	auditzielEditierbar: boolean; // Checkbox: "Auditziel bearbeiten"
-	auditsprachen: AuditSprache[];
-}
-
-// ──────────────────────────────────────────────
-// Audit-Team
-// ──────────────────────────────────────────────
-
-interface AuditTeamMitglied {
-	id: string; // UUID
-	rolle: TeamRolle;
-	name: string; // Textarea
-	istExtern: boolean; // Checkbox
-	firmenname: string; // Nur sichtbar wenn istExtern = true
-}
-
-// ──────────────────────────────────────────────
-// Betriebsorganisation
-// ──────────────────────────────────────────────
-
-interface Betriebsorganisation {
+	auditziel: string; // Standard-Text, readonly bis Checkbox
+	auditzielEditierbar: boolean;
+	auditartFreitext: string;
 	schichtsystem: Schichtsystem;
-	schichtsystemFreitext: string; // Nur bei "Anderes"
+	schichtsystemFreitext: string;
 	schichtuebergaben: string;
-	bemerkung: string;
-}
-
-// ──────────────────────────────────────────────
-// Auditmethode
-// ──────────────────────────────────────────────
-
-interface AuditmethodeBlock {
-	methode: Auditmethode;
+	bemerkungBetrieb: string;
+	auditmethode: Auditmethode;
 	iktTechnik: string;
 	iktTestdatum: string; // ISO-Date
 	testLetztesAudit: boolean;
 	gastgeber: string;
+	revisionOrtDatum: string;
+	revisionAenderungWaehrendAudit: string;
+	revisionKommentare: string;
+	hinweiseInfoText: string;
+	verteiler: string; // Multi-line
+	verteilungAuditteam: boolean;
+	verteilungGeschaeftsfuehrung: boolean;
+	verteilungFachabteilungen: boolean;
+	verteilungExtern: boolean;
 }
 
-// ──────────────────────────────────────────────
-// Revisionen
-// ──────────────────────────────────────────────
+/**
+ * Normgrundlage: ausgewaehlte Normen fuer einen Auditplan.
+ * n:1-Beziehung zu AuditPlan (eine Zeile pro ausgewaehlter Norm).
+ */
+interface AuditPlanNorm {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
+	normId: string; // ID aus ISO_NORMEN (z.B. 'iso9001', 'andere')
+	freitext: string; // Nur relevant wenn normId = 'andere'
+	position: number;
+}
 
-interface Revision {
-	id: string; // UUID
+/**
+ * Junction-Tabelle: Auditarten eines Auditplans.
+ * n:1-Beziehung zu AuditPlan (eine Zeile pro ausgewaehlter Auditart).
+ */
+interface AuditPlanAuditart {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
+	auditartId: string; // From AuditartOption enum or custom text
+	isCustom: boolean; // true if user-defined
+	position: number;
+}
+
+/**
+ * Junction-Tabelle: Auditsprachen eines Auditplans.
+ * n:1-Beziehung zu AuditPlan (eine Zeile pro ausgewaehlter Sprache).
+ */
+interface AuditPlanAuditsprache {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
+	sprache: AuditSprache; // From AuditSprache type
+	position: number;
+}
+
+/**
+ * Standorte des Auditplans.
+ * n:1-Beziehung zu AuditPlan.
+ */
+interface AuditPlanStandort {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
+	name: string;
+	position: number;
+}
+
+/**
+ * Revisionen des Auditplans.
+ * n:1-Beziehung zu AuditPlan.
+ */
+interface AuditPlanRevision {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
 	nummer: string; // Auto: "Rev. 1.0", "Rev. 2.0", ...
 	datum: string; // ISO-Date
-	beschreibung: string; // Textarea
+	beschreibung: string; // Multi-line
+	position: number;
 }
 
-interface RevisionMeta {
-	ortDatum: string;
-	aenderungWaehrendAudit: string;
-	kommentare: string;
+/**
+ * Team-Mitglieder des Auditplans.
+ * n:1-Beziehung zu AuditPlan.
+ */
+interface AuditPlanTeamMitglied {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
+	rolle: TeamRolle;
+	auditorId: string | null; // FK -> auditors.id (optional, fuer interne)
+	externalName: string; // Name (Freitext, fuer externe oder Override)
+	externalCompany: string; // Firmenname (nur wenn istExtern = true)
+	istExtern: boolean;
+	position: number;
 }
 
-// ──────────────────────────────────────────────
-// Auditzeiten-Uebersicht
-// ──────────────────────────────────────────────
-
-interface AuditzeitenTabelle {
-	id: string; // UUID
-	auditorId: string; // Select aus Auditoren
-	auditorName: string;
-	standortId: string; // Select aus Standorten
+/**
+ * Auditzeiten-Tabelle: eine Tabelle pro Auditor+Standort-Kombination.
+ * n:1-Beziehung zu AuditPlan.
+ */
+interface AuditPlanAuditzeit {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
+	auditorId: string | null; // FK -> auditors.id (null for external auditors)
+	auditorName: string; // Denormalized for display. auditorId is the FK. If auditorId is null, this is an external auditor and auditorName is the primary identifier.
+	standortId: string; // FK -> audit_plan_standorte.id
 	standortName: string;
-	zeilen: AuditzeitZeile[];
-	gesamtStunden: number; // Auto-Summe
+	position: number;
 }
 
-interface AuditzeitZeile {
-	id: string;
+/**
+ * Einzelne Zeile in einer Auditzeiten-Tabelle.
+ * n:1-Beziehung zu AuditPlanAuditzeit.
+ */
+interface AuditPlanAuditzeitZeile {
+	id: string; // crypto.randomUUID()
+	auditzeitId: string; // FK -> audit_plan_auditzeiten.id, CASCADE DELETE
 	startzeit: string; // "HH:mm"
 	endzeit: string; // "HH:mm"
 	aktivitaet: string;
 	stunden: number; // Auto-berechnet aus Start/Ende
+	position: number;
 }
 
-// ──────────────────────────────────────────────
-// Audit-Bloecke (Kernstruktur, §24.1)
-// ──────────────────────────────────────────────
-
-interface AuditBlock {
-	id: string; // Unique Timestamp-ID (Date.now().toString())
-	zeilen: AuditBlockZeile[];
+/**
+ * Audit-Block: Container fuer Audit-Block-Zeilen.
+ * n:1-Beziehung zu AuditPlan.
+ */
+interface AuditPlanBlock {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
 	position: number; // Fuer Sortierung / Drag & Drop
 }
 
-interface AuditBlockZeile {
-	id: string; // UUID
-	blockId: string; // Referenz zum Eltern-Block
-
-	// Felder
+/**
+ * Einzelne Zeile in einem Audit-Block.
+ * n:1-Beziehung zu AuditPlanBlock.
+ */
+interface AuditPlanBlockZeile {
+	id: string; // crypto.randomUUID()
+	blockId: string; // FK -> audit_plan_blocks.id, CASCADE DELETE
 	datum: string; // ISO-Date
 	uhrzeitVon: string; // "HH:mm"
 	uhrzeitBis: string; // "HH:mm"
-	istRemote: boolean; // Remote-Checkbox
-
-	organisationseinheit: string; // Aus datalist (26+ Abteilungen)
-	normkapitel: string[]; // Searchable Multiselect
-	thema: string[]; // Searchable Multiselect + Custom
-	elementProzess: string[]; // Searchable Multiselect + Custom
+	istRemote: boolean;
+	organisationseinheit: string;
 	auditor: string;
 	gespraechspartner: string;
+	// elementProzess: see junction table AuditPlanBlockZeileElementProzess
+	manuellBearbeitetBeschreibung: boolean;
+	manuellBearbeitetZusammenfassung: boolean;
+	manuellBearbeitetThema: boolean;
+	manuellBearbeitetNormkapitel: boolean;
+	position: number;
+}
 
-	// Toggles (§22.1) -- steuern Word-Export
+/**
+ * Notizen fuer eine Audit-Block-Zeile.
+ * 1:1-Beziehung zu AuditPlanBlockZeile.
+ */
+interface AuditPlanBlockZeileNotizen {
+	id: string; // crypto.randomUUID()
+	zeileId: string; // FK -> audit_plan_block_zeilen.id, CASCADE DELETE
+	beschreibung: string; // Multi-line, Auto-Fill aus abteilungBeschreibungen
+	vorstellung: string; // Multi-line, Default-Text
+	allgemein: string; // Multi-line, Default-Text
+	notizen: string; // Multi-line
+	dokumente: string; // Multi-line
+	zusammenfassung: string; // Multi-line, Auto-Fill aus zusammenfassungBeschreibungen
+}
+
+/**
+ * Toggles fuer eine Audit-Block-Zeile (steuern Word-Export).
+ * 1:1-Beziehung zu AuditPlanBlockZeile.
+ */
+interface AuditPlanBlockZeileToggles {
+	id: string; // crypto.randomUUID()
+	zeileId: string; // FK -> audit_plan_block_zeilen.id, CASCADE DELETE
 	datumToggle: boolean; // Default: true
 	uhrzeitToggle: boolean; // Default: true
 	remoteToggle: boolean; // Default: true
-
-	// Notizen-Panel (aufklappbar)
-	notizen: AuditBlockNotizen;
-
-	// Flag: Manuelle Bearbeitung (Auto-Fill-Schutz)
-	manuellBearbeitet: {
-		beschreibung: boolean;
-		zusammenfassung: boolean;
-		thema: boolean;
-		normkapitel: boolean;
-	};
 }
 
-interface AuditBlockNotizen {
-	beschreibung: string; // 5 Zeilen, Auto-Fill aus abteilungBeschreibungen
-	vorstellung: string; // 2 Zeilen, Default-Text
-	allgemein: string; // 2 Zeilen, Default-Text
-	notizen: string; // 3 Zeilen
-	dokumente: string; // 2 Zeilen
-	zusammenfassung: string; // 6 Zeilen, Auto-Fill aus zusammenfassungBeschreibungen
+/**
+ * Junction-Tabelle: Normkapitel einer Audit-Block-Zeile.
+ * n:n-Beziehung zwischen AuditPlanBlockZeile und Normkapiteln.
+ */
+interface AuditPlanBlockZeileNormkapitel {
+	id: string; // crypto.randomUUID()
+	zeileId: string; // FK -> audit_plan_block_zeilen.id, CASCADE DELETE
+	normkapitelId: string; // Referenz auf Normkapitel-Eintrag
+	position: number;
 }
 
-// ──────────────────────────────────────────────
-// Hinweise und Verteiler
-// ──────────────────────────────────────────────
+/**
+ * Junction-Tabelle: Themen einer Audit-Block-Zeile.
+ * n:n-Beziehung zwischen AuditPlanBlockZeile und Themen.
+ */
+interface AuditPlanBlockZeileThemen {
+	id: string; // crypto.randomUUID()
+	zeileId: string; // FK -> audit_plan_block_zeilen.id, CASCADE DELETE
+	themaId: string | null; // Referenz auf vordefiniertes Thema (null bei Custom)
+	customText: string; // Freitext (nur wenn themaId = null)
+	position: number;
+}
 
-interface HinweiseVerteiler {
-	infoText: string; // Readonly Hinweisbox
-	verteiler: string; // Textarea
-	verteilungOptionen: {
-		auditteam: boolean;
-		geschaeftsfuehrung: boolean;
-		fachabteilungen: boolean;
-		extern: boolean;
-	};
+/**
+ * Junction-Tabelle: Element/Prozess einer Audit-Block-Zeile.
+ * n:1-Beziehung zu AuditPlanBlockZeile (Multiselect + Custom).
+ */
+interface AuditPlanBlockZeileElementProzess {
+	id: string; // crypto.randomUUID()
+	zeileId: string; // FK -> audit_plan_block_zeilen.id, CASCADE DELETE
+	value: string; // Predefined or custom text
+	isCustom: boolean; // true if user-defined
+	position: number;
+}
+
+/**
+ * Zertifikatsnummern des Auditplans.
+ * n:1-Beziehung zu AuditPlan.
+ */
+interface AuditPlanZnNummer {
+	id: string; // crypto.randomUUID()
+	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
+	value: string; // Die Zertifikatsnummer
+	position: number;
 }
 
 // ──────────────────────────────────────────────
@@ -349,7 +374,7 @@ type AbteilungThemen = Record<string, string[]>;
 
 ### Gesamtlayout
 
-Die Seite ist ein langes, scrollbares Formular mit einer fixierten Aktionsleiste am oberen Rand. Die einzelnen Sektionen sind vertikal untereinander angeordnet, jeweils in einer `Card` (Bits-UI) mit Titel.
+Die Seite ist ein langes, scrollbares Formular mit einer fixierten Aktionsleiste am oberen Rand. Die einzelnen Sektionen sind vertikal untereinander angeordnet, jeweils in einer ShadCN Card mit Titel.
 
 ### Aktionsleiste (fixiert, oben)
 
@@ -366,14 +391,14 @@ Horizontale Leiste mit 5 Buttons:
 ### Sektion: ZN-Verwaltung (Zertifikatsnummern)
 
 - **Eingabefeld** + **Hinzufuegen-Button**: Textfeld fuer neue ZN, Button mit `+`-Icon.
-- **Anzeige**: Pill-Badges (Bits-UI `Badge`) nebeneinander.
+- **Anzeige**: Pill-Badges (ShadCN Badge) nebeneinander.
   - Jede Pill zeigt die ZN und hat einen `x`-Button zum Loeschen.
 - Daten gespeichert in `zertifikatsnummern: string[]`.
 
 ### Sektion: Logo-Upload
 
-- **Datei-Input**: `<input type="file" accept="image/*">`, gestylt als Button.
-- **Vorschau**: Bild in einem Container mit gestricheltem Rahmen (`border-dashed`), Hoehe `150px`.
+- **File upload**: Akzeptiert Bildformate, gestylt als Button.
+- **Vorschau**: Bild in einem image preview container mit dashed border in brand color.
 - **Entfernen-Button**: Unter der Vorschau, nur sichtbar wenn Logo vorhanden.
 - Logo wird als Base64-String gespeichert.
 
@@ -381,7 +406,7 @@ Horizontale Leiste mit 5 Buttons:
 
 #### Auftraggeber
 
-- `<textarea>` mit 4 Zeilen Hoehe.
+- Multi-line text area.
 
 #### Standorte (dynamische Liste)
 
@@ -391,7 +416,7 @@ Horizontale Leiste mit 5 Buttons:
 
 #### Geltungsbereich
 
-- `<textarea>`, frei skalierbar.
+- Multi-line text area, frei skalierbar.
 
 #### Normgrundlage / Auditkriterien (Custom Multiselect)
 
@@ -414,9 +439,9 @@ Horizontale Leiste mit 5 Buttons:
 
 #### Auditziel
 
-- `<textarea>` (readonly, grauer Hintergrund).
+- Multi-line text area (readonly, muted background).
 - Standardtext (vordefiniert, ca. 3-4 Saetze zum Auditzweck).
-- **Checkbox**: _"Auditziel bearbeiten"_ -- schaltet Textarea auf editierbar um (weisser Hintergrund).
+- **Checkbox**: _"Auditziel bearbeiten"_ -- schaltet text area auf editierbar um (default background).
 
 #### Auditsprache (Multiselect)
 
@@ -428,12 +453,12 @@ Horizontale Leiste mit 5 Buttons:
 
 4 Rollengruppen, jeweils als Untersektion:
 
-| Rolle       | Felder                                                   |
-| ----------- | -------------------------------------------------------- |
-| Auditleiter | Name (Textarea), Extern (Checkbox), Firmenname (bedingt) |
-| Auditoren   | Name (Textarea), Extern (Checkbox), Firmenname (bedingt) |
-| Trainees    | Name (Textarea), Extern (Checkbox), Firmenname (bedingt) |
-| Experten    | Name (Textarea), Extern (Checkbox), Firmenname (bedingt) |
+| Rolle       | Felder                                                    |
+| ----------- | --------------------------------------------------------- |
+| Auditleiter | Name (text area), Extern (Checkbox), Firmenname (bedingt) |
+| Auditoren   | Name (text area), Extern (Checkbox), Firmenname (bedingt) |
+| Trainees    | Name (text area), Extern (Checkbox), Firmenname (bedingt) |
+| Experten    | Name (text area), Extern (Checkbox), Firmenname (bedingt) |
 
 - **Firmenname-Feld**: Nur sichtbar, wenn `istExtern = true`.
 - Jede Rolle kann mehrere Eintraege haben (dynamische Liste mit Hinzufuegen/Entfernen).
@@ -465,7 +490,7 @@ Horizontale Leiste mit 5 Buttons:
 
 #### IKT-Testdatum
 
-- `<input type="date">`.
+- Date picker.
 
 #### Test letztes Audit
 
@@ -480,14 +505,14 @@ Horizontale Leiste mit 5 Buttons:
 - **Dynamische Liste** mit automatischer Nummerierung.
 - Jede Revision:
   - **Nummer** (readonly): "Rev. 1.0", "Rev. 2.0", "Rev. 3.0", ...
-  - **Datum**: `<input type="date">`.
-  - **Beschreibung**: `<textarea>`.
+  - **Datum**: Date picker.
+  - **Beschreibung**: Multi-line text area.
   - **Loeschen-Button**: Papierkorb-Icon.
 - **Hinzufuegen-Button**: _"+ Revision hinzufuegen"_.
 - Zusaetzliche Felder:
   - **Ort/Datum**: Textfeld.
-  - **Aenderung waehrend Audit**: Textarea.
-  - **Kommentare**: Textarea.
+  - **Aenderung waehrend Audit**: Multi-line text area.
+  - **Kommentare**: Multi-line text area.
 
 ### Sektion: Auditzeiten-Uebersicht
 
@@ -510,7 +535,7 @@ Dies ist der komplexeste Teil des Auditplan-Generators.
 
 #### Block-Verwaltung
 
-- **Block hinzufuegen-Button**: _"+ Audit-Block hinzufuegen"_ -- ruft `addAuditBlock()` auf.
+- **Block hinzufuegen-Button**: _"+ Audit-Block hinzufuegen"_ -- erstellt einen neuen Block.
 - Jeder Block hat eine eindeutige Timestamp-ID (`Date.now().toString()`).
 - Bloecke werden in einem Array gespeichert und nach `position` sortiert.
 
@@ -532,18 +557,18 @@ Jeder Block kann mehrere Zeilen enthalten. Jede Zeile hat folgende Felder:
 
 **Hauptfelder:**
 
-| Feld                 | Typ                        | Beschreibung                                    |
-| -------------------- | -------------------------- | ----------------------------------------------- |
-| Datum                | `<input date>`             | Toggle-gesteuert (§22.1)                        |
-| Uhrzeit Von          | `<input time>`             | Toggle-gesteuert (§22.1)                        |
-| Uhrzeit Bis          | `<input time>`             | Toggle-gesteuert (§22.1)                        |
-| Remote               | Checkbox                   | Toggle-gesteuert (§22.1)                        |
-| Organisationseinheit | `<input>` mit `<datalist>` | 26+ vordefinierte Abteilungen                   |
-| Normkapitel          | Searchable Multiselect     | Gefiltert nach Organisationseinheit             |
-| Thema                | Searchable Multiselect     | + Custom-Eintraege, gefiltert nach Org.-einheit |
-| Element/Prozess      | Searchable Multiselect     | + Custom-Eintraege                              |
-| Auditor              | Textfeld                   |                                                 |
-| Gespraechspartner    | Textfeld                   |                                                 |
+| Feld                 | Typ                     | Beschreibung                                    |
+| -------------------- | ----------------------- | ----------------------------------------------- |
+| Datum                | Date picker             | Toggle-gesteuert (§22.1)                        |
+| Uhrzeit Von          | Time picker             | Toggle-gesteuert (§22.1)                        |
+| Uhrzeit Bis          | Time picker             | Toggle-gesteuert (§22.1)                        |
+| Remote               | Checkbox                | Toggle-gesteuert (§22.1)                        |
+| Organisationseinheit | Text input mit datalist | 26+ vordefinierte Abteilungen                   |
+| Normkapitel          | Searchable Multiselect  | Gefiltert nach Organisationseinheit             |
+| Thema                | Searchable Multiselect  | + Custom-Eintraege, gefiltert nach Org.-einheit |
+| Element/Prozess      | Searchable Multiselect  | + Custom-Eintraege                              |
+| Auditor              | Textfeld                |                                                 |
+| Gespraechspartner    | Textfeld                |                                                 |
 
 **Toggles (§22.1):**
 
@@ -553,20 +578,20 @@ Drei Toggles pro Zeile, die bestimmen, ob das jeweilige Feld im Word-Export ersc
 - **Uhrzeit-Toggle**: Wenn aus, werden Uhrzeit Von/Bis im Export nicht angezeigt.
 - **Remote-Toggle**: Wenn aus, wird die Remote-Kennzeichnung im Export nicht angezeigt.
 
-Die Toggles sind als kleine Switch-Elemente (Bits-UI `Switch`) neben den jeweiligen Feldern positioniert.
+Die Toggles sind als ShadCN Switch Komponenten neben den jeweiligen Feldern positioniert.
 
 **Notizen-Panel (aufklappbar):**
 
-Unter jeder Zeile befindet sich ein aufklappbares Panel (Bits-UI `Collapsible`) mit folgenden Textfeldern:
+Unter jeder Zeile befindet sich ein aufklappbares Panel (ShadCN Collapsible) mit folgenden Textfeldern:
 
-| Feld            | Zeilen | Auto-Fill                                           |
-| --------------- | ------ | --------------------------------------------------- |
-| Beschreibung    | 5      | Aus `abteilungBeschreibungen[organisationseinheit]` |
-| Vorstellung     | 2      | Default-Text (vordefiniert)                         |
-| Allgemein       | 2      | Default-Text (vordefiniert)                         |
-| Notizen         | 3      | Leer                                                |
-| Dokumente       | 2      | Leer                                                |
-| Zusammenfassung | 6      | Aus `zusammenfassungBeschreibungen[org.einheit]`    |
+| Feld            | Auto-Fill                                           |
+| --------------- | --------------------------------------------------- |
+| Beschreibung    | Aus `abteilungBeschreibungen[organisationseinheit]` |
+| Vorstellung     | Default-Text (vordefiniert)                         |
+| Allgemein       | Default-Text (vordefiniert)                         |
+| Notizen         | Leer                                                |
+| Dokumente       | Leer                                                |
+| Zusammenfassung | Aus `zusammenfassungBeschreibungen[org.einheit]`    |
 
 #### Auto-Population (§23.1)
 
@@ -583,8 +608,8 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 
 ### Sektion: Hinweise und Verteiler
 
-- **Info-Box**: Blauer Hintergrund, readonly Text mit Hinweisen zum Auditplan.
-- **Verteiler**: `<textarea>` fuer Freitext-Verteilerliste.
+- **Info-Box**: Informational variant background, readonly Text mit Hinweisen zum Auditplan.
+- **Verteiler**: Multi-line text area fuer Freitext-Verteilerliste.
 - **4 Verteilungs-Checkboxen**:
   - Auditteam
   - Geschaeftsfuehrung
@@ -641,7 +666,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 ### Logo hochladen
 
 1. Klick auf Upload-Button oeffnet Datei-Dialog.
-2. Bild wird per `FileReader.readAsDataURL()` als Base64 gelesen.
+2. Bild wird als Base64 gelesen.
 3. Vorschau wird im Container angezeigt.
 
 ### Logo entfernen
@@ -671,7 +696,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 ### Audit-Block hinzufuegen (§24.1)
 
 1. Klick auf "Audit-Block hinzufuegen".
-2. `addAuditBlock()` wird aufgerufen:
+2. Ein neuer Block wird erstellt:
    - Neue ID: `Date.now().toString()`.
    - Position: letzter Index + 1.
    - Eine leere Zeile wird initial hinzugefuegt.
@@ -697,7 +722,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 ### Audit-Block verschieben (§24.3)
 
 1. **Nach oben/unten**: `position`-Werte werden getauscht.
-2. **Drag & Drop**: HTML5 Drag-and-Drop-API. `position`-Werte werden nach dem Drop neu berechnet.
+2. **Drag & Drop**: Positionen werden nach dem Drop neu berechnet.
 
 ### Auto-Population bei Organisationseinheit-Aenderung (§23.1)
 
@@ -731,7 +756,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 | ------------------- | ------------------------------------------------------------------ |
 | SvelteKit           | Routing (`/plan-generator`), Server-Funktionen                     |
 | Svelte 5            | Reaktive Zustandsverwaltung (`$state`, `$derived`, `$effect`)      |
-| Bits-UI             | Card, Button, Select, Checkbox, Switch, Badge, Collapsible, Dialog |
+| ShadCN-svelte       | Card, Button, Select, Checkbox, Switch, Badge, Collapsible, Dialog |
 | Tailwind CSS 4      | Formularlayout, responsive Design                                  |
 | Drizzle ORM         | CRUD fuer `saved_plans`                                            |
 | Turso               | SQLite-Datenbank (libsql)                                          |

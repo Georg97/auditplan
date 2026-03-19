@@ -14,121 +14,86 @@
 type BewertungsTyp = 'major_nonconformity' | 'minor_nonconformity' | 'observation' | 'improvement_potential' | 'positive_finding';
 
 // ══════════════════════════════════════════════
-// DRIZZLE-SCHEMA (Turso / SQLite)
+// DRIZZLE-SCHEMA (Turso / SQLite) — normalisiert
 // ══════════════════════════════════════════════
 
 /**
- * Haupttabelle: saved_notes
- * Speichert die gesamten Auditnotizen als JSON-Blob.
+ * Haupttabelle: audit_notes
+ * Top-level entity — Header-Felder als eigene Spalten, kein JSON-Blob.
+ * IDs: crypto.randomUUID()
+ * organizationId sitzt nur hier; alle Kind-Tabellen erben ueber FK.
  */
-interface SavedNotesRow {
-	id: string; // UUID
+interface AuditNotes {
+	id: string; // PK, crypto.randomUUID()
 	organizationId: string; // FK -> organization.id
-	name: string; // Name fuer Anzeige
-	daten: string; // JSON-String von NotizenDaten
-	createdAt: string;
-	updatedAt: string;
-}
+	name: string; // Anzeigename
 
-// ══════════════════════════════════════════════
-// CLIENT-DATENMODELL (vollstaendig)
-// ══════════════════════════════════════════════
-
-/**
- * Gesamtstruktur der Auditnotizen.
- * Wird als JSON in saved_notes.daten gespeichert.
- */
-interface NotizenDaten {
-	// Header-Daten
-	header: NotizenHeader;
+	// Header-Felder (ehem. NotizenHeader)
+	firma: string;
+	standards: string;
+	zertifikat: string;
+	auditart: string;
+	datumVon: string; // ISO-Date
+	datumBis: string; // ISO-Date
+	standort: string;
+	auditor: string;
+	seiteVon: string;
+	seiteBis: string;
 
 	// Logo
 	logoBase64: string | null;
-	logoDateiname: string | null;
 
-	// Notizen-Bloecke
-	notizenBloecke: NotizenBlock[];
+	// Timestamps & Audit
+	createdAt: string;
+	updatedAt: string;
+	createdBy: string; // FK -> user.id
+	updatedBy: string; // FK -> user.id
 }
 
-// ──────────────────────────────────────────────
-// Header-Daten
-// ──────────────────────────────────────────────
-
-interface NotizenHeader {
-	// Zeile 1
-	firmaAuftraggeber: string;
-	standards: string;
-
-	// Zeile 2
-	zertifikat: string;
-	auditart: string;
-
-	// Zeile 3
-	datumVon: string; // ISO-Date
-	datumBis: string; // ISO-Date
-	standorte: string;
-
-	// Zeile 4
-	auditor: string;
-	seiteVon: string; // Freitext (z.B. "1")
-	seiteBis: string; // Freitext (z.B. "15")
-}
-
-// ──────────────────────────────────────────────
-// Notizen-Bloecke (§24.2)
-// ──────────────────────────────────────────────
-
+/**
+ * notizen_block
+ * Ein Notizen-Block innerhalb einer AuditNotes-Instanz.
+ * FK: auditNotesId -> audit_notes.id (CASCADE DELETE)
+ */
 interface NotizenBlock {
-	id: string; // UUID
+	id: string; // PK, crypto.randomUUID()
+	auditNotesId: string; // FK -> audit_notes.id
 	position: number; // Sortierung / Drag & Drop
 
-	// Felder aus §13 (analog zu Audit-Bloecken)
+	// Block-Felder
 	datum: string; // ISO-Date
 	uhrzeitVon: string; // "HH:mm"
 	uhrzeitBis: string; // "HH:mm"
 	istRemote: boolean;
 
 	organisationseinheit: string;
-	normkapitel: string[]; // Searchable Multiselect
-	thema: string[]; // Searchable Multiselect + Custom
-	elementProzess: string[]; // Searchable Multiselect + Custom
 	auditor: string;
 	gespraechspartner: string;
 
 	// Notizen-Felder
-	beschreibung: string; // Textarea, Auto-Fill
-	vorstellung: string; // Textarea, Default-Text
-	allgemein: string; // Textarea, Default-Text
-	notizen: string; // Textarea
-	dokumente: string; // Textarea
-	zusammenfassung: string; // Textarea, Auto-Fill
-
-	// 6 Toggles (§22.2)
-	toggles: NotizenBlockToggles;
-
-	// QHSE-Dokumente (§25)
-	qhseDokumente: QhseDokument[];
-
-	// Bewertungsfelder (§26)
-	bewertungen: Bewertung[];
-
-	// Export-Checkboxen
-	exportOptionen: NotizenExportOptionen;
+	beschreibung: string; // Multi-line, Auto-Fill
+	vorstellung: string; // Multi-line, Default-Text
+	allgemein: string; // Multi-line, Default-Text
+	notizen: string; // Multi-line
+	dokumente: string; // Multi-line
+	zusammenfassung: string; // Multi-line, Auto-Fill
 
 	// Auto-Fill-Schutz
-	manuellBearbeitet: {
-		beschreibung: boolean;
-		zusammenfassung: boolean;
-		thema: boolean;
-		normkapitel: boolean;
-	};
+	manuellBeschreibung: boolean;
+	manuellZusammenfassung: boolean;
+	manuellThema: boolean;
+	manuellNormkapitel: boolean;
 }
 
-// ──────────────────────────────────────────────
-// Toggles (§22.2)
-// ──────────────────────────────────────────────
-
+/**
+ * notizen_block_toggles
+ * 1:1 mit NotizenBlock — Toggle-Zustaende fuer Export-Sichtbarkeit.
+ * FK: notizenBlockId -> notizen_block.id (CASCADE DELETE)
+ */
 interface NotizenBlockToggles {
+	id: string; // PK, crypto.randomUUID()
+	notizenBlockId: string; // FK -> notizen_block.id (UNIQUE)
+
 	datum: boolean; // Default: true
 	uhrzeit: boolean; // Default: true
 	remote: boolean; // Default: true
@@ -137,48 +102,61 @@ interface NotizenBlockToggles {
 	notizenAnzeigen: boolean; // Default: true
 }
 
-// ──────────────────────────────────────────────
-// QHSE-Dokumente (§25)
-// ──────────────────────────────────────────────
-
 /**
- * Ein QHSE-Dokument innerhalb eines Notizen-Blocks.
- * Im Word-Export: Jedes Dokument als eigene Tabellenzeile
- * Format: "Name (Datum) - Notizen"
+ * notizen_block_qhse_dokument
+ * QHSE-Dokumente innerhalb eines Blocks (§25).
+ * FK: notizenBlockId -> notizen_block.id (CASCADE DELETE)
+ * Word-Export-Format: "Name (Datum) - Notizen"
  */
-interface QhseDokument {
-	id: string; // UUID
+interface NotizenBlockQhseDokument {
+	id: string; // PK, crypto.randomUUID()
+	notizenBlockId: string; // FK -> notizen_block.id
+	position: number; // Sortierung
+
 	name: string; // Dokumentname
 	datum: string; // ISO-Date
 	notizen: string; // Freitext
 }
 
-// ──────────────────────────────────────────────
-// Bewertungsfelder (§26)
-// ──────────────────────────────────────────────
-
 /**
- * Ein Bewertungseintrag innerhalb eines Notizen-Blocks.
- * Im Word-Export:
- *   - Typ: fett + gelb hinterlegt
- *   - Kapitel: in Klammern
- *   - Beschreibung: nach Doppelpunkt
+ * notizen_block_bewertung
+ * Bewertungseintrag innerhalb eines Blocks (§26).
+ * FK: notizenBlockId -> notizen_block.id (CASCADE DELETE)
+ * Word-Export: Typ fett+gelb, Kapitel in Klammern, Beschreibung nach Doppelpunkt.
  */
-interface Bewertung {
-	id: string; // UUID
+interface NotizenBlockBewertung {
+	id: string; // PK, crypto.randomUUID()
+	notizenBlockId: string; // FK -> notizen_block.id
+	position: number; // Sortierung
+
 	typ: BewertungsTyp;
-	kapitel: string[]; // Multiselect: ISO-Kapitel
 	beschreibung: string; // Freitext
 }
 
-// ──────────────────────────────────────────────
-// Export-Optionen pro Block
-// ──────────────────────────────────────────────
+/**
+ * notizen_block_bewertung_kapitel
+ * Junction: Bewertung <-> Normkapitel (m:n).
+ * FK: bewertungId -> notizen_block_bewertung.id (CASCADE DELETE)
+ * kapitelId referenziert die ID eines Normkapitels aus der Wissensdatenbank.
+ */
+interface NotizenBlockBewertungKapitel {
+	id: string; // PK, crypto.randomUUID()
+	bewertungId: string; // FK -> notizen_block_bewertung.id
+	kapitelId: string; // FK -> Normkapitel (Wissensdatenbank)
+	position: number; // Sortierung
+}
 
-interface NotizenExportOptionen {
-	dokumenteAnzeigen: boolean; // QHSE-Dokumente im Export anzeigen
-	bewertungAnzeigen: boolean; // Bewertungen im Export anzeigen
-	notizenAnzeigen: boolean; // Notizen im Export anzeigen
+/**
+ * notizen_block_normkapitel
+ * Junction: NotizenBlock <-> Normkapitel (m:n, Searchable Multiselect).
+ * FK: notizenBlockId -> notizen_block.id (CASCADE DELETE)
+ * normkapitelId referenziert die ID eines Normkapitels aus der Wissensdatenbank.
+ */
+interface NotizenBlockNormkapitel {
+	id: string; // PK, crypto.randomUUID()
+	notizenBlockId: string; // FK -> notizen_block.id
+	normkapitelId: string; // FK -> Normkapitel (Wissensdatenbank)
+	position: number; // Sortierung
 }
 
 // ──────────────────────────────────────────────
@@ -225,8 +203,8 @@ Das Header-Layout ist zweispaltig: links die Formularfelder, rechts der Logo-Upl
 
 #### Rechte Spalte: Logo-Upload
 
-- **Datei-Input**: `<input type="file" accept="image/*">`, gestylt als Button _"Logo hochladen"_.
-- **Vorschau**: Container mit gestricheltem Rahmen (`border-dashed`), Hoehe `150px`, max. Breite `250px`.
+- **File upload**: Akzeptiert Bildformate, gestylt als Button _"Logo hochladen"_.
+- **Vorschau**: Image preview container mit dashed border in brand color.
 - **Entfernen-Button**: Unter der Vorschau, nur sichtbar wenn Logo vorhanden.
 - Logo wird als Base64-String gespeichert.
 
@@ -234,7 +212,7 @@ Das Header-Layout ist zweispaltig: links die Formularfelder, rechts der Logo-Upl
 
 #### Block-Verwaltung
 
-- **Block hinzufuegen-Button**: _"+ Notizen-Block hinzufuegen"_ -- ruft `addNotesBlock()` auf.
+- **Block hinzufuegen-Button**: _"+ Notizen-Block hinzufuegen"_ -- erstellt einen neuen Block.
 - Bloecke werden in einem Array gespeichert und nach `position` sortiert.
 
 #### Block-Kopfzeile
@@ -249,33 +227,33 @@ Jeder Block hat eine Kopfzeile mit:
 
 Identisch zu den Audit-Block-Zeilen aus Spec 09:
 
-| Feld                 | Typ                        | Beschreibung                          |
-| -------------------- | -------------------------- | ------------------------------------- |
-| Datum                | `<input date>`             | Toggle-gesteuert                      |
-| Uhrzeit Von          | `<input time>`             | Toggle-gesteuert                      |
-| Uhrzeit Bis          | `<input time>`             | Toggle-gesteuert                      |
-| Remote               | Checkbox                   | Toggle-gesteuert                      |
-| Organisationseinheit | `<input>` mit `<datalist>` | 26+ vordefinierte Abteilungen         |
-| Normkapitel          | Searchable Multiselect     | Gefiltert nach Organisationseinheit   |
-| Thema                | Searchable Multiselect     | + Custom, gefiltert nach Org.-einheit |
-| Element/Prozess      | Searchable Multiselect     | + Custom                              |
-| Auditor              | Textfeld                   |                                       |
-| Gespraechspartner    | Textfeld                   |                                       |
+| Feld                 | Typ                     | Beschreibung                          |
+| -------------------- | ----------------------- | ------------------------------------- |
+| Datum                | Date picker             | Toggle-gesteuert                      |
+| Uhrzeit Von          | Time picker             | Toggle-gesteuert                      |
+| Uhrzeit Bis          | Time picker             | Toggle-gesteuert                      |
+| Remote               | Checkbox                | Toggle-gesteuert                      |
+| Organisationseinheit | Text input mit datalist | 26+ vordefinierte Abteilungen         |
+| Normkapitel          | Searchable Multiselect  | Gefiltert nach Organisationseinheit   |
+| Thema                | Searchable Multiselect  | + Custom, gefiltert nach Org.-einheit |
+| Element/Prozess      | Searchable Multiselect  | + Custom                              |
+| Auditor              | Textfeld                |                                       |
+| Gespraechspartner    | Textfeld                |                                       |
 
 #### Notizen-Felder (aufklappbar)
 
-| Feld            | Zeilen | Auto-Fill                                           |
-| --------------- | ------ | --------------------------------------------------- |
-| Beschreibung    | 5      | Aus `abteilungBeschreibungen[organisationseinheit]` |
-| Vorstellung     | 2      | Default-Text                                        |
-| Allgemein       | 2      | Default-Text                                        |
-| Notizen         | 3      | Leer                                                |
-| Dokumente       | 2      | Leer                                                |
-| Zusammenfassung | 6      | Aus `zusammenfassungBeschreibungen[org.einheit]`    |
+| Feld            | Auto-Fill                                           |
+| --------------- | --------------------------------------------------- |
+| Beschreibung    | Aus `abteilungBeschreibungen[organisationseinheit]` |
+| Vorstellung     | Default-Text                                        |
+| Allgemein       | Default-Text                                        |
+| Notizen         | Leer                                                |
+| Dokumente       | Leer                                                |
+| Zusammenfassung | Aus `zusammenfassungBeschreibungen[org.einheit]`    |
 
 #### 6 Toggles (§22.2)
 
-Pro Block 6 Switch-Elemente (Bits-UI `Switch`):
+Pro Block 6 ShadCN Switch Komponenten:
 
 | Toggle             | Default | Wirkung                                             |
 | ------------------ | ------- | --------------------------------------------------- |
@@ -296,12 +274,12 @@ Unterhalb der Notizen-Felder, innerhalb jedes Blocks:
 - **Hinzufuegen-Button**: _"+ Dokument hinzufuegen"_
 - **Dokumenten-Liste**: Jedes Dokument als Zeile mit:
 
-  | Feld     | Typ            | Beschreibung           |
-  | -------- | -------------- | ---------------------- |
-  | Name     | `<input text>` | Dokumentname           |
-  | Datum    | `<input date>` | Dokumentdatum          |
-  | Notizen  | `<input text>` | Freitext-Anmerkungen   |
-  | Aktionen | Buttons        | Loeschen, Hoch, Runter |
+  | Feld     | Typ         | Beschreibung           |
+  | -------- | ----------- | ---------------------- |
+  | Name     | Text input  | Dokumentname           |
+  | Datum    | Date picker | Dokumentdatum          |
+  | Notizen  | Text input  | Freitext-Anmerkungen   |
+  | Aktionen | Buttons     | Loeschen, Hoch, Runter |
 
 - **Loeschen**: Mit Bestaetigung per AlertDialog.
 - **Verschieben**: Nach oben/unten Buttons.
@@ -322,20 +300,20 @@ Unterhalb der QHSE-Dokumente, innerhalb jedes Blocks:
 
   | Feld         | Typ                    | Beschreibung                              |
   | ------------ | ---------------------- | ----------------------------------------- |
-  | Typ          | `<Select>` (Bits-UI)   | 5 Bewertungstypen (siehe `BewertungsTyp`) |
+  | Typ          | ShadCN Select          | 5 Bewertungstypen (siehe `BewertungsTyp`) |
   | Kapitel      | Searchable Multiselect | ISO-Kapitel                               |
-  | Beschreibung | `<textarea>`           | Freitext                                  |
+  | Beschreibung | Multi-line text area   | Freitext                                  |
   | Aktionen     | Buttons                | Loeschen                                  |
 
 **Bewertungstypen im Detail:**
 
-| Typ                   | Farbe im UI     | Word-Format            |
-| --------------------- | --------------- | ---------------------- |
-| major_nonconformity   | `bg-red-100`    | Fett + Gelb hinterlegt |
-| minor_nonconformity   | `bg-orange-100` | Fett + Gelb hinterlegt |
-| observation           | `bg-yellow-100` | Fett + Gelb hinterlegt |
-| improvement_potential | `bg-blue-100`   | Fett + Gelb hinterlegt |
-| positive_finding      | `bg-green-100`  | Fett + Gelb hinterlegt |
+| Typ                   | Farbe im UI           | Word-Format            |
+| --------------------- | --------------------- | ---------------------- |
+| major_nonconformity   | Destructive variant   | Fett + Gelb hinterlegt |
+| minor_nonconformity   | Warning variant       | Fett + Gelb hinterlegt |
+| observation           | Caution variant       | Fett + Gelb hinterlegt |
+| improvement_potential | Informational variant | Fett + Gelb hinterlegt |
+| positive_finding      | Success variant       | Fett + Gelb hinterlegt |
 
 **Word-Export-Format**: Pro Bewertung eine Zeile:
 
@@ -389,7 +367,7 @@ Diese Checkboxen sind gekoppelt an die Toggles `dokumenteAnzeigen`, `bewertungAn
 ### Notizen-Block hinzufuegen (§24.2)
 
 1. Klick auf _"+ Notizen-Block hinzufuegen"_.
-2. `addNotesBlock()` wird aufgerufen:
+2. Ein neuer Block wird erstellt:
    - Neue UUID.
    - Position: letzter Index + 1.
    - Alle Felder auf Initialwerte (leere Strings, Default-Toggles auf `true`).
@@ -418,7 +396,7 @@ Diese Checkboxen sind gekoppelt an die Toggles `dokumenteAnzeigen`, `bewertungAn
 ### Notizen-Block verschieben (§24.3)
 
 1. **Nach oben/unten**: `position`-Werte werden getauscht. Alle Toggle-Zustaende, QHSE-Dokumente und Bewertungen bleiben erhalten.
-2. **Drag & Drop**: HTML5 Drag-and-Drop-API. Positionen werden nach dem Drop neu berechnet. Alle Daten bleiben intakt.
+2. **Drag & Drop**: Positionen werden nach dem Drop neu berechnet. Alle Daten bleiben intakt.
 
 ### QHSE-Dokument hinzufuegen (§25)
 
@@ -493,7 +471,7 @@ Die 6 Toggles pro Block werden in folgenden Situationen vollstaendig erhalten:
 | -------------- | ------------------------------------------------------------------ |
 | SvelteKit      | Routing (`/notes-generator`), Server-Funktionen                    |
 | Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`, `$effect`)      |
-| Bits-UI        | Card, Button, Select, Checkbox, Switch, Badge, Collapsible, Dialog |
+| ShadCN-svelte  | Card, Button, Select, Checkbox, Switch, Badge, Collapsible, Dialog |
 | Tailwind CSS 4 | Formularlayout, 2-Spalten-Header, responsive Design                |
 | Drizzle ORM    | CRUD fuer `saved_notes`                                            |
 | Turso          | SQLite-Datenbank (libsql)                                          |

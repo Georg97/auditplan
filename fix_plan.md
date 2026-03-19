@@ -15,7 +15,7 @@
 
 ## Phase 1: SETUP
 
-- [ ] S01 [SETUP] ShadCN-Komponenten installieren — Via CLI installieren (NICHT manuell erstellen). WICHTIG: --no-git Flag verwenden! `bunx shadcn-svelte@next add dialog select checkbox radio-group textarea popover command table alert-dialog sheet progress scroll-area dropdown-menu --no-git` — Specs: 01-architektur
+- [ ] S01 [SETUP] ShadCN-Komponenten installieren — Via CLI installieren (NICHT manuell erstellen). WICHTIG: --no-git Flag verwenden! `bunx shadcn-svelte@next add sidebar dialog select checkbox radio-group textarea popover command table alert-dialog sheet progress scroll-area dropdown-menu --no-git` — Specs: 01-architektur
 - [ ] S03 [SETUP] TanStack Table + DataTable-Wrapper — Reusable DataTable.svelte Komponente in src/lib/components/ erstellen, die @tanstack/svelte-table mit ShadCN table-Styling kombiniert — Specs: 01-architektur
 - [ ] S04 [SETUP] i18n-System aufsetzen — i18next installieren (bereits vorhanden), I18nRune Klasse in src/lib/i18n/i18n.svelte.ts erstellen, static/locales/de.json mit initialen Schlüsseln für Navigation + gemeinsame Labels, 9 weitere Locale-Stubs (en/fr/es/it/nl/pt/pl/ru/tr.json), i18n-Context in (app)/+layout.svelte via setContext() — Specs: 01-architektur
 - [ ] S05 [SETUP] Datenbankschema erstellen — Drizzle-Tabellen für Auditoren, Audits, Kalendereinträge, Maßnahmen, Auditpläne, Auditnotizen, Auditfragen, Einstellungen in src/db/schema.ts. JEDE Fachdaten-Tabelle MUSS organizationId-Spalte haben (Org-basierte Mandantenfähigkeit). better-auth Organization Plugin einrichten in src/lib/auth.ts. Nach Schema-Änderung `make db-push` ausführen! — Specs: 01-architektur, 14-einstellungen-persistenz
@@ -32,10 +32,10 @@
 
 ## Phase 2: Header & Navigation
 
-- [ ] H01 [IFACE] Header + Navigationsleiste — Komponenten-Props, Typen, Event-Signatures in src/lib/components/Header.svelte und Nav.svelte — Specs: 02-layout-header-nav
-- [ ] H02 [TEST] Header + Navigationsleiste — Rendering-Tests, Navigation-Wechsel, Active-State — Specs: 02-layout-header-nav
-- [ ] H03 [IMPL] Header + Navigationsleiste — SVG-Header (Links: ISO-Zertifikat 280x250, Mitte: 3D-Titel, Rechts: Klemmbrett 280x250), Gradient #667eea→#764ba2, 12 Nav-Items mit Icons, Hover/Active-Styles — Specs: 02-layout-header-nav
-- [ ] H04 [WIRE] App-Shell-Integration — Header + Nav in (app)/+layout.svelte einbinden, Route-basierte aktive Navigation, Settings-Button → Modal — Specs: 02-layout-header-nav
+- [ ] H01 [IFACE] Sidebar + Layout — Komponenten-Props und Typen für AppSidebar.svelte (NavItem[], aktive Route, User-Info), Mobile-Header mit SidebarTrigger — Specs: 02-layout-header-nav
+- [ ] H02 [TEST] Sidebar Navigation — Tests für NavItem-Daten, Active-State-Logik (pathname matching), i18n-Key-Auflösung — Specs: 02-layout-header-nav
+- [ ] H03 [IMPL] Sidebar + Layout — ShadCN Sidebar-basiertes Layout: AppSidebar mit Logo (logo_dark/logo_light), 12 Nav-Items mit Lucide Icons, Sidebar-Footer (Settings + User + Theme-Toggle), Mobile-Header mit Hamburger → Sheet-Overlay, Content-Bereich mit max-w-7xl. Frontend-Design-Skill für polierte Sidebar-UI verwenden — Specs: 02-layout-header-nav
+- [ ] H04 [WIRE] App-Shell-Integration — SidebarProvider + AppSidebar + SidebarInset in (app)/+layout.svelte, Route-basierte aktive Navigation via $page.url.pathname, Settings-Button → Dialog-Stub, collapsible Sidebar auf Desktop — Specs: 02-layout-header-nav
 
 ## Phase 3: Auditorenverwaltung
 

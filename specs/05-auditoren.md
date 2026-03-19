@@ -78,15 +78,28 @@ interface AuditorValidationErrors {
 	[key: string]: string | undefined;
 }
 
+// --- Paginiertes Ergebnis ---
+
+interface PaginatedResult<T> {
+	items: T[];
+	total: number;
+	page: number;
+	pages: number;
+}
+
 // --- Remote Functions ---
 
 interface AuditorRemoteFunctions {
-	getAuditors: () => Promise<Auditor[]>;
+	// Paginierte Liste aller Auditoren (fuer initiales Laden der Grid-Ansicht)
+	getAuditors: (page: number, limit: number) => Promise<PaginatedResult<Auditor>>;
+
 	getAuditor: (id: string) => Promise<Auditor | null>;
 	createAuditor: (data: Omit<Auditor, 'id' | 'organizationId' | 'createdAt' | 'updatedAt'>) => Promise<Auditor>;
 	updateAuditor: (id: string, data: Partial<Auditor>) => Promise<Auditor>;
 	deleteAuditor: (id: string) => Promise<void>;
-	searchAuditors: (query: string) => Promise<Auditor[]>;
+
+	// Server-seitige Suche via SQL LIKE/WHERE — NICHT clientseitige Filterung
+	searchAuditors: (query: string, page: number, limit: number) => Promise<PaginatedResult<Auditor>>;
 }
 ```
 
@@ -115,48 +128,47 @@ interface AuditorRemoteFunctions {
 
 #### Suchfeld
 
-| Eigenschaft   | Wert                                             |
-| ------------- | ------------------------------------------------ |
-| Breite        | `100%`, max `500px`                              |
-| Padding       | `0.75rem 1rem 0.75rem 2.5rem`                    |
-| Border        | `2px solid #e2e8f0`                              |
-| Border-Radius | `25px` (Pill-Form)                               |
-| Icon          | Lupe links im Feld (absolut positioniert)        |
-| Placeholder   | "Suche nach Name, Firma oder Spezialisierung..." |
-| Focus-Border  | `#667eea`                                        |
+| Eigenschaft   | Wert                                                      |
+| ------------- | --------------------------------------------------------- |
+| Breite        | full width, max-w-lg                                      |
+| Padding       | standard input padding with space for icon                |
+| Border        | border color, 2px                                         |
+| Border-Radius | rounded-full (Pill-Form)                                  |
+| Icon          | Lucide `search` icon links im Feld (absolut positioniert) |
+| Placeholder   | "Suche nach Name, Firma oder Spezialisierung..."          |
+| Focus-Border  | brand color                                               |
 
-Die Suche filtert in Echtzeit (Debounce 300ms) die angezeigten Auditor-Karten. Die Filterung erfolgt clientseitig auf den bereits geladenen Daten.
+Die Suche filtert in Echtzeit (Debounce 300ms) die angezeigten Auditor-Karten. Die Suche erfolgt server-seitig via SQL LIKE/WHERE auf `name`, `company` und Qualifikationsfeldern. Ergebnisse werden paginiert zurueckgegeben.
 
 #### Auditor-Karten-Grid
 
-| Eigenschaft | Wert                                                           |
-| ----------- | -------------------------------------------------------------- |
-| Layout      | `display: grid`                                                |
-| Spalten     | `grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))` |
-| Gap         | `1.5rem`                                                       |
-| Padding     | `1.5rem`                                                       |
+| Eigenschaft | Wert                  |
+| ----------- | --------------------- |
+| Layout      | responsive card grid  |
+| Gap         | gap-6                 |
+| Padding     | standard card padding |
 
 #### Einzelne Auditor-Karte
 
-| Eigenschaft   | Wert                                                             |
-| ------------- | ---------------------------------------------------------------- |
-| Hintergrund   | Weiss                                                            |
-| Border-Radius | `12px`                                                           |
-| Box-Shadow    | `0 2px 10px rgba(0, 0, 0, 0.1)`                                  |
-| Padding       | `1.5rem`                                                         |
-| Transition    | `all 0.3s ease`                                                  |
-| Hover         | `translateY(-5px)`, `box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15)` |
+| Eigenschaft   | Wert                                  |
+| ------------- | ------------------------------------- |
+| Hintergrund   | ShadCN Card (`bg-card`)               |
+| Border-Radius | rounded-lg                            |
+| Box-Shadow    | card shadow                           |
+| Padding       | standard card padding                 |
+| Transition    | smooth transition                     |
+| Hover         | subtle hover lift, shadow intensified |
 
 Karten-Inhalt:
 
 ```
 +------------------------------------------+
-|  👤 Max Mustermann                       |
+|  [user icon] Max Mustermann              |
 |  Titel: Lead Auditor                     |
 |  ----------------------------------------|
-|  📧 max@example.com                     |
-|  📞 +49 123 456789                      |
-|  🏢 Audit GmbH                          |
+|  [mail icon] max@example.com             |
+|  [phone icon] +49 123 456789            |
+|  [building icon] Audit GmbH             |
 |  ----------------------------------------|
 |  ISO: [9001] [14001] [27001]             |
 |  Erfahrung: 12 Jahre                     |
@@ -165,22 +177,22 @@ Karten-Inhalt:
 +------------------------------------------+
 ```
 
-- **Name:** Schriftgroesse `1.2rem`, Fett, Farbe `#2d3748`
-- **Titel:** Schriftgroesse `0.9rem`, Farbe `#718096`
-- **Kontaktdaten:** Icon + Text, Schriftgroesse `0.9rem`
-- **ISO-Badges:** Kleine farbige Badges fuer jede aktivierte ISO-Norm
-  - ISO 9001: `#667eea` (Blau/Lila)
-  - ISO 14001: `#38a169` (Gruen)
-  - ISO 45001: `#dd6b20` (Orange)
-  - ISO 50001: `#3182ce` (Blau)
-  - ISO 27001: `#e53e3e` (Rot)
+- **Name:** medium heading text, bold, foreground color
+- **Titel:** small text, muted foreground
+- **Kontaktdaten:** Lucide icons (`mail`, `phone`, `building-2`) + Text, small text
+- **ISO-Badges:** use ShadCN Badge with appropriate variant for each ISO standard
+  - ISO 9001: brand/primary variant
+  - ISO 14001: success variant
+  - ISO 45001: warning variant
+  - ISO 50001: info variant
+  - ISO 27001: destructive variant
 - **Erfahrung:** "X Jahre" Anzeige
-- **Buttons:** Flexbox, `gap: 0.5rem`, am unteren Rand der Karte
+- **Buttons:** Flexbox, gap-2, am unteren Rand der Karte. "Bearbeiten" as outline button, "Loeschen" as destructive button
 
 #### Leerer Zustand
 
 - Zentrierte Anzeige: "Keine Auditoren vorhanden. Fuegen Sie Ihren ersten Auditor hinzu."
-- Button: "Auditor hinzufuegen" -> navigiert zu `/add-auditor`
+- Button: primary button "Auditor hinzufuegen" -> navigiert zu `/add-auditor`
 
 ---
 
@@ -224,24 +236,24 @@ Im Bearbeitungsmodus wird die Route mit Query-Parameter aufgerufen: `/add-audito
 
 Jeder Abschnitt hat:
 
-| Eigenschaft   | Wert                            |
-| ------------- | ------------------------------- |
-| Hintergrund   | Weiss                           |
-| Border-Radius | `12px`                          |
-| Box-Shadow    | `0 2px 10px rgba(0, 0, 0, 0.1)` |
-| Padding       | `1.5rem`                        |
-| Margin-Bottom | `1.5rem`                        |
+| Eigenschaft   | Wert                     |
+| ------------- | ------------------------ |
+| Hintergrund   | ShadCN Card (`bg-card`)  |
+| Border-Radius | rounded-lg               |
+| Box-Shadow    | card shadow              |
+| Padding       | standard card padding    |
+| Margin-Bottom | standard section spacing |
 
 Abschnitts-Titel:
 
-| Eigenschaft    | Wert                |
-| -------------- | ------------------- |
-| Schriftgroesse | `1.2rem`            |
-| Schriftstil    | Fett                |
-| Farbe          | `#2d3748`           |
-| Border-Bottom  | `2px solid #667eea` |
-| Padding-Bottom | `0.5rem`            |
-| Margin-Bottom  | `1rem`              |
+| Eigenschaft    | Wert                    |
+| -------------- | ----------------------- |
+| Schriftgroesse | medium heading text     |
+| Schriftstil    | bold                    |
+| Farbe          | foreground              |
+| Border-Bottom  | brand color border, 2px |
+| Padding-Bottom | small spacing           |
+| Margin-Bottom  | standard spacing        |
 
 #### Abschnitt 1: Persoenliche Daten
 
@@ -254,7 +266,7 @@ Abschnitts-Titel:
 | Mobil       | `tel`   | Nein    | -             | "+49 170 1234567"     |
 | Unternehmen | `text`  | Nein    | -             | "Firmenname"          |
 
-Layout: `display: grid`, `grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))`, `gap: 1rem`
+Layout: responsive card grid (auto-fill columns, min 250px)
 
 #### Abschnitt 2: Adresse
 
@@ -279,7 +291,7 @@ Layout: 4-spaltiges Grid auf Desktop, 2-spaltig auf Tablet, 1-spaltig auf Mobil
 | `iso50001` | ISO 50001 - Energiemanagement      |
 | `iso27001` | ISO 27001 - Informationssicherheit |
 
-Jede Checkbox: Bits UI `Checkbox`-Komponente, farbiger Akzent passend zur ISO-Norm.
+Jede Checkbox: ShadCN `Checkbox`-Komponente, farbiger Akzent passend zur ISO-Norm.
 
 **Weitere Felder:**
 
@@ -296,7 +308,7 @@ Jede Checkbox: Bits UI `Checkbox`-Komponente, farbiger Akzent passend zur ISO-No
 | Tagessatz      | `number` | `step="50"`, `min="0"`, Suffix: "EUR / Tag"                     |
 | Verfuegbarkeit | `select` | Optionen: Vollzeit, Teilzeit, Nach Vereinbarung, Eingeschraenkt |
 
-Das Select-Feld wird mit einer Bits UI `Select`-Komponente umgesetzt.
+Das Select-Feld wird mit einer ShadCN `Select`-Komponente umgesetzt.
 
 #### Abschnitt 5: Notizen
 
@@ -306,41 +318,42 @@ Das Select-Feld wird mit einer Bits UI `Select`-Komponente umgesetzt.
 
 #### Aktions-Buttons
 
-| Button        | Farbe                                         | Aktion                             |
-| ------------- | --------------------------------------------- | ---------------------------------- |
-| Speichern     | Gradient `#667eea` -> `#764ba2`, weisser Text | Formular absenden                  |
-| Zuruecksetzen | Grauer Hintergrund `#e2e8f0`, dunkler Text    | Formular leeren / auf Anfangswerte |
+| Button        | Stil                       | Aktion                             |
+| ------------- | -------------------------- | ---------------------------------- |
+| Speichern     | primary button             | Formular absenden                  |
+| Zuruecksetzen | secondary button (outline) | Formular leeren / auf Anfangswerte |
 
-Buttons: `padding: 0.75rem 2rem`, `border-radius: 8px`, `font-size: 1rem`
+Buttons: standard button padding, rounded-md
 
 #### Eingabefelder (allgemein)
 
-| Eigenschaft    | Wert                                                     |
-| -------------- | -------------------------------------------------------- |
-| Padding        | `0.75rem 1rem`                                           |
-| Border         | `2px solid #e2e8f0`                                      |
-| Border-Radius  | `8px`                                                    |
-| Schriftgroesse | `0.95rem`                                                |
-| Focus-Border   | `#667eea`                                                |
-| Focus-Shadow   | `0 0 0 3px rgba(102, 126, 234, 0.2)`                     |
-| Fehler-Border  | `#e53e3e`                                                |
-| Fehler-Text    | Schriftgroesse `0.8rem`, Farbe `#e53e3e`, unter dem Feld |
+| Eigenschaft    | Wert                                          |
+| -------------- | --------------------------------------------- |
+| Padding        | standard input padding                        |
+| Border         | border color, 2px                             |
+| Border-Radius  | rounded-md                                    |
+| Schriftgroesse | base text                                     |
+| Focus-Border   | brand color (ring)                            |
+| Focus-Shadow   | brand color focus ring                        |
+| Fehler-Border  | destructive color                             |
+| Fehler-Text    | small text, destructive color, unter dem Feld |
 
 ## Interaktionen
 
 ### Grid-Ansicht: Daten laden
 
-1. Beim Seitenaufruf wird `getAuditors()` aufgerufen
+1. Beim Seitenaufruf wird `getAuditors(page, limit)` aufgerufen (paginiert)
 2. Skeleton-Loader waehrend des Ladens (6 Platzhalter-Karten)
-3. Ergebnis wird in `let auditors = $state<Auditor[]>([])` gespeichert
+3. Ergebnis wird in `$state`-Variablen gespeichert (items + Pagination-Metadaten)
 4. Die Karten werden reaktiv gerendert
+5. Pagination-Buttons ermoeglichen das Blaettern durch die Ergebnisse
 
 ### Grid-Ansicht: Suche
 
 1. Benutzer tippt in das Suchfeld
 2. Debounce von 300ms
-3. Clientseitige Filterung: `auditors.filter(a => ...)` ueber `name`, `company`, ISO-Normen-Text
-4. Die Grid-Ansicht aktualisiert sich reaktiv mit `$derived`
+3. Server-seitige Suche: `searchAuditors(query, page, limit)` wird aufgerufen — SQL LIKE/WHERE auf `name`, `company`, Qualifikationsfeldern
+4. Die Grid-Ansicht aktualisiert sich mit den paginierten Ergebnissen vom Server
 
 ### Grid-Ansicht: Bearbeiten
 
@@ -350,7 +363,7 @@ Buttons: `padding: 0.75rem 2rem`, `border-radius: 8px`, `font-size: 1rem`
 
 ### Grid-Ansicht: Loeschen
 
-1. Klick auf "Loeschen" -> Bestaetigungsdialog (Bits UI `AlertDialog`)
+1. Klick auf "Loeschen" -> Bestaetigungsdialog (ShadCN `AlertDialog`)
 2. Dialog-Text: "Moechten Sie den Auditor '[Name]' wirklich loeschen?"
 3. Bei Bestaetigung: `deleteAuditor(id)` wird aufgerufen
 4. Erfolg: Auditor wird aus der lokalen Liste entfernt, Toast-Benachrichtigung
@@ -369,7 +382,7 @@ Buttons: `padding: 0.75rem 2rem`, `border-radius: 8px`, `font-size: 1rem`
 1. Clientseitige Validierung beim Absenden:
    - `name`: Darf nicht leer sein -> Fehler: "Name ist erforderlich"
    - `email`: Muss gueltiges E-Mail-Format haben -> Fehler: "Bitte geben Sie eine gueltige E-Mail-Adresse ein"
-2. Fehlerhafte Felder: Roter Rand, Fehlermeldung darunter
+2. Fehlerhafte Felder: destructive border, Fehlermeldung darunter
 3. Erstes fehlerhaftes Feld erhaelt automatisch den Fokus
 
 ### Formular: Speichern
@@ -395,6 +408,6 @@ Buttons: `padding: 0.75rem 2rem`, `border-radius: 8px`, `font-size: 1rem`
 - **Spec 01 (Architektur):** Remote Functions, Drizzle-Schema (`auditors`-Tabelle), i18n
 - **Spec 02 (Layout):** Seite wird innerhalb des App-Layouts gerendert
 - **Spec 04 (Dashboard):** Dashboard zeigt Auditoren-Anzahl als Statistik-Karte
-- **Bits UI:** `Checkbox`, `Select`, `AlertDialog`, `Input`-Komponenten
+- **ShadCN:** `Checkbox`, `Select`, `AlertDialog`, `Input`-Komponenten
 - **Drizzle-Schema:** `auditors`-Tabelle mit allen oben definierten Feldern
 - **SvelteKit:** `$page.url.searchParams` fuer den `edit`-Query-Parameter

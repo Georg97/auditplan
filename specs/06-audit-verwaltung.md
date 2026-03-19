@@ -11,7 +11,8 @@ type AuditTyp = 'internal' | 'external' | 'certification' | 'surveillance' | 're
 
 type AuditFormat = 'on_site' | 'remote' | 'hybrid';
 
-type AuditStatus = 'planned' | 'in_progress' | 'completed' | 'cancelled';
+type AuditStatus = 'planned' | 'in_progress' | 'completed' | 'postponed' | 'cancelled';
+// 'overdue' is computed (frist < today AND status != 'completed'), not a stored status
 
 // ──────────────────────────────────────────────
 // Drizzle-Schema (Turso / SQLite)
@@ -42,12 +43,12 @@ interface AuditRow {
 	format: AuditFormat | null;
 
 	// 4. Norm & Geltungsbereich
-	normen: string; // JSON-Array von Norm-IDs, z.B. '["iso9001","iso14001"]'
+	// Normen werden ueber Junction-Tabelle `audit_normen` abgebildet (NICHT als JSON-String)
 	geltungsbereich: string | null;
 
 	// 5. Personal
-	leitenderAuditorId: string; // FK -> auditors.id, NOT NULL
-	auditTeam: string | null;
+	leitenderAuditorId: string; // FK -> auditors.id, NOT NULL, ON DELETE RESTRICT
+	// Auditteam wird ueber Junction-Tabelle `audit_team_members` abgebildet (NICHT als Freitext)
 	ansprechpartner: string | null;
 	kontaktEmail: string | null;
 
@@ -62,8 +63,31 @@ interface AuditRow {
 }
 
 /**
- * Datei-Uploads zu Audits.
- * Dateien werden als Blob/Base64 oder per Dateipfad gespeichert.
+ * Junction-Tabelle: audit_normen
+ * Verknuepft Audits mit ISO-Normen (n:m Beziehung).
+ */
+interface AuditNormRow {
+	auditId: string; // FK -> audits.id, ON DELETE CASCADE
+	normId: string; // z.B. "iso9001", "iso14001" etc.
+	// Composite Primary Key: (auditId, normId)
+}
+
+/**
+ * Junction-Tabelle: audit_team_members
+ * Verknuepft Audits mit Auditoren als Teammitglieder (n:m Beziehung).
+ */
+interface AuditTeamMemberRow {
+	auditId: string; // FK -> audits.id, ON DELETE CASCADE
+	auditorId: string; // FK -> auditors.id, ON DELETE RESTRICT
+	role: string | null; // Optionale Rolle im Team, z.B. "Fachexperte", "Beobachter"
+	// Composite Primary Key: (auditId, auditorId)
+}
+
+/**
+ * Datei-Metadaten zu Audits.
+ * WICHTIG: Dateien werden NICHT als Base64 in der DB gespeichert.
+ * Nur Metadaten (Name, Typ, Groesse, Storage-Key) in der DB,
+ * Dateiinhalt in externem Object Storage (R2/S3).
  */
 interface AuditDateiRow {
 	id: string; // UUID
@@ -71,7 +95,7 @@ interface AuditDateiRow {
 	dateiName: string; // Originalname
 	dateiTyp: string; // MIME-Type
 	dateiGroesse: number; // Bytes (max 5 MB = 5_242_880)
-	dateiInhalt: string; // Base64-kodierter Inhalt
+	storageKey: string; // Referenz auf Datei im Object Storage (R2/S3), NICHT Base64 in DB
 	createdAt: string;
 }
 
@@ -99,12 +123,23 @@ interface AuditorRow {
 }
 
 // ──────────────────────────────────────────────
+// Paginiertes Ergebnis
+// ──────────────────────────────────────────────
+
+interface PaginatedResult<T> {
+	items: T[];
+	total: number;
+	page: number;
+	pages: number;
+}
+
+// ──────────────────────────────────────────────
 // Suchparameter
 // ──────────────────────────────────────────────
 
 interface AuditSuchParams {
 	suchbegriff: string; // Freitext (case-insensitive)
-	seite: number; // Pagination
+	seite: number; // Pagination (1-basiert)
 	proSeite: number; // Items pro Seite
 }
 
@@ -114,8 +149,10 @@ interface AuditSuchParams {
 
 interface AuditFormState {
 	audit: Omit<AuditRow, 'id' | 'organizationId' | 'createdAt' | 'updatedAt'>;
+	selectedNormen: string[]; // Array von normId-Werten fuer die Junction-Tabelle
+	selectedTeamMembers: { auditorId: string; role: string | null }[]; // Teammitglieder fuer Junction-Tabelle
 	dateien: File[]; // Neue Uploads (noch nicht gespeichert)
-	vorhandeneDateien: AuditDateiRow[]; // Bereits gespeicherte Dateien
+	vorhandeneDateien: AuditDateiRow[]; // Bereits gespeicherte Dateien (nur Metadaten)
 	fehler: Record<string, string>; // Validierungsfehler pro Feld
 	istNeu: boolean;
 	speichert: boolean;
@@ -140,7 +177,7 @@ Die Seite gliedert sich in zwei Bereiche:
 
 ### 2. Suchergebnisse (Responsive Grid)
 
-- CSS-Grid: `grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))`, Gap `1rem`.
+- Responsive Grid: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` mit `gap-4`.
 - Jede Karte (`Card` aus Bits-UI) zeigt:
   - **Kopfzeile**: Auditname (fett), Status-Badge (farbkodiert, siehe unten).
   - **Mitte**: Audittyp, Unternehmen, Abteilung, Zeitraum (Start- bis Enddatum).
@@ -149,14 +186,15 @@ Die Seite gliedert sich in zwei Bereiche:
     - **Loeschen** (Papierkorb-Icon) -- Bestaetigung per Dialog.
     - **Dateien** (Bueroklammer-Icon) -- oeffnet Datei-Panel/Modal.
 
-**Status-Farbkodierung** (Tailwind-Klassen):
+**Status-Farbkodierung**: Use ShadCN Badge component with semantic variant per status:
 
-| Status      | Hintergrund     | Text              |
-| ----------- | --------------- | ----------------- |
-| planned     | `bg-blue-100`   | `text-blue-800`   |
-| in_progress | `bg-yellow-100` | `text-yellow-800` |
-| completed   | `bg-green-100`  | `text-green-800`  |
-| cancelled   | `bg-red-100`    | `text-red-800`    |
+| Status      | Badge Variant |
+| ----------- | ------------- |
+| planned     | info          |
+| in_progress | warning       |
+| completed   | success       |
+| postponed   | muted         |
+| cancelled   | destructive   |
 
 ### 3. Audit-Formular (6 Sektionen)
 
@@ -225,16 +263,16 @@ Unterhalb des Upload-Feldes: Liste bereits hochgeladener Dateien mit Dateiname, 
 1. Benutzer tippt in das Suchfeld.
 2. Nach 300 ms Debounce wird ein Server-Call (`searchAudits`) mit dem Suchbegriff ausgeloest.
 3. Server fuehrt eine SQL-Abfrage mit `LIKE '%suchbegriff%'` auf `auditName`, `abteilung` sowie einem JOIN auf `auditors.name` aus.
-4. Ergebnis wird als Array von `AuditRow` (inkl. Auditor-Name) zurueckgegeben.
-5. Das Grid rendert die Karten neu.
+4. Ergebnis wird als paginiertes `PaginatedResult<AuditRow>` (inkl. Auditor-Name) zurueckgegeben.
+5. Das Grid rendert die Karten neu. Pagination-Buttons ermoeglichen das Blaettern durch die Ergebnisse.
 
 ### Audit anlegen
 
 1. Klick auf "Neues Audit anlegen".
 2. Formular oeffnet sich mit leeren Feldern (`istNeu = true`).
-3. Pflichtfelder sind markiert (rote Umrandung bei Fehler).
+3. Pflichtfelder sind markiert (destructive border bei Fehler).
 4. Bei "Speichern": Client-Validierung -> Server-Call (`createAudit`).
-5. Dateien werden separat per `uploadAuditDatei` hochgeladen (Base64-Kodierung, Groessenpruefung client- und serverseitig).
+5. Dateien werden separat per `uploadAuditDatei` in Object Storage (R2/S3) hochgeladen (Groessenpruefung client- und serverseitig). Nur Metadaten (Name, Typ, Groesse, Storage-Key) werden in der DB gespeichert.
 6. Bei Erfolg: Formular schliesst, Suchergebnisse aktualisieren.
 
 ### Audit bearbeiten
@@ -268,13 +306,13 @@ Unterhalb des Upload-Feldes: Liste bereits hochgeladener Dateien mit Dateiname, 
 
 ### Intern (Projekt)
 
-| Abhaengigkeit           | Beschreibung                                               |
-| ----------------------- | ---------------------------------------------------------- |
-| `auditors`-Tabelle      | Dynamisches Dropdown fuer "Leitender Auditor" (Sektion 5)  |
-| better-auth Session     | `organizationId` fuer alle CRUD-Operationen                |
-| Drizzle ORM Schema      | Tabellendefinitionen `audits`, `audit_dateien`, `auditors` |
-| Spec 07 (Kalender)      | Audits koennen als Kalendereintraege referenziert werden   |
-| Spec 08 (Import/Export) | Audits werden beim Export/Import beruecksichtigt           |
+| Abhaengigkeit           | Beschreibung                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| `auditors`-Tabelle      | Dynamisches Dropdown fuer "Leitender Auditor" (Sektion 5)                                        |
+| better-auth Session     | `organizationId` fuer alle CRUD-Operationen                                                      |
+| Drizzle ORM Schema      | Tabellendefinitionen `audits`, `audit_normen`, `audit_team_members`, `audit_dateien`, `auditors` |
+| Spec 07 (Kalender)      | Audits koennen als Kalendereintraege referenziert werden                                         |
+| Spec 08 (Import/Export) | Audits werden beim Export/Import beruecksichtigt                                                 |
 
 ### Extern (Bibliotheken)
 
@@ -283,7 +321,7 @@ Unterhalb des Upload-Feldes: Liste bereits hochgeladener Dateien mit Dateiname, 
 | SvelteKit      | Routing (`/audits`), Server-Funktionen                 |
 | Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`)     |
 | Bits-UI        | Select, Checkbox, Button, Card, AlertDialog, Accordion |
-| Tailwind CSS 4 | Styling, responsive Grid, Farbkodierung                |
+| Tailwind CSS 4 | Styling, responsive Grid                               |
 | Drizzle ORM    | SQL-Queries, Schema-Definition                         |
 | Turso          | SQLite-Datenbank (libsql)                              |
 | better-auth    | Authentifizierung, Session-Management                  |

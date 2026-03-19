@@ -129,7 +129,9 @@ git push
 
 - **One task per iteration.** Pick one, finish it, commit it.
 - **No placeholders.** Every implementation must be complete and functional.
-- **Specs are truth.** If your implementation contradicts a spec, the spec wins. If a spec is wrong, update it AND implement correctly.
+- **Specs describe features, not implementation details.** Data models and business logic in specs are authoritative. Visual details, exact layouts, and UI specifics are guidance — use the frontend-design skill and your engineering judgment. See `CLAUDE.md` "Spec Trust Levels" for which specs to follow strictly vs. loosely.
+- **Think critically about anti-patterns.** Specs were derived from a localStorage prototype and may still contain anti-patterns. If you see JSON blob storage, client-side filtering of all records, missing pagination, free-text where FKs belong, or Base64 files in DB — fix it. Follow `01-architektur.md` patterns, they override all other specs.
+- **If a spec contradicts good engineering**, update the spec AND implement correctly. Document what you changed and why in the commit message.
 - **SvelteKit conventions.** Use file-based routing. Server code in `+page.server.ts` or `.remote.ts` files. Client state with Svelte 5 runes. Styling with Tailwind utility classes and ShadCN components from `$lib/components/ui/`.
 - **Use bun.** `bun add` for new dependencies, `bun run` for scripts. Never npm/yarn/pnpm.
 - **German UI via i18n.** ALL user-facing text MUST use `i18nRune.t('key')`. No hardcoded German strings in components. Translation keys in `static/locales/de.json`.

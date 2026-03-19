@@ -6,13 +6,9 @@
 // --- Einstellungen (§16) ---
 
 interface AppSettings {
-	// Farbschema
-	theme: ThemeName;
-	individualColors: {
-		header: ColorOption;
-		nav: ColorOption;
-		card: ColorOption;
-	};
+	// Erscheinungsbild
+	colorMode: 'light' | 'dark' | 'system'; // mode-watcher
+	accentPreset: AccentPreset; // Akzentfarben-Vorauswahl
 
 	// Ansicht
 	kompaktansicht: boolean;
@@ -26,64 +22,24 @@ interface AppSettings {
 	standardAbteilung: string;
 }
 
-type ThemeName =
-	| 'default' // #667eea -> #764ba2
-	| 'dark'
-	| 'light'
-	| 'green'
-	| 'blue'
-	| 'red'
-	| 'purple'
-	| 'orange'
-	| 'cyan'
-	| 'pink'
-	| 'yellow'
+// Accent presets override --brand, --accent-mid, --accent-deep CSS variables
+type AccentPreset =
+	| 'default' // Teal-blue (project default from layout.css)
 	| 'indigo'
-	| 'teal'
+	| 'violet'
 	| 'rose'
 	| 'emerald'
-	| 'sky'
+	| 'amber'
 	| 'slate';
 
-interface ThemeDefinition {
-	name: ThemeName;
-	label: string;
-	bodyBgGradient: [string, string]; // Von -> Bis
-	headerBg: string;
-	buttonColors: {
-		primary: string;
-		secondary: string;
-	};
-	navHighlight: string;
-	cardHeadings: string;
-	modalHeader: string;
-	previewColor: string; // Fuer Farbvorschau-Quadrat
+// Each preset defines OKLCH values for the three accent CSS variables
+interface AccentPresetDefinition {
+	name: AccentPreset;
+	label: string; // i18n key for display
+	brand: string; // OKLCH value for --brand
+	accentMid: string; // OKLCH value for --accent-mid
+	accentDeep: string; // OKLCH value for --accent-deep
 }
-
-// 18 Themes (17 benannt + "default")
-const THEMES: ThemeDefinition[] = [
-	{
-		name: 'default',
-		label: 'Default',
-		bodyBgGradient: ['#667eea', '#764ba2'],
-		headerBg: 'linear-gradient(135deg, #667eea, #764ba2)',
-		buttonColors: { primary: '#667eea', secondary: '#764ba2' },
-		navHighlight: '#667eea',
-		cardHeadings: '#667eea',
-		modalHeader: '#667eea',
-		previewColor: '#667eea'
-	}
-	// ... 16 weitere Themes
-];
-
-type ColorOption =
-	| 'inherit' // Vom globalen Theme uebernehmen
-	| 'default'
-	| 'blue'
-	| 'green'
-	| 'red'
-	| 'purple'
-	| 'orange';
 
 // --- Datei-Upload (§27) ---
 
@@ -182,51 +138,28 @@ interface RatingState {
 
 Das Einstellungen-Modal wird ueber das Zahnrad-Symbol im Header geoeffnet.
 
-#### Tab "Global" - Farbschemata
+#### Erscheinungsbild
 
-| Eigenschaft         | Wert                                       |
-| ------------------- | ------------------------------------------ |
-| Layout              | Grid mit Farbvorschau-Quadraten            |
-| Anzahl Themes       | 18                                         |
-| Vorschau            | Jedes Theme als farbiges Quadrat mit Label |
-| Auswahl             | Klick auf Quadrat setzt aktives Theme      |
-| Sofortige Anwendung | Theme wird sofort nach Auswahl angewendet  |
+**Light/Dark-Modus:**
 
-**Theme-Liste:**
+| Eigenschaft | Wert                                                                      |
+| ----------- | ------------------------------------------------------------------------- |
+| Steuerung   | `mode-watcher` (bereits eingerichtet)                                     |
+| Optionen    | Light / Dark / System (3 Buttons oder SegmentedControl)                   |
+| Mechanismus | Setzt `.dark` Klasse auf `<html>`, Tailwind dark mode uebernimmt den Rest |
+| Persistenz  | `mode-watcher` speichert Praeferenz automatisch                           |
 
-| Theme   | Gradient / Hauptfarbe  |
-| ------- | ---------------------- |
-| Default | `#667eea` -> `#764ba2` |
-| Dark    | Dunkle Farben          |
-| Light   | Helle Farben           |
-| Green   | Gruentoene             |
-| Blue    | Blauttoene             |
-| Red     | Rottoene               |
-| Purple  | Lilatoene              |
-| Orange  | Orangetoene            |
-| Cyan    | Cyantoene              |
-| Pink    | Rosatoene              |
-| Yellow  | Gelbtoene              |
-| Indigo  | Indigotoene            |
-| Teal    | Petroltoene            |
-| Rose    | Altrosattoene          |
-| Emerald | Smaragdtoene           |
-| Sky     | Himmelblau             |
-| Slate   | Schiefergrau           |
+**Akzentfarben-Vorauswahl:**
 
-Jedes Theme definiert: Body-Hintergrund-Gradient, Header-Hintergrund, Button-Farben, Nav-Highlight, Card-Ueberschriften, Modal-Header.
+| Eigenschaft         | Wert                                                              |
+| ------------------- | ----------------------------------------------------------------- |
+| Layout              | Grid mit Farbvorschau-Kreisen oder Quadraten                      |
+| Anzahl Presets      | 7 (default, indigo, violet, rose, emerald, amber, slate)          |
+| Vorschau            | Jedes Preset als farbiger Kreis mit dem jeweiligen `--brand`-Wert |
+| Auswahl             | Klick auf Kreis setzt aktives Preset                              |
+| Sofortige Anwendung | CSS-Variablen werden sofort ueberschrieben                        |
 
-#### Tab "Individuelle Bereiche"
-
-3 Farb-Selects fuer individuelle Anpassungen:
-
-| Bereich    | Optionen                                           |
-| ---------- | -------------------------------------------------- |
-| Header     | inherit, default, blue, green, red, purple, orange |
-| Navigation | inherit, default, blue, green, red, purple, orange |
-| Karten     | inherit, default, blue, green, red, purple, orange |
-
-Bei "inherit" wird die Farbe vom globalen Theme uebernommen.
+Bei Auswahl eines Presets werden die OKLCH-Werte fuer `--brand`, `--accent-mid` und `--accent-deep` als Inline-Styles auf `<html>` gesetzt (oder via `document.documentElement.style.setProperty()`). Alle ShadCN-Komponenten und Tailwind-Klassen, die diese Variablen referenzieren, passen sich automatisch an.
 
 #### Weitere Einstellungen
 
@@ -266,7 +199,7 @@ Bei "inherit" wird die Farbe vom globalen Theme uebernommen.
 
 **Datei-Viewer-Modal:**
 
-- z-index: 1001 (ueber anderen Modals)
+- Modal layer z-index (ueber anderen Modals)
 - Oeffnet sich bei Klick auf eine Datei in der Vorschau
 
 **Hilfsfunktion:** `formatFileSize(bytes: number): string` - Formatiert Bytes in lesbare Groesse (KB, MB)
@@ -305,11 +238,11 @@ Alle Daten werden serverseitig in Turso (libSQL) via Drizzle ORM gespeichert. **
 
 #### Visuelle Rueckmeldung beim Ziehen
 
-| Eigenschaft | Wert                                     |
-| ----------- | ---------------------------------------- |
-| Rahmen      | `2px dashed #667eea` (gestrichelt, Blau) |
-| Hintergrund | `#f0f2ff` (helles Blau)                  |
-| Skalierung  | `scale(1.02)`                            |
+| Eigenschaft | Wert                                                               |
+| ----------- | ------------------------------------------------------------------ |
+| Rahmen      | Brand color dashed border (`border-brand`)                         |
+| Hintergrund | Light accent background (`bg-accent-mid/10` or `bg-surface-light`) |
+| Skalierung  | Subtle scale animation                                             |
 
 #### Block-Verschiebung
 
@@ -320,17 +253,18 @@ Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke ne
 ### Einstellungen speichern
 
 1. Benutzer oeffnet das Einstellungen-Modal ueber das Zahnrad-Symbol.
-2. Aenderungen an Theme, Farben, Checkboxen, Sprache oder Textfeldern loesen sofort ein Update aus.
+2. Aenderungen an Modus, Akzentfarben, Checkboxen, Sprache oder Textfeldern loesen sofort ein Update aus.
 3. Das Settings-Objekt wird via Server-Action als JSON in die `settings`-Tabelle geschrieben.
-4. Theme-Aenderungen werden sofort auf der gesamten Seite angewendet (CSS-Variablen oder Tailwind-Klassen).
-5. Sprachwechsel laedt die entsprechenden Uebersetzungen nach.
+4. Light/Dark-Modus wird via `mode-watcher` gesteuert (`.dark` Klasse auf `<html>`).
+5. Akzentfarben-Aenderungen setzen CSS-Variablen (`--brand`, `--accent-mid`, `--accent-deep`) auf `<html>`.
+6. Sprachwechsel laedt die entsprechenden Uebersetzungen nach.
 
-### Farbschema anwenden
+### Akzentfarbe anwenden
 
-1. Benutzer klickt auf ein Theme-Quadrat im Tab "Global".
-2. Die `ThemeDefinition` wird ausgelesen und auf CSS-Variablen gemappt.
-3. Body-Gradient, Header, Buttons, Navigation, Karten und Modal werden aktualisiert.
-4. Individuelle Bereichsfarben (Tab "Individuelle Bereiche") ueberschreiben ggf. die globalen Farben.
+1. Benutzer klickt auf ein Preset im Erscheinungsbild-Bereich.
+2. Die OKLCH-Werte des Presets werden via `document.documentElement.style.setProperty()` gesetzt.
+3. Alle Tailwind-Klassen und ShadCN-Komponenten, die `--brand`, `--accent-mid`, `--accent-deep` referenzieren, passen sich automatisch an.
+4. Die Auswahl wird in der `settings`-Tabelle persistiert und beim naechsten App-Start wiederhergestellt.
 
 ### Datei hochladen
 
@@ -343,7 +277,7 @@ Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke ne
 ### Datei anzeigen
 
 1. Benutzer klickt auf eine Datei in der Vorschau.
-2. Datei-Viewer-Modal oeffnet sich (z-index: 1001).
+2. Datei-Viewer-Modal oeffnet sich (modal layer z-index).
 3. Bilder: `<img src="data:image/...;base64,...">` direkt angezeigt.
 4. PDFs: `<iframe src="data:application/pdf;base64,...">` eingebettet.
 5. Andere Dateitypen: Icon mit Dateiname und Download-Link.
@@ -371,7 +305,7 @@ Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke ne
 ### Drag & Drop - Bloecke verschieben
 
 1. **`initBlockDragAndDrop()`** wird beim Rendern der Block-Liste aufgerufen.
-2. **Drag Start:** `handleNotesDragStart()` speichert den Index des gezogenen Blocks. Visuelles Feedback wird angewendet (gestrichelter Rahmen, heller Hintergrund, Skalierung).
+2. **Drag Start:** `handleNotesDragStart()` speichert den Index des gezogenen Blocks. Visuelles Feedback wird angewendet (brand color dashed border, light accent background, subtle scale animation).
 3. **Drag Over:** `handleNotesDragOver()` verhindert Standard-Verhalten und zeigt die potenzielle Zielposition an.
 4. **Drop:** `handleNotesDrop()` berechnet die neue Position und aktualisiert das Array.
 5. **Drag End:** `handleNotesDragEnd()` entfernt visuelles Feedback.
@@ -406,6 +340,7 @@ Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke ne
 | `@libsql/client` | Turso-Datenbankverbindung                                   |
 | `drizzle-orm`    | ORM fuer Datenbankoperationen                               |
 | `better-auth`    | Benutzer-Authentifizierung (organizationId fuer alle Daten) |
+| `mode-watcher`   | Light/Dark/System Modus-Umschaltung                         |
 | `bits-ui`        | UI-Komponenten (Dialog, Tabs, Select, Checkbox, Button)     |
-| Tailwind CSS 4   | Theming via CSS-Variablen, responsive Layouts               |
+| Tailwind CSS 4   | Theming via OKLCH CSS-Variablen, responsive Layouts         |
 | SvelteKit        | Server-Actions, Load-Funktionen, Routing                    |

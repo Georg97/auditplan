@@ -1,185 +1,178 @@
-# 02 - Layout, Header und Navigation
+# 02 — Layout, Header und Navigation
 
 ## Datenmodell
 
 ```typescript
 interface NavItem {
-	id: string;
-	label: string; // i18n-Schluessel, z.B. "nav.uebersicht"
-	icon: string; // Emoji oder Icon-Bezeichner
+	label: string; // i18n-Schlüssel, z.B. "nav.overview"
+	icon: string; // Lucide-Icon-Name, z.B. "clipboard-list"
 	href: string; // SvelteKit-Route, z.B. "/overview"
 }
 
-interface SettingsState {
-	isOpen: boolean; // Modal sichtbar
-	language: SupportedLocale;
-	theme: 'light' | 'dark'; // Falls spaeter gewuenscht
-}
-
-// Navigationspunkte (12 Eintraege)
+// Navigationspunkte (12 Einträge)
 const NAV_ITEMS: NavItem[] = [
-	{ id: 'overview', label: 'nav.uebersicht', icon: '📋', href: '/overview' },
-	{ id: 'dashboard', label: 'nav.dashboard', icon: '📊', href: '/dashboard' },
-	{ id: 'auditor-management', label: 'nav.auditoren', icon: '👥', href: '/auditor-management' },
-	{ id: 'add-auditor', label: 'nav.auditor_neu', icon: '➕', href: '/add-auditor' },
-	{ id: 'search-manage', label: 'nav.suchen', icon: '🔍', href: '/search-manage' },
-	{ id: 'calendar', label: 'nav.kalender', icon: '📅', href: '/calendar' },
-	{ id: 'import-export', label: 'nav.import_export', icon: '📁', href: '/import-export' },
-	{ id: 'plan-generator', label: 'nav.auditplan', icon: '📝', href: '/plan-generator' },
-	{ id: 'report-generator', label: 'nav.auditbericht', icon: '📄', href: '/report-generator' },
-	{ id: 'notes-generator', label: 'nav.auditnotizen', icon: '🗒️', href: '/notes-generator' },
-	{ id: 'audit-questions', label: 'nav.fragen_dokumente', icon: '❓', href: '/audit-questions' },
-	{ id: 'action-plan', label: 'nav.massnahmenplan', icon: '⚡', href: '/action-plan' }
+	{ label: 'nav.overview', icon: 'clipboard-list', href: '/overview' },
+	{ label: 'nav.dashboard', icon: 'bar-chart-3', href: '/dashboard' },
+	{ label: 'nav.auditorManagement', icon: 'users', href: '/auditor-management' },
+	{ label: 'nav.addAuditor', icon: 'user-plus', href: '/add-auditor' },
+	{ label: 'nav.searchManage', icon: 'search', href: '/search-manage' },
+	{ label: 'nav.calendar', icon: 'calendar', href: '/calendar' },
+	{ label: 'nav.importExport', icon: 'folder-down', href: '/import-export' },
+	{ label: 'nav.planGenerator', icon: 'file-text', href: '/plan-generator' },
+	{ label: 'nav.reportGenerator', icon: 'file-check', href: '/report-generator' },
+	{ label: 'nav.notesGenerator', icon: 'sticky-note', href: '/notes-generator' },
+	{ label: 'nav.auditQuestions', icon: 'circle-help', href: '/audit-questions' },
+	{ label: 'nav.actionPlan', icon: 'list-checks', href: '/action-plan' }
 ];
 ```
 
 ## UI-Beschreibung
 
-### Header
+### Layout-Architektur: Sidebar + Content (SaaS-Standard)
 
-**Datei:** `src/lib/components/layout/Header.svelte`
+Die App verwendet ein modernes Sidebar-Layout wie bei typischen SaaS-Anwendungen (z.B. Linear, Notion, Vercel Dashboard):
 
-Der Header ist ein festes Element am oberen Rand der Seite mit einem Verlaufshintergrund.
+- **Desktop (lg+):** Permanente Sidebar links, Content-Bereich rechts
+- **Mobile/Tablet (<lg):** Sidebar ausgeblendet, Hamburger-Button öffnet Overlay-Sidebar (Sheet)
 
-| Eigenschaft | Wert                                      |
-| ----------- | ----------------------------------------- |
-| Hintergrund | Linearer Gradient: `#667eea` -> `#764ba2` |
-| Hoehe       | Automatisch (abhaengig vom Inhalt)        |
-| Padding     | `1.5rem 2rem`                             |
-| Position    | Relativ (scrollt mit der Seite)           |
+```
+Desktop (lg+):                      Mobile (<lg):
++----------+---------------------+  +---------------------------+
+| Sidebar  |     Header          |  | [☰] Header                |
+|          |---------------------|  |---------------------------|
+| [Logo]   |                     |  |                           |
+| Nav 1    |   {@render          |  |   {@render children()}    |
+| Nav 2    |     children()}     |  |                           |
+| Nav 3    |                     |  +---------------------------+
+| ...      |   (Seiteninhalt)    |
+| Nav 12   |                     |  Hamburger → öffnet Sheet:
+|          |                     |  +----------+
+| [Zahnrad]|                     |  | [Logo]   |
+| [User]   |                     |  | Nav 1    |
++----------+---------------------+  | Nav 2    |
+                                    | ...      |
+                                    | [Zahnrad]|
+                                    | [User]   |
+                                    +----------+
+```
 
-**3 Elemente im Header (Flexbox, `justify-between`, `align-center`):**
+### Sidebar-Komponente
 
-#### 1. Linkes SVG - ISO-Zertifikat mit Lupe
+**Datei:** `src/lib/components/layout/AppSidebar.svelte`
 
-- Groesse: `280x250px`
-- Darstellung: 3D-ISO-Zertifikat mit einer Lupe darueber
-- Techniken: SVG-Gradienten (`linearGradient`), Filter (`feDropShadow`, `feGaussianBlur`), abgerundete Rechtecke
-- Farben: Weiss/Grau fuer das Dokument, Blau/Lila fuer Akzente, Gold fuer die Lupe
-- Animation: Keine (statisches SVG)
+Verwende ShadCN `sidebar` Komponente als Basis: `bunx shadcn-svelte@next add sidebar --no-git`
 
-#### 2. Mittlerer Bereich - Titel
+**Aufbau der Sidebar:**
 
-- **Haupttitel:** `<h1>` mit Text "Der ISO Audit Manager"
-  - Schriftgroesse: `2.5rem`
-  - Farbe: Weiss
-  - Text-Shadow: 3D-Effekt mit mehreren Schatten-Ebenen (`2px 2px 4px rgba(0,0,0,0.3)`)
-  - Schriftstil: Fett (bold)
-- **Untertitel 1:** Beschreibungstext mit Perspektiv-Effekt
-  - Schriftgroesse: `1.1rem`
-  - Farbe: `rgba(255, 255, 255, 0.9)`
-  - Leichter `perspective`-CSS-Effekt
-- **Untertitel 2:** Zweiter Beschreibungstext mit alternativem Perspektiv-Winkel
-  - Gleiche Formatierung wie Untertitel 1
+1. **Sidebar-Header:**
+   - App-Logo: `static/logo_dark.png` (light mode) / `static/logo_light.png` (dark mode) — responsiv über `mode-watcher`
+   - App-Name: `i18n.t('app.name')` — kurzer Text, z.B. "Audit Manager"
+   - Logo+Name als `<a href="/overview">` (Klick → Startseite)
 
-#### 3. Rechtes SVG - Klemmbrett mit Fortschrittsbalken
+2. **Sidebar-Content (scrollbar):**
+   - 12 Nav-Items als Liste
+   - Jedes Item: Lucide-Icon + Label aus `i18n.t(item.label)`
+   - Aktiver Zustand: Vergleich `$page.url.pathname` mit `item.href`
+   - Optional: Nav-Items in Gruppen unterteilen (z.B. "Übersicht", "Verwaltung", "Generatoren", "Tools")
 
-- Groesse: `280x250px`
-- Darstellung: 3D-Klemmbrett mit ISO-Fortschrittsbalken, Auditor-Team-Symbolen und Kalender-Icon
-- Techniken: SVG-Gradienten, Filter, Rechtecke mit abgerundeten Ecken
-- Fortschrittsbalken: Verschiedene Fuellstaende fuer unterschiedliche ISO-Normen
-- Farben: Gruen (abgeschlossen), Orange (in Bearbeitung), Blau (geplant)
+3. **Sidebar-Footer:**
+   - Einstellungen-Button: Lucide `settings` Icon + `i18n.t('nav.settings')`
+   - User-Info: Avatar/Name des eingeloggten Benutzers aus `data.user`
+   - Theme-Toggle: Light/Dark Mode Schalter (ShadCN `theme-switcher` bereits vorhanden)
 
-#### 4. Einstellungen-Button
+### Sidebar Nav-Item Zustände
 
-- Position: Absolut, oben rechts im Header (`top: 1rem`, `right: 1rem`)
-- Icon: Zahnrad (Gear-Icon aus Bits UI oder SVG)
-- Groesse: `2.5rem x 2.5rem`
-- Hintergrund: `rgba(255, 255, 255, 0.2)`
-- Border-Radius: `50%`
-- Hover-Effekt: Rotation um 90 Grad (`transform: rotate(90deg)`), Transition `0.3s`
-- Klick: Oeffnet das Einstellungen-Modal (Bits UI Dialog)
+| Zustand | Beschreibung                                                                                              |
+| ------- | --------------------------------------------------------------------------------------------------------- |
+| Default | Icon + Label, dezenter Text (text-sidebar-foreground), kein Hintergrund                                   |
+| Hover   | Leicht hervorgehobener Hintergrund (bg-sidebar-accent), sanfte Transition                                 |
+| Aktiv   | Hervorgehobener Hintergrund (bg-sidebar-primary), kontrastierender Text (text-sidebar-primary-foreground) |
 
-### Navigationsleiste
+Die ShadCN `sidebar` Komponente bringt diese Zustände bereits mit — nutze die eingebauten Varianten.
 
-**Datei:** `src/lib/components/layout/NavBar.svelte`
+### Mobile Navigation
 
-| Eigenschaft   | Wert                                                  |
-| ------------- | ----------------------------------------------------- |
-| Layout        | Flexbox, `flex-wrap: wrap`, `justify-content: center` |
-| Hintergrund   | Weiss                                                 |
-| Padding       | `0.5rem 1rem`                                         |
-| Border-Bottom | `2px solid #e2e8f0`                                   |
-| Gap           | `0.5rem`                                              |
+- **Trigger:** Hamburger-Button (`menu` Lucide-Icon) oben links im Header, nur sichtbar auf Mobile (`lg:hidden`)
+- **Overlay:** ShadCN `Sheet` Komponente (side="left"), enthält dieselbe Sidebar-Komponente
+- **Schließen:** Klick außerhalb, Escape-Taste, oder Klick auf Nav-Item (automatische Navigation schließt Sheet)
 
-#### Navigations-Item (Standardzustand)
+### Header (nur Mobile / optionaler schmaler Header auf Desktop)
 
-| Eigenschaft    | Wert                |
-| -------------- | ------------------- |
-| Padding        | `0.6rem 1.2rem`     |
-| Border         | `2px solid #e2e8f0` |
-| Border-Radius  | `25px` (Pill-Form)  |
-| Hintergrund    | Weiss               |
-| Schriftgroesse | `0.85rem`           |
-| Cursor         | Pointer             |
-| Transition     | `all 0.3s ease`     |
+Auf Mobile wird ein schmaler Header angezeigt mit:
 
-#### Navigations-Item (Hover-Zustand)
+- Links: Hamburger-Button (öffnet Sheet-Sidebar)
+- Mitte: App-Logo (klein) oder App-Name
+- Rechts: Optional User-Avatar oder Theme-Toggle
 
-| Eigenschaft  | Wert                                 |
-| ------------ | ------------------------------------ |
-| Border-Farbe | `#667eea`                            |
-| Textfarbe    | `#667eea`                            |
-| Transform    | `translateY(-2px)`                   |
-| Box-Shadow   | `0 4px 6px rgba(102, 126, 234, 0.2)` |
+Auf Desktop ist der Header optional — die Sidebar enthält bereits Logo, Navigation und User-Info. Wenn ein Header auf Desktop gewünscht ist, kann er für Breadcrumbs, Seitentitel oder Suchfeld genutzt werden.
 
-#### Navigations-Item (Aktiver Zustand)
+### Content-Bereich
 
-| Eigenschaft  | Wert                                      |
-| ------------ | ----------------------------------------- |
-| Hintergrund  | Linearer Gradient: `#667eea` -> `#764ba2` |
-| Textfarbe    | Weiss                                     |
-| Border-Farbe | Transparent                               |
-| Box-Shadow   | `0 4px 15px rgba(102, 126, 234, 0.4)`     |
+```svelte
+<main class="flex-1 overflow-y-auto">
+	<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+		{@render children()}
+	</div>
+</main>
+```
 
-### App-Layout
+### App-Layout Struktur
 
 **Datei:** `src/routes/(app)/+layout.svelte`
 
-```
-+------------------------------------------------------+
-|                    Header                            |
-| [SVG Zertifikat]  Titel + Untertitel  [SVG Klemmbrett]|
-|                                        [Zahnrad]     |
-+------------------------------------------------------+
-| Nav: [Uebersicht] [Dashboard] [Auditoren] [...]     |
-+------------------------------------------------------+
-|                                                      |
-|                   <slot />                           |
-|              (Seiteninhalt)                          |
-|                                                      |
-+------------------------------------------------------+
+```svelte
+<script lang="ts">
+	import { setContext } from 'svelte';
+	import AppSidebar from '$lib/components/layout/AppSidebar.svelte';
+	import { SidebarProvider, SidebarTrigger, SidebarInset } from '$lib/components/ui/sidebar';
+	// ... i18n + settings context setup
+</script>
+
+<SidebarProvider>
+	<AppSidebar />
+	<SidebarInset>
+		<!-- Mobile header with hamburger -->
+		<header class="flex items-center gap-2 border-b px-4 py-2 lg:hidden">
+			<SidebarTrigger />
+			<span class="font-display font-semibold">{i18n.t('app.name')}</span>
+		</header>
+		<!-- Page content -->
+		<main class="flex-1 overflow-y-auto">
+			<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+				{@render children()}
+			</div>
+		</main>
+	</SidebarInset>
+</SidebarProvider>
 ```
 
 ## Interaktionen
 
 ### Navigation
 
-- Die aktive Route wird ueber `$page.url.pathname` (SvelteKit) ermittelt
-- Jedes `NavItem` wird als `<a>`-Tag gerendert (SvelteKit `href`-Routing)
-- SvelteKit uebernimmt das clientseitige Routing automatisch (kein manuelles `navigateToPage()`)
-- Beim Klick auf einen Nav-Eintrag wird die entsprechende Route geladen
+- Die aktive Route wird über `$page.url.pathname` (aus `$app/state`) ermittelt
+- Jedes NavItem wird als `<a>` Tag gerendert (SvelteKit file-based Routing)
 - Der aktive Zustand wird durch Vergleich von `$page.url.pathname` mit `item.href` bestimmt
+- Auf Mobile: Nach Klick auf Nav-Item schließt sich das Sheet automatisch
 
 ### Einstellungen-Modal
 
-1. Klick auf Zahnrad-Button -> Modal oeffnet sich (Bits UI `Dialog`)
-2. Im Modal: Sprachauswahl (Dropdown mit 10 Sprachen)
-3. Sprachwechsel -> `setLocale()` wird aufgerufen, UI aktualisiert sich reaktiv
-4. Spracheinstellung wird per Remote Function in der Datenbank gespeichert
-5. Modal schliessen mit X-Button, Escape-Taste oder Klick ausserhalb
+1. Klick auf Einstellungen-Button in Sidebar-Footer → Modal öffnet sich (ShadCN `Dialog`)
+2. Im Modal: Sprachauswahl, Theme-Wahl, weitere Einstellungen (Spec 14)
+3. Modal schließen mit X-Button, Escape-Taste oder Klick außerhalb
 
 ### Responsive Verhalten
 
-- Header-SVGs werden auf kleinen Bildschirmen (`< 768px`) ausgeblendet (`display: none`)
-- Titel-Schriftgroesse reduziert sich auf `1.8rem`
-- Navigationsleiste: `flex-wrap` sorgt fuer automatischen Umbruch
-- Auf sehr kleinen Bildschirmen (`< 480px`) werden Nav-Items kompakter (weniger Padding)
+- **≥1024px (lg):** Sidebar permanent sichtbar, Content-Bereich nimmt restliche Breite ein
+- **<1024px:** Sidebar ausgeblendet, Hamburger-Button öffnet Sheet-Overlay
+- Sidebar kann auch auf Desktop ein-/ausgeklappt werden (ShadCN Sidebar `collapsible` Prop)
+- Eingeklappter Zustand zeigt nur Icons (kein Label-Text)
 
-## Abhaengigkeiten
+## Abhängigkeiten
 
-- **Spec 01 (Architektur):** Tech-Stack, Routing-Struktur, i18n-System
-- **SvelteKit:** `$page` Store fuer aktive Route, dateibasiertes Routing
-- **Bits UI:** `Dialog`-Komponente fuer Einstellungen-Modal
-- **i18n-Modul:** `t()`-Funktion fuer alle sichtbaren Texte
-- **Alle anderen Module (03-05):** Werden innerhalb des `<slot />`-Bereichs dieses Layouts gerendert
+- **Spec 01 (Architektur):** Tech-Stack, Routing-Struktur, i18n-System, Theme-System
+- **ShadCN-Komponenten:** `sidebar` (Hauptkomponente), `sheet` (Mobile Overlay), `dialog` (Settings Modal)
+- **SvelteKit:** `$page` aus `$app/state` für aktive Route
+- **i18n-Modul:** `i18nRune.t()` für alle sichtbaren Texte
+- **mode-watcher:** Light/Dark Mode Detection für Logo-Wechsel
+- **Alle anderen Module (03-14):** Werden innerhalb des Content-Bereichs gerendert

@@ -3,59 +3,38 @@
 ## Datenmodell
 
 ```typescript
-// --- Gespeicherte Auditfragen & Dokumente ---
+// --- Summary item for list display ---
+// The Overview page only needs summary info for each saved item.
+// Full data lives in normalized tables (see Spec 09: AuditPlan, Spec 10: AuditNotes, Spec 11: SavedAuditQuestions).
 
-interface SavedDocument {
+interface SummaryItem {
 	id: string;
-	organizationId: string;
 	name: string;
-	type: 'auditfragen' | 'dokument';
-	content: Record<string, unknown>; // JSON-Inhalt des Generators
+	type: 'plan' | 'notes' | 'questions';
 	createdAt: Date;
 	updatedAt: Date;
 }
 
-// --- Gespeicherte Auditnotizen ---
+// --- Paginiertes Ergebnis ---
 
-interface SavedNote {
-	id: string;
-	organizationId: string;
-	name: string;
-	content: Record<string, unknown>; // JSON-Inhalt des Notizen-Generators
-	createdAt: Date;
-	updatedAt: Date;
-}
-
-// --- Gespeicherte Auditplaene ---
-
-interface SavedPlan {
-	id: string;
-	organizationId: string;
-	name: string;
-	content: Record<string, unknown>; // JSON-Inhalt des Plan-Generators
-	createdAt: Date;
-	updatedAt: Date;
-}
-
-// --- Gemeinsamer Typ fuer die Uebersichtsliste ---
-
-interface OverviewEntry {
-	id: string;
-	name: string;
-	createdAt: Date;
-	updatedAt: Date;
-	type: 'document' | 'note' | 'plan';
+interface PaginatedResult<T> {
+	items: T[];
+	total: number; // Gesamtanzahl Eintraege
+	page: number; // Aktuelle Seite (1-basiert)
+	pages: number; // Gesamtanzahl Seiten
 }
 
 // --- Remote Functions ---
+// Each function queries the respective normalized table (audit_plans, audit_notes, saved_audit_questions)
+// and returns only the summary fields needed for list display.
 
 interface OverviewRemoteFunctions {
-	getDocuments: () => Promise<SavedDocument[]>;
-	getNotes: () => Promise<SavedNote[]>;
-	getPlans: () => Promise<SavedPlan[]>;
-	deleteDocument: (id: string) => Promise<void>;
-	deleteNote: (id: string) => Promise<void>;
+	getPlans: (page: number, limit: number) => Promise<PaginatedResult<SummaryItem>>; // From audit_plans (Spec 09)
+	getNotes: (page: number, limit: number) => Promise<PaginatedResult<SummaryItem>>; // From audit_notes (Spec 10)
+	getQuestions: (page: number, limit: number) => Promise<PaginatedResult<SummaryItem>>; // From saved_audit_questions (Spec 11)
 	deletePlan: (id: string) => Promise<void>;
+	deleteNote: (id: string) => Promise<void>;
+	deleteQuestion: (id: string) => Promise<void>;
 }
 ```
 
@@ -96,118 +75,104 @@ Diese Seite ist die Standard-Startseite der Anwendung nach dem Login.
 
 ### Abschnitt-Container
 
-| Eigenschaft   | Wert                                     |
-| ------------- | ---------------------------------------- |
-| Hintergrund   | Weiss                                    |
-| Border-Radius | `12px`                                   |
-| Box-Shadow    | `0 2px 10px rgba(0, 0, 0, 0.1)`          |
-| Padding       | `1.5rem`                                 |
-| Margin-Bottom | `1.5rem`                                 |
-| Max-Hoehe     | `400px`                                  |
-| Overflow-Y    | `auto` (scrollbar bei vielen Eintraegen) |
+| Eigenschaft   | Wert                                            |
+| ------------- | ----------------------------------------------- |
+| Hintergrund   | ShadCN Card (`bg-card`)                         |
+| Border-Radius | rounded-lg                                      |
+| Box-Shadow    | card shadow                                     |
+| Padding       | standard card padding                           |
+| Margin-Bottom | standard section spacing                        |
+| Max-Hoehe     | scrollable container with reasonable max height |
+| Overflow-Y    | `auto` (scrollbar bei vielen Eintraegen)        |
 
 ### Abschnitts-Titel
 
-| Eigenschaft    | Wert                                                               |
-| -------------- | ------------------------------------------------------------------ |
-| Schriftgroesse | `1.3rem`                                                           |
-| Schriftstil    | Fett (bold)                                                        |
-| Farbe          | `#2d3748`                                                          |
-| Margin-Bottom  | `1rem`                                                             |
-| Icon           | Emoji vor dem Titel (Dokumente: "📄", Notizen: "📝", Plaene: "📋") |
+| Eigenschaft    | Wert                                                                                                 |
+| -------------- | ---------------------------------------------------------------------------------------------------- |
+| Schriftgroesse | medium heading text                                                                                  |
+| Schriftstil    | bold                                                                                                 |
+| Farbe          | foreground                                                                                           |
+| Margin-Bottom  | standard spacing                                                                                     |
+| Icon           | Lucide icon vor dem Titel (Dokumente: `file-text`, Notizen: `pencil-line`, Plaene: `clipboard-list`) |
 
 ### Eintrags-Zeile
 
 | Eigenschaft       | Wert                                                             |
 | ----------------- | ---------------------------------------------------------------- |
 | Layout            | Flexbox, `justify-content: space-between`, `align-items: center` |
-| Padding           | `0.75rem 1rem`                                                   |
-| Border-Bottom     | `1px solid #e2e8f0`                                              |
-| Hover-Hintergrund | `#f7fafc`                                                        |
+| Padding           | compact row padding                                              |
+| Border-Bottom     | border color                                                     |
+| Hover-Hintergrund | muted background                                                 |
 
 #### Linke Seite (Name + Datum)
 
-- **Name:** Schriftgroesse `1rem`, Farbe `#2d3748`, Fett
-- **Datum:** Schriftgroesse `0.85rem`, Farbe `#718096`, formatiert mit `date-fns` (z.B. "14. Maerz 2026")
+- **Name:** base text size, foreground color, bold
+- **Datum:** small text, muted foreground, formatiert mit `@internationalized/date` (z.B. "14. Maerz 2026")
 
 #### Rechte Seite (Aktions-Buttons)
 
-3 Buttons nebeneinander mit `gap: 0.5rem`:
+3 Buttons nebeneinander mit gap-2:
 
-1. **Bearbeiten** (Blau)
-   - Hintergrund: `#667eea`
-   - Text: Weiss
-   - Icon: Stift-Symbol
-   - Border-Radius: `6px`
-   - Padding: `0.4rem 0.8rem`
-
-2. **Loeschen** (Rot)
-   - Hintergrund: `#e53e3e`
-   - Text: Weiss
-   - Icon: Muelleimer-Symbol
-   - Border-Radius: `6px`
-   - Padding: `0.4rem 0.8rem`
-
-3. **Download** (Gruen)
-   - Hintergrund: `#38a169`
-   - Text: Weiss
-   - Icon: Download-Symbol
-   - Border-Radius: `6px`
-   - Padding: `0.4rem 0.8rem`
+1. **Bearbeiten** — primary button (outline variant), Lucide icon: `pencil`
+2. **Loeschen** — destructive button, Lucide icon: `trash-2`
+3. **Download** — outline button (success intent), Lucide icon: `download`
    - Dropdown bei Klick: "Word (.docx)" und "PDF (.pdf)"
+
+All buttons use compact button padding.
 
 ### Leerer Zustand
 
 Wenn ein Abschnitt keine Eintraege hat:
 
 - Zentrierter Text: "Keine gespeicherten [Typ] vorhanden."
-- Farbe: `#a0aec0`
-- Schriftgroesse: `0.95rem`
-- Padding: `2rem`
+- Farbe: muted foreground
+- Schriftgroesse: small text
+- Padding: generous empty-state padding
 
 ## Interaktionen
 
 ### Daten laden
 
 1. Beim Seitenaufruf werden alle drei Remote Functions parallel aufgerufen:
-   - `getDocuments()` -> Laedt gespeicherte Auditfragen & Dokumente
-   - `getNotes()` -> Laedt gespeicherte Auditnotizen
-   - `getPlans()` -> Laedt gespeicherte Auditplaene
+   - `getPlans(page, limit)` -> Laedt Auditplaene aus `audit_plans` (Spec 09), nur Summary-Felder (paginiert)
+   - `getNotes(page, limit)` -> Laedt Auditnotizen aus `audit_notes` (Spec 10), nur Summary-Felder (paginiert)
+   - `getQuestions(page, limit)` -> Laedt Auditfragen aus `saved_audit_questions` (Spec 11), nur Summary-Felder (paginiert)
 2. Waehrend des Ladens wird ein Skeleton-Loader angezeigt (3 Platzhalter-Bloecke)
 3. Die Ergebnisse werden in reaktive `$state`-Variablen gespeichert
+4. Beim Scrollen werden weitere Eintraege nachgeladen (infinite scroll oder Pagination-Buttons)
 
 ### Bearbeiten
 
 1. Klick auf "Bearbeiten" -> Navigation zur entsprechenden Generator-Seite
 2. Die `id` des Eintrags wird als URL-Parameter mitgegeben:
-   - Dokument: `/audit-questions?edit={id}`
-   - Notiz: `/notes-generator?edit={id}`
-   - Plan: `/plan-generator?edit={id}`
+   - Plan: `/plan-generator?edit={id}` (Spec 09: AuditPlan)
+   - Notiz: `/notes-generator?edit={id}` (Spec 10: AuditNotes)
+   - Auditfragen: `/audit-questions?edit={id}` (Spec 11: SavedAuditQuestions)
 3. Die Generator-Seite laedt den Eintrag per Remote Function und befuellt das Formular
 
 ### Loeschen
 
-1. Klick auf "Loeschen" -> Bestaetigungsdialog oeffnet sich (Bits UI `AlertDialog`)
+1. Klick auf "Loeschen" -> Bestaetigungsdialog oeffnet sich (ShadCN `AlertDialog`)
 2. Dialog-Text: "Moechten Sie '[Name]' wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden."
-3. Buttons: "Abbrechen" (grau) und "Loeschen" (rot)
-4. Bei Bestaetigung: Remote Function `delete[Type](id)` wird aufgerufen
+3. Buttons: outline button "Abbrechen" und destructive button "Loeschen"
+4. Bei Bestaetigung: Remote Function `deletePlan(id)` / `deleteNote(id)` / `deleteQuestion(id)` wird aufgerufen
 5. Nach erfolgreichem Loeschen: Eintrag wird aus der lokalen `$state`-Liste entfernt (optimistic UI)
 6. Toast-Benachrichtigung: "Erfolgreich geloescht"
 
 ### Download
 
-1. Klick auf "Download" -> Dropdown-Menue erscheint (Bits UI `DropdownMenu`)
+1. Klick auf "Download" -> Dropdown-Menue erscheint (ShadCN `DropdownMenu`)
 2. Optionen: "Word (.docx)" und "PDF (.pdf)"
 3. Bei Auswahl:
-   - Word: `content`-JSON wird an die `docx`-Bibliothek uebergeben, Datei wird generiert und heruntergeladen
-   - PDF: Content wird serverseitig als PDF gerendert und als Download bereitgestellt
+   - Word: Normalized data is loaded from the respective tables and passed to the `docx` library for generation
+   - PDF: Data is loaded from the respective tables, rendered as PDF server-side and provided as download
 4. Dateiname: `{name}_{datum}.{format}`
 
 ## Abhaengigkeiten
 
 - **Spec 01 (Architektur):** Remote Functions, Drizzle-Schema, i18n
 - **Spec 02 (Layout):** Seite wird innerhalb des App-Layouts gerendert
-- **Bits UI:** `AlertDialog` (Loeschen-Bestaetigung), `DropdownMenu` (Download-Optionen)
+- **ShadCN:** `AlertDialog` (Loeschen-Bestaetigung), `DropdownMenu` (Download-Optionen)
 - **docx:** Word-Dokument-Generierung
-- **date-fns:** Datumsformatierung in der Eintragsliste
+- **@internationalized/date:** Datumsformatierung in der Eintragsliste
 - **Abhaengig von Generator-Modulen:** Die Bearbeiten-Funktion navigiert zu den jeweiligen Generator-Seiten (Auditplan, Auditnotizen, Auditfragen)

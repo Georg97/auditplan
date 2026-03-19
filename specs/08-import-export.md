@@ -2,6 +2,9 @@
 
 ## Datenmodell
 
+> **Hinweis:** Export/Import arbeitet mit normalisierten Tabellen. Export JOINt ueber alle
+> Relationen, Import fuegt in korrekter Reihenfolge ein (Parent → Child) mit Transaction.
+
 ```typescript
 // ──────────────────────────────────────────────
 // Export-Datenstruktur (JSON)
@@ -11,34 +14,123 @@
  * Vollstaendiger Datenexport.
  * Dateiname: auditplan_backup_{timestamp}.json
  * Beispiel: auditplan_backup_2026-03-18T14-30-00.json
+ *
+ * Der Export JOINt ueber alle Relationen und baut daraus
+ * ein vollstaendiges JSON. Jeder Schluessel entspricht einer
+ * normalisierten Datenbanktabelle (keine JSON-Blobs).
  */
 interface ExportDaten {
 	version: string; // Schema-Version, z.B. "1.0"
 	exportiertAm: string; // ISO-DateTime
 	benutzer: string; // organizationId oder Anzeigename
 
-	// Alle exportierbaren Datenschluessel
+	// ── Parent-Tabellen ──
 	audits: AuditRow[];
 	auditors: AuditorRow[];
-	saved_plans: SavedPlanRow[];
-	saved_notes: SavedNotesRow[];
 	calendar_entries: CalendarEntryRow[];
-	actions: ActionRow[];
 	settings: SettingsRow[];
 	saved_audits: SavedAuditRow[];
-	saved_audit_questions: SavedAuditQuestionRow[];
+
+	// ── Audit Child-Tabellen (Spec 06) ──
+	audit_normen: AuditNormRow[]; // FK → audits (Junction: Audit <-> Normen)
+	audit_team_members: AuditTeamMemberRow[]; // FK → audits, auditors (Junction: Audit <-> Auditoren)
+	audit_dateien: AuditDateiRow[]; // FK → audits (metadata only, not file content)
+	audit_reports: AuditReportRow[]; // FK → saved_audits (Spec 11)
+
+	// ── Auditplan (Spec 09) ──
+	audit_plans: AuditPlanRow[]; // Parent
+	audit_plan_grunddaten: AuditPlanGrunddatenRow[]; // 1:1 → audit_plans
+	audit_plan_normen: AuditPlanNormRow[]; // n:1 → audit_plans
+	audit_plan_standorte: AuditPlanStandortRow[]; // n:1 → audit_plans
+	audit_plan_revisionen: AuditPlanRevisionRow[]; // n:1 → audit_plans
+	audit_plan_team_mitglieder: AuditPlanTeamMitgliedRow[]; // n:1 → audit_plans
+	audit_plan_auditzeiten: AuditPlanAuditzeitRow[]; // n:1 → audit_plans
+	audit_plan_auditzeit_zeilen: AuditPlanAuditzeitZeileRow[]; // n:1 → audit_plan_auditzeiten
+	audit_plan_blocks: AuditPlanBlockRow[]; // n:1 → audit_plans
+	audit_plan_block_zeilen: AuditPlanBlockZeileRow[]; // n:1 → audit_plan_blocks
+	audit_plan_block_zeilen_notizen: AuditPlanBlockZeileNotizenRow[]; // 1:1 → audit_plan_block_zeilen
+	audit_plan_block_zeilen_toggles: AuditPlanBlockZeileTogglesRow[]; // 1:1 → audit_plan_block_zeilen
+	audit_plan_block_zeilen_normkapitel: AuditPlanBlockZeileNormkapitelRow[]; // n:n → audit_plan_block_zeilen
+	audit_plan_block_zeilen_themen: AuditPlanBlockZeileThemenRow[]; // n:n → audit_plan_block_zeilen
+	audit_plan_zn_nummern: AuditPlanZnNummerRow[]; // n:1 → audit_plans
+
+	// ── Auditnotizen (Spec 10) ──
+	audit_notes: AuditNotesRow[]; // Parent
+	notizen_blocks: NotizenBlockRow[]; // n:1 → audit_notes
+	notizen_block_toggles: NotizenBlockTogglesRow[]; // 1:1 → notizen_blocks
+	notizen_block_qhse_dokumente: NotizenBlockQhseDokumentRow[]; // n:1 → notizen_blocks
+	notizen_block_bewertungen: NotizenBlockBewertungRow[]; // n:1 → notizen_blocks
+	notizen_block_bewertung_kapitel: NotizenBlockBewertungKapitelRow[]; // n:n → notizen_block_bewertungen
+	notizen_block_normkapitel: NotizenBlockNormkapitelRow[]; // n:n → notizen_blocks
+
+	// ── Auditfragen (Spec 11) ──
+	saved_audit_questions: SavedAuditQuestionRow[]; // Header-Daten (flache Spalten)
+	saved_question_entries: SavedQuestionEntryRow[]; // Child: einzelne Fragen (FK → saved_audit_questions)
+	saved_question_documents: SavedQuestionDocumentRow[]; // Child: Dokumente (FK → saved_audit_questions)
+
+	// ── Massnahmenplan (Spec 11) ──
+	actions: ActionRow[]; // FK → audits (optional)
 }
 
 /**
  * Schluessel, die im Export enthalten sind.
- * Jeder Schluessel entspricht einer Datenbanktabelle.
+ * Jeder Schluessel entspricht einer normalisierten Datenbanktabelle.
  */
-type ExportSchluessel = 'audits' | 'auditors' | 'saved_plans' | 'saved_notes' | 'calendar_entries' | 'actions' | 'settings' | 'saved_audits' | 'saved_audit_questions';
+type ExportSchluessel =
+	// Parent-Tabellen
+	| 'audits'
+	| 'auditors'
+	| 'calendar_entries'
+	| 'settings'
+	| 'saved_audits'
+	// Audit children (Spec 06)
+	| 'audit_normen'
+	| 'audit_team_members'
+	| 'audit_dateien'
+	| 'audit_reports'
+	// Auditplan (Spec 09)
+	| 'audit_plans'
+	| 'audit_plan_grunddaten'
+	| 'audit_plan_normen'
+	| 'audit_plan_standorte'
+	| 'audit_plan_revisionen'
+	| 'audit_plan_team_mitglieder'
+	| 'audit_plan_auditzeiten'
+	| 'audit_plan_auditzeit_zeilen'
+	| 'audit_plan_blocks'
+	| 'audit_plan_block_zeilen'
+	| 'audit_plan_block_zeilen_notizen'
+	| 'audit_plan_block_zeilen_toggles'
+	| 'audit_plan_block_zeilen_normkapitel'
+	| 'audit_plan_block_zeilen_themen'
+	| 'audit_plan_zn_nummern'
+	// Auditnotizen (Spec 10)
+	| 'audit_notes'
+	| 'notizen_blocks'
+	| 'notizen_block_toggles'
+	| 'notizen_block_qhse_dokumente'
+	| 'notizen_block_bewertungen'
+	| 'notizen_block_bewertung_kapitel'
+	| 'notizen_block_normkapitel'
+	// Auditfragen (Spec 11)
+	| 'saved_audit_questions'
+	| 'saved_question_entries'
+	| 'saved_question_documents'
+	// Massnahmenplan (Spec 11)
+	| 'actions';
 
 // ──────────────────────────────────────────────
 // Import-Validierung
 // ──────────────────────────────────────────────
 
+/**
+ * Import fuegt Datensaetze in korrekter Reihenfolge ein:
+ *   1. Parent-Tabellen (audits, auditors, saved_plans, ...)
+ *   2. Child-Tabellen (saved_question_entries, saved_question_documents, actions)
+ *
+ * Alle Inserts laufen innerhalb einer einzigen DB-Transaction.
+ * Bei Fehler: Rollback der gesamten Transaction.
+ */
 interface ImportErgebnis {
 	erfolgreich: boolean;
 	importierteSchluessel: ExportSchluessel[];
@@ -46,6 +138,64 @@ interface ImportErgebnis {
 	fehler: string[]; // Validierungsfehler
 	anzahl: Record<ExportSchluessel, number>; // Importierte Datensaetze pro Schluessel
 }
+
+// ──────────────────────────────────────────────
+// Import-Reihenfolge (Parent → Child)
+// ──────────────────────────────────────────────
+
+/**
+ * Definiert die Einfuegereihenfolge fuer den Import.
+ * Parent-Tabellen werden zuerst eingefuegt, damit FK-Constraints
+ * der Child-Tabellen erfuellt sind.
+ */
+const IMPORT_ORDER: ExportSchluessel[] = [
+	// 1. Unabhaengige Parent-Tabellen
+	'audits',
+	'auditors',
+	'calendar_entries',
+	'settings',
+	'saved_audits',
+
+	// 2. Audit children (FK → audits, auditors)
+	'audit_normen',
+	'audit_team_members',
+	'audit_dateien',
+	'audit_reports',
+
+	// 3. Auditplan hierarchy (Spec 09)
+	'audit_plans', // Parent
+	'audit_plan_grunddaten', // 1:1 → audit_plans
+	'audit_plan_normen', // n:1 → audit_plans
+	'audit_plan_standorte', // n:1 → audit_plans
+	'audit_plan_revisionen', // n:1 → audit_plans
+	'audit_plan_team_mitglieder', // n:1 → audit_plans
+	'audit_plan_zn_nummern', // n:1 → audit_plans
+	'audit_plan_auditzeiten', // n:1 → audit_plans
+	'audit_plan_auditzeit_zeilen', // n:1 → audit_plan_auditzeiten
+	'audit_plan_blocks', // n:1 → audit_plans
+	'audit_plan_block_zeilen', // n:1 → audit_plan_blocks
+	'audit_plan_block_zeilen_notizen', // 1:1 → audit_plan_block_zeilen
+	'audit_plan_block_zeilen_toggles', // 1:1 → audit_plan_block_zeilen
+	'audit_plan_block_zeilen_normkapitel', // n:n → audit_plan_block_zeilen
+	'audit_plan_block_zeilen_themen', // n:n → audit_plan_block_zeilen
+
+	// 4. Auditnotizen hierarchy (Spec 10)
+	'audit_notes', // Parent
+	'notizen_blocks', // n:1 → audit_notes
+	'notizen_block_toggles', // 1:1 → notizen_blocks
+	'notizen_block_qhse_dokumente', // n:1 → notizen_blocks
+	'notizen_block_bewertungen', // n:1 → notizen_blocks
+	'notizen_block_bewertung_kapitel', // n:n → notizen_block_bewertungen
+	'notizen_block_normkapitel', // n:n → notizen_blocks
+
+	// 5. Auditfragen hierarchy (Spec 11)
+	'saved_audit_questions',
+	'saved_question_entries', // FK → saved_audit_questions
+	'saved_question_documents', // FK → saved_audit_questions
+
+	// 6. Massnahmen (optionaler FK → audits)
+	'actions'
+];
 
 // ──────────────────────────────────────────────
 // CSV-Export
@@ -80,12 +230,7 @@ interface ImportExportState {
 
 ### Layout
 
-Die Seite zeigt 3 Karten in einem responsiven Grid:
-
-```
-grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
-gap: 1.5rem
-```
+Die Seite zeigt 3 Karten in einem responsiven Grid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` mit `gap-6`.
 
 Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Beschreibungstext, Aktions-Button.
 
@@ -115,17 +260,17 @@ Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Besc
 
 ### Allgemeine Gestaltung
 
-- Karten haben gleiche Hoehe (CSS `align-items: stretch` auf dem Grid).
-- Ladeindikator (Spinner) auf dem jeweiligen Button waehrend der Operation.
-- Fehlermeldungen in roter Infobox unterhalb des Buttons.
+- Karten haben gleiche Hoehe (Grid `items-stretch`).
+- ShadCN Button loading state with Lucide Loader2 icon on the active button during the operation.
+- Fehlermeldungen: use toast error or ShadCN Alert destructive variant below the button.
 
 ## Interaktionen
 
 ### JSON-Export
 
 1. Benutzer klickt **"JSON exportieren"**.
-2. Button zeigt Lade-Spinner.
-3. Server-Call (`exportAllData`): Laedt alle 9 Datenschluessel aus der Datenbank fuer den aktuellen Benutzer.
+2. Button zeigt Loading-State (ShadCN Button mit Lucide Loader2 Icon).
+3. Server-Call (`exportAllData`): Laedt alle Datenschluessel aus der Datenbank fuer den aktuellen Benutzer.
 4. Server gibt das vollstaendige `ExportDaten`-Objekt zurueck.
 5. Client erstellt eine JSON-Datei:
    ```
@@ -147,7 +292,7 @@ Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Besc
    - Ist es gueltiges JSON?
    - Enthaelt es mindestens einen bekannten Schluessel?
    - Sind die Werte Arrays?
-5. Bei Validierungsfehler: Fehlermeldung anzeigen, Abbruch.
+5. Bei Validierungsfehler: Fehlermeldung anzeigen (toast error oder ShadCN Alert destructive), Abbruch.
 6. Bei gueltigem JSON: Server-Call (`importData`) mit dem geparsten Objekt.
 7. Server validiert jeden Datensatz einzeln und schreibt gueltige Eintraege in die DB.
 8. Server gibt `ImportErgebnis` zurueck.
@@ -159,7 +304,7 @@ Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Besc
 ### CSV-Export
 
 1. Benutzer klickt **"CSV exportieren"**.
-2. Button zeigt Lade-Spinner.
+2. Button zeigt Loading-State (ShadCN Button mit Lucide Loader2 Icon).
 3. Server-Call (`getAuditsForCsvExport`): Laedt alle Audits des Benutzers.
 4. Client konvertiert die Audit-Daten in CSV-Format:
    - **UTF-8 BOM** (`\uFEFF`) am Dateianfang fuer korrekte Umlaute in Excel.
@@ -180,15 +325,16 @@ Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Besc
 
 ### Intern (Projekt)
 
-| Abhaengigkeit            | Beschreibung                                                 |
-| ------------------------ | ------------------------------------------------------------ |
-| Alle 9 Datenbanktabellen | Export liest alle Tabellen, Import schreibt in alle Tabellen |
-| better-auth Session      | `organizationId` fuer Datenzuordnung                         |
-| Drizzle ORM Schema       | Zugriff auf alle relevanten Tabellen                         |
-| Spec 06 (Audits)         | `audits`, `auditors` Tabellen                                |
-| Spec 07 (Kalender)       | `calendar_entries` Tabelle                                   |
-| Spec 09 (Auditplan)      | `saved_plans` Tabelle                                        |
-| Spec 10 (Notizen)        | `saved_notes` Tabelle                                        |
+| Abhaengigkeit             | Beschreibung                                                                                              |
+| ------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Alle Datenbanktabellen    | Export liest alle Tabellen, Import schreibt in alle Tabellen                                              |
+| better-auth Session       | `organizationId` fuer Datenzuordnung                                                                      |
+| Drizzle ORM Schema        | Zugriff auf alle relevanten Tabellen                                                                      |
+| Spec 06 (Audits)          | `audits`, `auditors`, `audit_normen`, `audit_team_members`, `audit_dateien`                               |
+| Spec 07 (Kalender)        | `calendar_entries` Tabelle                                                                                |
+| Spec 09 (Auditplan)       | `audit_plans` + 14 child tables                                                                           |
+| Spec 10 (Notizen)         | `audit_notes` + 6 child tables                                                                            |
+| Spec 11 (Berichte/Fragen) | `audit_reports`, `saved_audit_questions`, `saved_question_entries`, `saved_question_documents`, `actions` |
 
 ### Extern (Bibliotheken)
 

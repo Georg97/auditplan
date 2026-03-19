@@ -84,6 +84,31 @@
 - Tests mock the DB via vitest aliases — no real DB needed during `make test`
 - For testing Drizzle query logic: mock `$lib/server/db` with `vi.mock()`
 
+### Saving Normalized Data (multi-table transactions)
+
+- Complex entities (audit plans, notes) span many related tables
+- **Save strategy:** Use `db.transaction()` with DELETE-then-INSERT for child tables. On save: delete all children for the parent ID, then re-insert from the current form state. Simpler and more reliable than diffing.
+- **Dynamic lists** (standorte, revisionen, ZN-Nummern, blocks): accumulate changes in client `$state`, persist all on "Speichern" click. Do NOT write to DB on every add/remove — batch save.
+- **Position fields:** Recalculate all positions sequentially (0, 1, 2...) on save, not on each drag operation.
+
+### File Downloads (Word export, PDF, CSV)
+
+- Generate files **server-side** using a `+server.ts` endpoint (NOT a remote function — remote functions can't return binary streams)
+- Pattern: `src/routes/(app)/api/export/auditplan/+server.ts` → reads from DB, generates .docx via `docx` library, returns `new Response(blob, { headers: { 'Content-Disposition': '...' } })`
+- Client triggers download via `<a href="/api/export/auditplan?id=xxx" download>` or `window.open()`
+
+### Logo and Image Storage
+
+- Logos (audit plan header, notes header) are stored as Base64 in the DB — this is acceptable for small images (<500KB)
+- For file attachments (audit documents, uploads >1MB), store metadata in DB and file content in object storage (R2/S3) if available, otherwise Base64 is acceptable for MVP
+
+### i18n for Enum/Constant Labels
+
+- TypeScript enum VALUES are English internal keys (e.g. `'initial_certification'`)
+- Display labels come from `i18n.t()` lookups: `i18n.t('auditart.initial_certification')` → "Erstzertifizierung"
+- Static arrays of options (ORGANISATIONSEINHEITEN, ISO_NORMEN, AuditartOptions) are defined as TS constants with `id` fields. Labels are i18n keys, resolved at render time.
+- The knowledge database (`src/lib/data/`) contains domain-specific content (descriptions, summaries) that is NOT localized — it's German professional audit text. Only UI chrome is i18n'd.
+
 ### Forms
 
 - ALL forms MUST use SvelteKit form actions + SuperForms + Zod validation
@@ -168,6 +193,7 @@
 - **Fonts:** `font-display` (Plus Jakarta Sans — headings), `font-body` (DM Sans — text). Use via `style="font-family: var(--font-display)"` or Tailwind classes.
 - **Animations available:** `animate-fade-up`, `animate-float-slow`, `animate-float-slower`, `animate-slide-in-left`, `animate-pulse-glow`, `animate-shimmer` (defined in layout.css)
 - **Grain overlay:** Apply `grain` class for subtle texture on hero sections
+- **App layout:** Sidebar + Content (SaaS standard). Desktop: permanent sidebar left, content right. Mobile: hamburger → Sheet overlay sidebar. Uses ShadCN `sidebar` component.
 - **Page layout pattern:** max-width container with consistent padding:
   ```svelte
   <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -202,6 +228,40 @@
 ### Off-Limits Files
 
 - **NEVER read `requirements.md`** — it contains outdated patterns (localStorage, German type values, navigateToPage()). ALL requirements are already translated into `specs/*.md` files. Only read spec files.
+
+### Spec Trust Levels
+
+Specs were derived from a localStorage-based vanilla JS prototype. They have been cleaned up but may still contain anti-patterns. Trust levels:
+
+**Authoritative (follow exactly):**
+
+- `specs/01-architektur.md` — architecture patterns, code examples, data layer rules
+- `specs/13-wissensdatenbank.md` — static knowledge data structure
+
+**Authoritative for data models + business logic, loose on UI:**
+
+- `specs/09-auditplan-generator.md` — normalized DB tables are correct, UI descriptions are goals not prescriptions
+- `specs/10-notizen-generator.md` — same: DB tables correct, UI is guidance
+- `specs/11-berichte-auditfragen.md` — same
+- `specs/12-word-export.md` — Word document structure is exact (hex colors OK for DOCX)
+
+**Functional goals (interpret with engineering judgment):**
+
+- `specs/02-layout-header-nav.md` — describes WHAT the header/nav should contain, not HOW to style it
+- `specs/03-uebersicht.md` through `specs/08-import-export.md` — describe features and user flows; use modern patterns for implementation
+- `specs/14-einstellungen-persistenz.md` — settings features are correct, theme system uses mode-watcher + OKLCH
+
+**When a spec conflicts with good engineering:**
+
+- Prefer normalization over JSON blobs
+- Prefer server-side queries over client-side filtering
+- Prefer pagination over loading all records
+- Prefer FK constraints over free-text references
+- Prefer UUID over timestamp IDs
+- Prefer object storage references over Base64 in DB
+- Prefer ShadCN components over hand-written UI
+- Prefer the frontend-design skill over spec visual details
+- If in doubt, follow `01-architektur.md` patterns — they override all other specs
 
 ## Learnings
 
