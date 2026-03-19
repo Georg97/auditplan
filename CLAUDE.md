@@ -275,4 +275,6 @@ Specs were derived from a localStorage-based vanilla JS prototype. They have bee
 
 ## Learnings
 
-(Ralph adds discovered patterns and gotchas here)
+- **shadcn-svelte CLI:** Use `@latest` not `@next` for the CLI. The `--no-git` flag doesn't exist; use `-y -o` (yes + overwrite) for non-interactive installs: `bunx shadcn-svelte@latest add <components> -y -o`
+- **ShadCN installs may overwrite existing components** (button, input, separator, tooltip were overwritten). The updated button no longer exports `ButtonPropsWithoutHTML` — use `ButtonSize` and `ButtonVariant` instead.
+- **ESLint config:** `.vercel/` build output must be in ignores. ShadCN UI components need relaxed rules (no-navigation-without-resolve, no-useless-assignment, no-at-html-tags off) since they are generated code.
