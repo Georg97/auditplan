@@ -69,15 +69,15 @@
 
 ## Phase 7: Import/Export
 
-- [ ] IE01 [IFACE] Import/Export-Funktionen — Export-JSON-Schema, CSV-Generierung, Import-Validierung — Specs: 08-import-export
-- [ ] IE02 [TEST] Import/Export — JSON-Roundtrip, CSV-Format mit BOM, Fehlerbehandlung — Specs: 08-import-export
-- [ ] IE03 [IMPL] Import/Export — 3 Karten-Layout (Export JSON, Import JSON, CSV Export), Dateidownload/-upload — Specs: 08-import-export
+- [x] IE01 [IFACE] Import/Export-Funktionen — Export-JSON-Schema, CSV-Generierung, Import-Validierung — Specs: 08-import-export
+- [x] IE02 [TEST] Import/Export — JSON-Roundtrip, CSV-Format mit BOM, Fehlerbehandlung — Specs: 08-import-export
+- [x] IE03 [IMPL] Import/Export — 3 Karten-Layout (Export JSON, Import JSON, CSV Export), Dateidownload/-upload — Specs: 08-import-export
 
 ## Phase 8: Einstellungen
 
-- [ ] E01 [IFACE] Einstellungen-Datenmodell — Theme-Typen (18 Themes), Sprach-Config, Kompaktansicht — Specs: 14-einstellungen-persistenz
-- [ ] E02 [TEST] Einstellungen — Theme-Wechsel, Sprache, Standardwerte, Daten-Management — Specs: 14-einstellungen-persistenz
-- [ ] E03 [IMPL] Einstellungen — Modal mit Tabs (Global: 18 Theme-Farbvorschauen, Individuell: 3 Bereichsfarben), Kompaktansicht, Benachrichtigungen, Sprachauswahl, Standard-Auditor/-Abteilung, Daten-Management (Export/Import/Löschen) — Specs: 14-einstellungen-persistenz
+- [x] E01 [IFACE] Einstellungen-Datenmodell — Theme-Typen (18 Themes), Sprach-Config, Kompaktansicht — Specs: 14-einstellungen-persistenz
+- [x] E02 [TEST] Einstellungen — Theme-Wechsel, Sprache, Standardwerte, Daten-Management — Specs: 14-einstellungen-persistenz
+- [x] E03 [IMPL] Einstellungen — Modal mit Tabs (Global: 18 Theme-Farbvorschauen, Individuell: 3 Bereichsfarben), Kompaktansicht, Benachrichtigungen, Sprachauswahl, Standard-Auditor/-Abteilung, Daten-Management (Export/Import/Löschen) — Specs: 14-einstellungen-persistenz
 
 ## Phase 9: Auditplan-Generator (Kernmodul)
 

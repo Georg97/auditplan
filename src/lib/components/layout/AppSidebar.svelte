@@ -63,10 +63,10 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton tooltipContent={i18n.t('nav.settings')}>
 					{#snippet child({ props })}
-						<button {...props}>
+						<a href="/settings" {...props}>
 							<Settings />
 							<span>{i18n.t('nav.settings')}</span>
-						</button>
+						</a>
 					{/snippet}
 				</Sidebar.MenuButton>
 			</Sidebar.MenuItem>
