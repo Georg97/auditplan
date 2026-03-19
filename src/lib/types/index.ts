@@ -7,3 +7,4 @@ export * from './saved';
 export * from './settings';
 export * from './dashboard';
 export * from './import-export';
+export * from './plan-generator';
