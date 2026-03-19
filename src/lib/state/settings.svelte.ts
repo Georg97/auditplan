@@ -1,5 +1,5 @@
 import type { SupportedLocale } from '$lib/i18n/i18n.svelte';
-import { type ThemeName, type IndividualColor, type AppSettings, defaultSettings } from '$lib/types/settings';
+import { type ThemeName, type AppSettings, defaultSettings } from '$lib/types/settings';
 
 export class SettingsState {
 	theme = $state<ThemeName>(defaultSettings.theme);
