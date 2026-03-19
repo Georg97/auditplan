@@ -19,6 +19,7 @@ $TotalInputTokens = 0
 $TotalOutputTokens = 0
 $TotalCacheRead = 0
 $TotalCacheCreation = 0
+$IterationStats = @()
 
 Write-Host "=== Ralph Loop Starting ===" -ForegroundColor Cyan
 Write-Host "Max iterations: $MaxIterations (0=infinite)"
@@ -28,23 +29,21 @@ Write-Host ""
 
 while ($true) {
     $Iteration++
-    $Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-    $LogFile = Join-Path $LogDir "iteration_${Iteration}_${Timestamp}.jsonl"
     $IterStart = Get-Date
 
     Write-Host "--- Iteration $Iteration @ $IterStart ---" -ForegroundColor Yellow
 
     try {
         $PromptContent = Get-Content -Path (Join-Path $ScriptDir "PROMPT.md") -Raw
-        $PromptContent | claude -p --dangerously-skip-permissions --model $Model --output-format stream-json --verbose 2>&1 | Tee-Object -FilePath $LogFile
+        $Output = $PromptContent | claude -p --dangerously-skip-permissions --model $Model --output-format stream-json --verbose 2>&1
 
-        # Parse token usage from the stream-json output
+        # Parse token usage from the stream-json output (in memory, no file)
         $IterInput = 0
         $IterOutput = 0
         $IterCacheRead = 0
         $IterCacheCreation = 0
 
-        Get-Content $LogFile | ForEach-Object {
+        $Output | ForEach-Object {
             try {
                 $line = $_ | ConvertFrom-Json -ErrorAction SilentlyContinue
                 if ($line.type -eq "result" -and $line.usage) {
@@ -63,12 +62,22 @@ while ($true) {
 
         $IterDuration = (Get-Date) - $IterStart
 
+        # Track per-iteration stats for the summary
+        $IterationStats += @{
+            Iteration = $Iteration
+            Start     = $IterStart
+            Duration  = $IterDuration
+            Input     = $IterInput
+            Output    = $IterOutput
+            CacheRead = $IterCacheRead
+            CacheCreate = $IterCacheCreation
+        }
+
         Write-Host "--- Iteration $Iteration completed in $($IterDuration.ToString('hh\:mm\:ss')) ---" -ForegroundColor Green
         Write-Host "    Tokens: input=$IterInput output=$IterOutput cache_read=$IterCacheRead cache_create=$IterCacheCreation" -ForegroundColor DarkCyan
     }
     catch {
         Write-Host "--- Iteration $Iteration exited with error (continuing) ---" -ForegroundColor Red
-        $_.Exception.Message | Out-File -Append -FilePath $LogFile
     }
 
     # Check if all tasks are complete
@@ -106,42 +115,52 @@ $CacheCreateCost = ($TotalCacheCreation / 1000000) * 6.25
 $TotalCost = $InputCost + $OutputCost + $CacheReadCost + $CacheCreateCost
 
 # Determine next run number
-$ExistingLogs = Get-ChildItem -Path $LogDir -Filter "loop-run-*.log" -ErrorAction SilentlyContinue
+$ExistingRuns = Get-ChildItem -Path $LogDir -Filter "run-*.txt" -ErrorAction SilentlyContinue
 $RunNumber = 1
-if ($ExistingLogs) {
-    $RunNumber = ($ExistingLogs | ForEach-Object {
-        if ($_.BaseName -match 'loop-run-(\d+)') { [int]$Matches[1] }
+if ($ExistingRuns) {
+    $RunNumber = ($ExistingRuns | ForEach-Object {
+        if ($_.BaseName -match 'run-(\d+)') { [int]$Matches[1] }
     } | Measure-Object -Maximum).Maximum + 1
 }
-$RunLogFile = Join-Path $LogDir "loop-run-${RunNumber}.log"
+$RunFile = Join-Path $LogDir "run-${RunNumber}.txt"
+
+# Build per-iteration breakdown
+$IterLines = ""
+foreach ($s in $IterationStats) {
+    $IterCost = (($s.Input / 1e6) * 5.0) + (($s.Output / 1e6) * 25.0) + (($s.CacheRead / 1e6) * 0.50) + (($s.CacheCreate / 1e6) * 6.25)
+    $IterLines += "  #$($s.Iteration)  $($s.Duration.ToString('hh\:mm\:ss'))  in=$($s.Input.ToString('N0'))  out=$($s.Output.ToString('N0'))  ~`$$($IterCost.ToString('F2'))`n"
+}
 
 # Build summary content
 $Summary = @"
-============================================
-  Ralph Loop Run #$RunNumber
-============================================
-  Started:             $($LoopStart.ToString('yyyy-MM-dd HH:mm:ss'))
-  Ended:               $($LoopEnd.ToString('yyyy-MM-dd HH:mm:ss'))
-  Duration:            $($LoopDuration.ToString('hh\:mm\:ss'))
+Ralph Loop — Run #$RunNumber
+========================================
+Model:       $Model
+Started:     $($LoopStart.ToString('yyyy-MM-dd HH:mm:ss'))
+Ended:       $($LoopEnd.ToString('yyyy-MM-dd HH:mm:ss'))
+Duration:    $($LoopDuration.ToString('hh\:mm\:ss'))
+Iterations:  $Iteration
 
-  Iterations:          $Iteration
-  Model:               $Model
+Tokens
+  Input:          $($TotalInputTokens.ToString('N0'))
+  Output:         $($TotalOutputTokens.ToString('N0'))
+  Cache read:     $($TotalCacheRead.ToString('N0'))
+  Cache create:   $($TotalCacheCreation.ToString('N0'))
 
-  Total input tokens:  $($TotalInputTokens.ToString('N0'))
-  Total output tokens: $($TotalOutputTokens.ToString('N0'))
-  Total cache read:    $($TotalCacheRead.ToString('N0'))
-  Total cache create:  $($TotalCacheCreation.ToString('N0'))
+Cost (estimated, Opus pricing)
+  Input:          `$$($InputCost.ToString('F4'))
+  Output:         `$$($OutputCost.ToString('F4'))
+  Cache read:     `$$($CacheReadCost.ToString('F4'))
+  Cache create:   `$$($CacheCreateCost.ToString('F4'))
+  ─────────────────────
+  Total:          `$$($TotalCost.ToString('F2'))
 
-  Estimated API cost:  `$$($TotalCost.ToString('F2')) (Opus pricing)
-    Input:             `$$($InputCost.ToString('F4'))
-    Output:            `$$($OutputCost.ToString('F4'))
-    Cache read:        `$$($CacheReadCost.ToString('F4'))
-    Cache create:      `$$($CacheCreateCost.ToString('F4'))
-============================================
+Iterations
+$IterLines========================================
 "@
 
-# Write to log file
-$Summary | Out-File -FilePath $RunLogFile -Encoding utf8
+# Write to file
+$Summary | Out-File -FilePath $RunFile -Encoding utf8
 Write-Host ""
 Write-Host $Summary -ForegroundColor Cyan
-Write-Host "  Log written to: $RunLogFile" -ForegroundColor DarkGray
+Write-Host "  Summary: $RunFile" -ForegroundColor DarkGray
