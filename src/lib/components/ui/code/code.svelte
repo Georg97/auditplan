@@ -1,3 +1,4 @@
+<!-- eslint-disable svelte/no-at-html-tags -- code component intentionally renders syntax-highlighted HTML -->
 <script lang="ts">
 	import { cn } from '$lib/utils.js';
 	import { codeVariants } from '.';

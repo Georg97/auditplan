@@ -4,7 +4,7 @@
 	import { useCodeCopyButton } from './code.svelte.js';
 	import type { CodeCopyButtonProps } from './types.js';
 
-	let { ref = $bindable(null), variant = 'ghost', size = 'icon', class: className, ...rest }: CodeCopyButtonProps = $props();
+	let { ref: _ref = $bindable(null), variant = 'ghost', size = 'icon', class: className, ...rest }: CodeCopyButtonProps = $props();
 
 	const copyButton = useCodeCopyButton();
 </script>

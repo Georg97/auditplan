@@ -209,4 +209,6 @@
 - After ShadCN component installs, always run `make format` — installed components don't match project's Prettier config
 - The copy-button component's types reference `ButtonPropsWithoutHTML` which doesn't exist in newer button versions — use `ButtonSize`/`ButtonVariant` directly instead
 - `.vercel/` build output must be in eslint ignores to prevent lint errors from generated code
-- Pre-existing lint errors exist in demo page (+page.svelte), login page, hooks.server.ts, and code components — to be fixed in S08 task
+- HTML `<!-- eslint-disable -->` comments in .svelte files do NOT work for Svelte ESLint rules — use eslint.config.js file-level overrides instead
+- ShadCN UI components (src/lib/components/ui/) need relaxed lint rules: no-at-html-tags, no-navigation-without-resolve, no-useless-assignment
+- `make db-push` requires interactive TTY — cannot run in non-interactive shells, must be run manually by user
