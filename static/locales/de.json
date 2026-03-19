@@ -1,6 +1,7 @@
 {
 	"app": {
 		"name": "ISO Audit Manager",
+		"subtitle": "Auditplanung & Management",
 		"loading": "Laden..."
 	},
 	"nav": {
@@ -16,7 +17,13 @@
 		"notesGenerator": "Notizen-Generator",
 		"auditQuestions": "Auditfragen & Dokumente",
 		"actionPlan": "Maßnahmenplan",
-		"settings": "Einstellungen"
+		"settings": "Einstellungen",
+		"group": {
+			"overview": "Übersicht",
+			"management": "Verwaltung",
+			"generators": "Generatoren",
+			"tools": "Werkzeuge"
+		}
 	},
 	"common": {
 		"save": "Speichern",
@@ -73,18 +80,48 @@
 	},
 	"auditor": {
 		"title": "Auditorenverwaltung",
+		"addTitle": "Auditor hinzufügen",
+		"editTitle": "Auditor bearbeiten",
 		"addNew": "Neuen Auditor hinzufügen",
-		"firstName": "Vorname",
-		"lastName": "Nachname",
+		"name": "Name",
+		"titleField": "Titel",
+		"email": "E-Mail",
+		"phone": "Telefon",
+		"mobile": "Mobil",
 		"company": "Unternehmen",
-		"position": "Position",
-		"qualifications": "Qualifikationen",
-		"availability": "Verfügbarkeit",
+		"personalData": "Persönliche Daten",
 		"address": "Adresse",
 		"street": "Straße",
+		"zipCode": "PLZ",
 		"city": "Stadt",
-		"zip": "PLZ",
-		"country": "Land"
+		"country": "Land",
+		"qualifications": "Qualifikationen",
+		"certifications": "Zertifizierungen",
+		"languages": "Sprachen",
+		"experienceYears": "Berufserfahrung (Jahre)",
+		"availability": "Verfügbarkeit",
+		"dailyRate": "Tagessatz (EUR)",
+		"notes": "Notizen",
+		"fullTime": "Vollzeit",
+		"partTime": "Teilzeit",
+		"byArrangement": "Nach Vereinbarung",
+		"limited": "Eingeschränkt",
+		"searchPlaceholder": "Suche nach Name, Firma oder Spezialisierung...",
+		"noAuditors": "Keine Auditoren vorhanden.",
+		"noAuditorsHint": "Fügen Sie Ihren ersten Auditor hinzu.",
+		"deleteConfirmTitle": "Auditor löschen",
+		"deleteConfirmMessage": "Möchten Sie den Auditor '{{name}}' wirklich löschen?",
+		"savedSuccess": "Auditor erfolgreich gespeichert",
+		"deletedSuccess": "Auditor erfolgreich gelöscht",
+		"reset": "Zurücksetzen",
+		"yearsExperience": "{{count}} Jahre Erfahrung",
+		"namePlaceholder": "Vor- und Nachname",
+		"titlePlaceholder": "z.B. Lead Auditor",
+		"emailPlaceholder": "auditor@example.com",
+		"phonePlaceholder": "+49 123 456789",
+		"mobilePlaceholder": "+49 170 1234567",
+		"companyPlaceholder": "Firmenname",
+		"notesPlaceholder": "Zusätzliche Anmerkungen..."
 	},
 	"dashboard": {
 		"title": "Dashboard",
@@ -194,6 +231,12 @@
 		"observation": "Beobachtung",
 		"improvement": "Verbesserungspotential",
 		"positive": "Positive Feststellung"
+	},
+	"upload": {
+		"dropOrClick": "Datei hierher ziehen oder klicken zum Hochladen",
+		"maxSize": "Maximale Dateigröße: 5 MB",
+		"invalidType": "Ungültiger Dateityp",
+		"tooLarge": "Datei ist zu groß (max. 5 MB)"
 	},
 	"auditart": {
 		"initial_certification": "Erstzertifizierung",
