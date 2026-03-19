@@ -60,7 +60,7 @@
 - German UI labels, German spec files
 - Component files: PascalCase.svelte
 - Route files: kebab-case directories
-- Server functions in .remote.ts use query() and mutation() from $app/server
+- Server functions in .remote.ts use query() and command() from $app/server
 
 ## Architecture Rules (MANDATORY)
 
@@ -68,14 +68,14 @@
 
 - **NEVER use localStorage** for data persistence. All data goes through Drizzle ORM + Turso.
 - Data reads: `query()` from `$app/server` in `.remote.ts` files
-- Data writes: `mutation()` from `$app/server` in `.remote.ts` files
+- Data writes: `command()` from `$app/server` in `.remote.ts` files
 - Only exception for localStorage: transient client-side UI state (e.g. sidebar collapsed)
 
 ### Remote Functions vs Form Actions
 
-- Use `.remote.ts` (query/mutation) for: fetching data for display, shared data operations called from multiple pages, bulk operations (batch delete, export)
+- Use `.remote.ts` (query/command) for: fetching data for display, shared data operations called from multiple pages, bulk operations (batch delete, export)
 - Use `+page.server.ts` form actions for: user form submissions (POST via `<form>`), page-local mutations tied to a specific route
-- Form actions CAN import and call remote mutations internally if needed
+- Form actions CAN import and call remote commands internally if needed
 - Rule of thumb: if it's a `<form>` → form action. If it's a button click or data load → remote function.
 
 ### Database Migrations
@@ -212,3 +212,4 @@
 - HTML `<!-- eslint-disable -->` comments in .svelte files do NOT work for Svelte ESLint rules — use eslint.config.js file-level overrides instead
 - ShadCN UI components (src/lib/components/ui/) need relaxed lint rules: no-at-html-tags, no-navigation-without-resolve, no-useless-assignment
 - `make db-push` requires interactive TTY — cannot run in non-interactive shells, must be run manually by user
+- SvelteKit remote functions: `$app/server` exports `query` and `command` (NOT `mutation`). For parameterized functions use `query('unchecked', fn)` or `command('unchecked', fn)` — or pass a Standard Schema validator instead of `'unchecked'`
