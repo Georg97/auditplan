@@ -205,4 +205,8 @@
 
 ## Learnings
 
-(Ralph adds discovered patterns and gotchas here)
+- shadcn-svelte@latest CLI uses `-y` (not `--no-git`) for non-interactive mode, and `-o` to overwrite existing components
+- After ShadCN component installs, always run `make format` — installed components don't match project's Prettier config
+- The copy-button component's types reference `ButtonPropsWithoutHTML` which doesn't exist in newer button versions — use `ButtonSize`/`ButtonVariant` directly instead
+- `.vercel/` build output must be in eslint ignores to prevent lint errors from generated code
+- Pre-existing lint errors exist in demo page (+page.svelte), login page, hooks.server.ts, and code components — to be fixed in S08 task

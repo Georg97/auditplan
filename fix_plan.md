@@ -15,7 +15,7 @@
 
 ## Phase 1: SETUP
 
-- [ ] S01 [SETUP] ShadCN-Komponenten installieren — Via CLI installieren (NICHT manuell erstellen). WICHTIG: --no-git Flag verwenden! `bunx shadcn-svelte@next add dialog select checkbox radio-group textarea popover command table alert-dialog sheet progress scroll-area dropdown-menu --no-git` — Specs: 01-architektur
+- [x] S01 [SETUP] ShadCN-Komponenten installieren — Via CLI installieren (NICHT manuell erstellen). WICHTIG: --no-git Flag verwenden! `bunx shadcn-svelte@next add dialog select checkbox radio-group textarea popover command table alert-dialog sheet progress scroll-area dropdown-menu --no-git` — Specs: 01-architektur
 - [ ] S03 [SETUP] TanStack Table + DataTable-Wrapper — Reusable DataTable.svelte Komponente in src/lib/components/ erstellen, die @tanstack/svelte-table mit ShadCN table-Styling kombiniert — Specs: 01-architektur
 - [ ] S04 [SETUP] i18n-System aufsetzen — i18next installieren (bereits vorhanden), I18nRune Klasse in src/lib/i18n/i18n.svelte.ts erstellen, static/locales/de.json mit initialen Schlüsseln für Navigation + gemeinsame Labels, 9 weitere Locale-Stubs (en/fr/es/it/nl/pt/pl/ru/tr.json), i18n-Context in (app)/+layout.svelte via setContext() — Specs: 01-architektur
 - [ ] S05 [SETUP] Datenbankschema erstellen — Drizzle-Tabellen für Auditoren, Audits, Kalendereinträge, Maßnahmen, Auditpläne, Auditnotizen, Auditfragen, Einstellungen in src/db/schema.ts. JEDE Fachdaten-Tabelle MUSS organizationId-Spalte haben (Org-basierte Mandantenfähigkeit). better-auth Organization Plugin einrichten in src/lib/auth.ts. Nach Schema-Änderung `make db-push` ausführen! — Specs: 01-architektur, 14-einstellungen-persistenz
