@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import type { I18nRune } from '$lib/i18n/i18n.svelte';
 	import { saveNotes, editSavedNotes, getSavedNotesById } from '$lib/rpc/notizen.remote';
+	import { generateNotesWordDocument } from '$lib/word/auditnotizen-word';
 	import { organisationseinheitOptionen } from '$lib/data/organisationseinheiten';
 	import { abteilungBeschreibungen } from '$lib/data/abteilung-beschreibungen';
 	import { zusammenfassungBeschreibungen, zusammenfassungDefaultText } from '$lib/data/zusammenfassungen';
@@ -306,6 +307,15 @@
 		resetDialogOpen = false;
 	}
 
+	async function handleGenerate() {
+		try {
+			await generateNotesWordDocument(data);
+			toast.success(i18n.t('common.download'));
+		} catch {
+			toast.error(i18n.t('notes_generator.save_error'));
+		}
+	}
+
 	// Input classes
 	const inputClass =
 		'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border px-3 py-1 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
@@ -324,7 +334,7 @@
 				<RotateCcw class="mr-2 size-4" />
 				{i18n.t('notes_generator.reset')}
 			</Button>
-			<Button variant="outline" disabled>
+			<Button variant="outline" onclick={handleGenerate}>
 				<FileText class="mr-2 size-4" />
 				{i18n.t('notes_generator.generate')}
 			</Button>

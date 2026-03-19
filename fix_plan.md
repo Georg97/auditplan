@@ -119,14 +119,14 @@
 - [x] W04 [TEST] Auditnotizen Word-Export — SKIPPED: No component render tests per CLAUDE.md — Specs: 12-word-export
 - [x] W05 [IMPL] Auditnotizen Word-Export — generateNotesWordDocument: block tables with conditional sections (toggles), QHSE docs as individual rows, bewertungen with yellow highlight, zusammenfassung gray+bold — Specs: 12-word-export
 - [x] W06 [TEST] Auditfragen Word-Export — SKIPPED: No component render tests per CLAUDE.md — Specs: 12-word-export
-- [x] W07 [IMPL] Auditfragen Word-Export — generateAuditQuestionsWord: HTML-Blob with BOM, application/msword MIME, numbered questions + docs list, filename Auditfragen_[Abt]_[Datum].doc — Specs: 12-word-export
+- [x] W07 [IMPL] Auditfragen Word-Export — generateAuditQuestionsWord: HTML-Blob with BOM, application/msword MIME, numbered questions + docs list, filename Auditfragen*[Abt]*[Datum].doc — Specs: 12-word-export
 
 ## Phase 13: Integration Wiring
 
 - [ ] I01 [WIRE] Dashboard mit allen Datenquellen — Audits, Auditoren, Maßnahmen, Kalender zählen und aggregieren — Specs: 04-dashboard, 06-audit-verwaltung, 05-auditoren
 - [ ] I02 [WIRE] Übersicht mit Speicher/Lade-Flows — Gespeicherte Pläne/Notizen/Fragen laden, bearbeiten (in Generator-Formulare), löschen, downloaden — Specs: 03-uebersicht, 09-auditplan-generator, 10-notizen-generator
 - [ ] I03 [WIRE] Einstellungen global anwenden — Theme-Wechsel, Sprache, Kompaktansicht wirkt auf alle Seiten — Specs: 14-einstellungen-persistenz
-- [ ] I04 [WIRE] Word-Export in alle Generatoren einbinden — Download-Buttons in Auditplan, Notizen, Auditfragen, Übersicht — Specs: 12-word-export
+- [x] I04 [WIRE] Word-Export in alle Generatoren einbinden — Download-Buttons in Auditplan, Notizen, Auditfragen, Übersicht — Specs: 12-word-export
 - [ ] I05 [WIRE] i18n komplett — Alle 10 Sprachen mit Übersetzungen für alle Module — Specs: 01-architektur
 
 ## Phase 14: SMOKE Tests

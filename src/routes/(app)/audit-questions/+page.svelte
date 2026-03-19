@@ -2,6 +2,7 @@
 	import { getContext } from 'svelte';
 	import type { I18nRune } from '$lib/i18n/i18n.svelte';
 	import { saveAuditQuestions } from '$lib/rpc/auditfragen.remote';
+	import { generateAuditQuestionsWord } from '$lib/word/auditfragen-word';
 	import { organisationseinheitOptionen } from '$lib/data/organisationseinheiten';
 	import { auditQuestionsData } from '$lib/data/audit-questions';
 	import * as Card from '$lib/components/ui/card';
@@ -48,6 +49,16 @@
 		loadedAbteilung = selectedAbteilung;
 		loadedNorm = selectedNorm;
 		hasLoaded = true;
+	}
+
+	function handleWordExport() {
+		if (!loadedAbteilung || questions.length === 0) return;
+		generateAuditQuestionsWord({
+			abteilung: loadedAbteilung,
+			datum: auditdatum,
+			questions: questions.map((q, i) => ({ ...q, nummer: i + 1 })),
+			documents
+		});
 	}
 
 	async function handleSave() {
@@ -218,7 +229,7 @@
 
 		<!-- Action Buttons -->
 		<div class="flex justify-end gap-3">
-			<Button variant="outline" disabled>
+			<Button variant="outline" onclick={handleWordExport} disabled={!loadedAbteilung || questions.length === 0}>
 				<FileText class="mr-2 size-4" />
 				{i18n.t('audit_questions.word_export')}
 			</Button>

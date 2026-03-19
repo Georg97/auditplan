@@ -3,6 +3,8 @@
 	import { page } from '$app/state';
 	import type { I18nRune } from '$lib/i18n/i18n.svelte';
 	import { savePlan, editSavedPlan, getSavedPlanById } from '$lib/rpc/plaene.remote';
+	import { generatePlanWordDocument } from '$lib/word/auditplan-word';
+	import FileText from '@lucide/svelte/icons/file-text';
 	import { getAuditors } from '$lib/rpc/auditoren.remote';
 	import { organisationseinheitOptionen } from '$lib/data/organisationseinheiten';
 	import { abteilungBeschreibungen } from '$lib/data/abteilung-beschreibungen';
@@ -398,6 +400,15 @@
 		znInput = '';
 	}
 
+	async function handleWordExport() {
+		try {
+			await generatePlanWordDocument(plan, plan.logo || undefined);
+			toast.success(i18n.t('common.download'));
+		} catch {
+			toast.error(i18n.t('plan_generator.save_error'));
+		}
+	}
+
 	// File input ref
 	let fileInput: HTMLInputElement | undefined = $state();
 </script>
@@ -412,6 +423,10 @@
 			<Button variant="outline" onclick={handleReset}>
 				<RotateCcw class="mr-2 size-4" />
 				{i18n.t('plan_generator.reset')}
+			</Button>
+			<Button variant="outline" onclick={handleWordExport}>
+				<FileText class="mr-2 size-4" />
+				Word-Export
 			</Button>
 			<Button onclick={handleSave} disabled={saving}>
 				<Save class="mr-2 size-4" />
