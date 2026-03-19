@@ -177,6 +177,23 @@
 		"delete_confirm": "Möchten Sie diesen Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
 		"delete_success": "Eintrag erfolgreich gelöscht"
 	},
+	"import_export": {
+		"export_title": "Daten exportieren",
+		"export_desc": "Exportiert alle Ihre Daten als JSON-Datei. Diese Datei kann später zum Wiederherstellen verwendet werden.",
+		"export_json": "JSON exportieren",
+		"export_success": "Backup erfolgreich erstellt",
+		"export_file": "Backup erstellt: {{name}}",
+		"import_title": "Daten importieren",
+		"import_desc": "Importiert Daten aus einer zuvor exportierten JSON-Datei. Bestehende Daten werden ergänzt.",
+		"import_json": "JSON importieren",
+		"import_success": "Import erfolgreich abgeschlossen",
+		"invalid_file": "Die ausgewählte Datei ist kein gültiges Backup-Format.",
+		"csv_title": "CSV Export",
+		"csv_desc": "Exportiert die Audit-Daten als CSV-Datei für die Verwendung in Excel oder anderen Tabellenkalkulationen.",
+		"export_csv": "CSV exportieren",
+		"csv_success": "CSV-Datei erfolgreich erstellt",
+		"error": "Export/Import fehlgeschlagen. Bitte versuchen Sie es erneut."
+	},
 	"calendar": {
 		"title": "Kalender",
 		"today": "Heute",
