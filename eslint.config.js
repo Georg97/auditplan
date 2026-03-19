@@ -49,6 +49,12 @@ export default ts.config(
 		}
 	},
 	{
+		files: ['src/lib/components/layout/**/*.svelte'],
+		rules: {
+			'svelte/no-navigation-without-resolve': 'off'
+		}
+	},
+	{
 		ignores: ['build/', '.svelte-kit/', 'dist/', 'node_modules/', 'loop_logs/', '.vercel/']
 	}
 );

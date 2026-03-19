@@ -32,7 +32,7 @@
 
 ## Phase 2: Header & Navigation
 
-- [ ] H01 [IFACE] Header + Navigationsleiste — Komponenten-Props, Typen, Event-Signatures in src/lib/components/Header.svelte und Nav.svelte — Specs: 02-layout-header-nav
+- [x] H01 [IFACE] Header + Navigationsleiste — Komponenten-Props, Typen, Event-Signatures in src/lib/components/Header.svelte und Nav.svelte — Specs: 02-layout-header-nav
 - [ ] H02 [TEST] Header + Navigationsleiste — Rendering-Tests, Navigation-Wechsel, Active-State — Specs: 02-layout-header-nav
 - [ ] H03 [IMPL] Header + Navigationsleiste — SVG-Header (Links: ISO-Zertifikat 280x250, Mitte: 3D-Titel, Rechts: Klemmbrett 280x250), Gradient #667eea→#764ba2, 12 Nav-Items mit Icons, Hover/Active-Styles — Specs: 02-layout-header-nav
 - [ ] H04 [WIRE] App-Shell-Integration — Header + Nav in (app)/+layout.svelte einbinden, Route-basierte aktive Navigation, Settings-Button → Modal — Specs: 02-layout-header-nav
