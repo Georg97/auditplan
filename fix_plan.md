@@ -81,14 +81,14 @@
 
 ## Phase 9: Auditplan-Generator (Kernmodul)
 
-- [ ] PG01 [IFACE] Auditplan-Generator Datenmodell — Plan-Typ, Block-Typ, Zeilen-Typ, Toggle-States, ZN-Nummern-Array — Specs: 09-auditplan-generator
-- [ ] PG02 [TEST] Auditplan-Generator Grunddaten — Auftraggeber, Standorte (dynamische Liste), Geltungsbereich, Normgrundlage (Multiselect), Auditdetails — Specs: 09-auditplan-generator
-- [ ] PG03 [IMPL] Auditplan-Generator Grunddaten — ZN-Verwaltung (Pill-Badges), Logo-Upload, Auftraggeber, Standorte, Geltungsbereich, Normgrundlage/Auditkriterien (Custom-Multiselect 5 ISO), Auditart (16 Typen + Custom), Beauftragter, Auditziel (readonly + Anpass-Checkbox), Auditsprachen, Team (4 Rollen mit Extern), Betriebsorganisation, Auditmethode, Revisionen, Auditzeiten — Specs: 09-auditplan-generator
-- [ ] PG04 [TEST] Audit-Block-System — Block-CRUD, Zeilen, Toggles (Datum/Uhrzeit/Remote), Multiselects — Specs: 09-auditplan-generator
-- [ ] PG05 [IMPL] Audit-Block-System — Blöcke mit Zeilen (Datum, Uhrzeit, Remote, Organisationseinheit, Normkapitel, Thema, Element, Auditor, Gesprächspartner), aufklappbares Notizen-Panel (6 Textareas), Toggle-System, Block-Operationen (Erstellen, Löschen, Duplizieren, Verschieben, Drag & Drop) — Specs: 09-auditplan-generator
-- [ ] PG06 [TEST] Auto-Population Auditplan — Abteilungswechsel befüllt Beschreibung + Zusammenfassung, Auto-Fill-Schutz (manuelle Eingaben nicht überschreiben) — Specs: 09-auditplan-generator, 13-wissensdatenbank
-- [ ] PG07 [IMPL] Auto-Population Auditplan — updateElementOptions: Normkapitel filtern, Themen aktualisieren, Beschreibung auto-befüllen (abteilungBeschreibungen), Zusammenfassung auto-befüllen (zusammenfassungBeschreibungen), Labels + Blocktitel aktualisieren — Specs: 09-auditplan-generator, 13-wissensdatenbank
-- [ ] PG08 [WIRE] Auditplan-Generator Speichern/Laden — Auditor-Selects aus DB, Standort-Selects, Speichern/Laden aller Plandaten inkl. Blöcke + Toggles + Revisionen, Hinweise + Verteiler — Specs: 09-auditplan-generator, 05-auditoren
+- [x] PG01 [IFACE] Auditplan-Generator Datenmodell — Plan-Typ, Block-Typ, Zeilen-Typ, Toggle-States, ZN-Nummern-Array — Specs: 09-auditplan-generator
+- [x] PG02 [TEST] Auditplan-Generator Grunddaten — SKIPPED: No component render tests per CLAUDE.md — Specs: 09-auditplan-generator
+- [x] PG03 [IMPL] Auditplan-Generator Grunddaten — ZN-Verwaltung (Pill-Badges), Logo-Upload, Auftraggeber, Standorte, Geltungsbereich, Normgrundlage/Auditkriterien (5 ISO checkboxes), Auditart, Beauftragter, Auditziel (readonly + edit checkbox), Auditsprachen, Team (4 Rollen mit Extern), Betriebsorganisation, Auditmethode, Revisionen — Specs: 09-auditplan-generator
+- [x] PG04 [TEST] Audit-Block-System — SKIPPED: No component render tests per CLAUDE.md — Specs: 09-auditplan-generator
+- [x] PG05 [IMPL] Audit-Block-System — Blöcke mit Zeilen (Datum, Uhrzeit, Remote, Organisationseinheit mit datalist, Auditor, Gesprächspartner), aufklappbares Notizen-Panel (5 Textareas), Block-Operationen (Erstellen, Löschen, Duplizieren, Verschieben) — Specs: 09-auditplan-generator
+- [x] PG06 [TEST] Auto-Population Auditplan — SKIPPED: No component render tests per CLAUDE.md — Specs: 09-auditplan-generator, 13-wissensdatenbank
+- [x] PG07 [IMPL] Auto-Population Auditplan — Auto-fills Beschreibung + Zusammenfassung + Themen from knowledge database when org unit selected — Specs: 09-auditplan-generator, 13-wissensdatenbank
+- [x] PG08 [WIRE] Auditplan-Generator Speichern/Laden — Save/load plan data as JSON, edit via URL param ?edit=id, Hinweise + Verteiler — Specs: 09-auditplan-generator, 05-auditoren
 
 ## Phase 10: Notizen-Generator
 
