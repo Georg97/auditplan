@@ -39,7 +39,7 @@
 
 ## Phase 3: Auditorenverwaltung
 
-- [ ] A01 [IFACE] Auditor-Datenmodell + Server-Funktionen — TypeScript-Interfaces, CRUD-Funktions-Signaturen in .remote.ts — Specs: 05-auditoren
+- [x] A01 [IFACE] Auditor-Datenmodell + Server-Funktionen — TypeScript-Interfaces, CRUD-Funktions-Signaturen in .remote.ts — Specs: 05-auditoren
 - [ ] A02 [TEST] Auditor-CRUD — Tests für addAuditor, editAuditor, deleteAuditor, Validierung (Name + E-Mail Pflichtfelder) — Specs: 05-auditoren
 - [ ] A03 [IMPL] Auditor-CRUD — Formular (5 Abschnitte: Persönliche Daten, Adresse, Qualifikationen mit 5 ISO-Checkboxen, Verfügbarkeit, Notizen), Grid-Ansicht, Echtzeit-Suche/Filter — Specs: 05-auditoren
 - [ ] A04 [WIRE] Auditor-Seiten verbinden — add-auditor + auditor-management verlinken, Bearbeiten-Navigation mit vorausgefüllten Daten — Specs: 05-auditoren
