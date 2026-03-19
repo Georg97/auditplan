@@ -27,3 +27,7 @@ export const prioritySchema = z.enum(priorityValues);
 export const isoStandardValues = ['iso9001', 'iso14001', 'iso45001', 'iso27001', 'iso50001'] as const;
 export type IsoStandard = (typeof isoStandardValues)[number];
 export const isoStandardSchema = z.enum(isoStandardValues);
+
+export const auditFormatValues = ['on_site', 'remote', 'hybrid'] as const;
+export type AuditFormat = (typeof auditFormatValues)[number];
+export const auditFormatSchema = z.enum(auditFormatValues);

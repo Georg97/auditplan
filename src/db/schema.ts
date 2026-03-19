@@ -196,21 +196,25 @@ export const audits = sqliteTable(
 			.primaryKey()
 			.$defaultFn(() => crypto.randomUUID()),
 		organizationId: text('organization_id').notNull(),
-		title: text('title').notNull(),
-		description: text('description'),
-		status: text('status').notNull().default('planned'),
-		auditType: text('audit_type'),
-		norm: text('norm'),
-		location: text('location'),
-		department: text('department'),
-		startDate: text('start_date'),
+		auditName: text('audit_name').notNull(),
+		auditType: text('audit_type').notNull().default('internal'),
+		startDate: text('start_date').notNull(),
 		endDate: text('end_date'),
-		leadAuditorId: text('lead_auditor_id'),
-		coAuditorId: text('co_auditor_id'),
+		startTime: text('start_time'),
+		endTime: text('end_time'),
+		company: text('company').notNull(),
+		department: text('department').notNull(),
+		location: text('location'),
+		format: text('format'),
+		norms: text('norms'),
 		scope: text('scope'),
-		findings: text('findings'),
-		attachments: text('attachments'),
+		leadAuditorId: text('lead_auditor_id').notNull(),
+		auditTeam: text('audit_team'),
+		contactPerson: text('contact_person'),
+		contactEmail: text('contact_email'),
 		notes: text('notes'),
+		documentLinks: text('document_links'),
+		status: text('status').notNull().default('planned'),
 		createdAt: integer('created_at', { mode: 'timestamp_ms' })
 			.default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
 			.notNull(),
@@ -220,6 +224,26 @@ export const audits = sqliteTable(
 			.notNull()
 	},
 	(table) => [index('audits_orgId_idx').on(table.organizationId), index('audits_status_idx').on(table.status)]
+);
+
+export const auditFiles = sqliteTable(
+	'audit_files',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		auditId: text('audit_id')
+			.notNull()
+			.references(() => audits.id, { onDelete: 'cascade' }),
+		fileName: text('file_name').notNull(),
+		fileType: text('file_type').notNull(),
+		fileSize: integer('file_size').notNull(),
+		fileContent: text('file_content').notNull(),
+		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+			.default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+			.notNull()
+	},
+	(table) => [index('audit_files_auditId_idx').on(table.auditId)]
 );
 
 export const calendarEntries = sqliteTable(
@@ -375,8 +399,7 @@ export const accountRelations = relations(account, ({ one }) => ({
 }));
 
 export const auditorsRelations = relations(auditors, ({ many }) => ({
-	ledAudits: many(audits, { relationName: 'leadAuditor' }),
-	coAudits: many(audits, { relationName: 'coAuditor' })
+	ledAudits: many(audits, { relationName: 'leadAuditor' })
 }));
 
 export const auditsRelations = relations(audits, ({ one, many }) => ({
@@ -385,13 +408,16 @@ export const auditsRelations = relations(audits, ({ one, many }) => ({
 		references: [auditors.id],
 		relationName: 'leadAuditor'
 	}),
-	coAuditor: one(auditors, {
-		fields: [audits.coAuditorId],
-		references: [auditors.id],
-		relationName: 'coAuditor'
-	}),
 	calendarEntries: many(calendarEntries),
-	actions: many(actions)
+	actions: many(actions),
+	files: many(auditFiles)
+}));
+
+export const auditFilesRelations = relations(auditFiles, ({ one }) => ({
+	audit: one(audits, {
+		fields: [auditFiles.auditId],
+		references: [audits.id]
+	})
 }));
 
 export const calendarEntriesRelations = relations(calendarEntries, ({ one }) => ({

@@ -46,7 +46,7 @@
 
 ## Phase 4: Audit-Verwaltung
 
-- [ ] V01 [IFACE] Audit-Datenmodell + Server-Funktionen — TypeScript-Interfaces, CRUD, Datei-Anhang-Typ — Specs: 06-audit-verwaltung
+- [x] V01 [IFACE] Audit-Datenmodell + Server-Funktionen — TypeScript-Interfaces, CRUD, Datei-Anhang-Typ — Specs: 06-audit-verwaltung
 - [ ] V02 [TEST] Audit-CRUD — Tests für Erstellen, Suchen, Filtern, Datei-Upload, Status-Validierung — Specs: 06-audit-verwaltung
 - [ ] V03 [IMPL] Audit-CRUD — Formular (6 Abschnitte: Grundinfo, Zeitplanung, Organisation, Norm, Personal, Notizen+Dokumente), Suchergebnisse als Grid-Karten mit Status-Farbkodierung — Specs: 06-audit-verwaltung
 - [ ] V04 [WIRE] Audit-Seite mit Auditoren verknüpfen — Auditor-Select dynamisch aus DB befüllen — Specs: 06-audit-verwaltung, 05-auditoren
