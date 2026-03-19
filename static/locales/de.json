@@ -177,6 +177,44 @@
 		"delete_confirm": "Möchten Sie diesen Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
 		"delete_success": "Eintrag erfolgreich gelöscht"
 	},
+	"calendar": {
+		"title": "Kalender",
+		"today": "Heute",
+		"view_month": "Monat",
+		"view_week": "Woche",
+		"view_day": "Tag",
+		"new_entry": "Neuer Kalendereintrag",
+		"edit_entry": "Eintrag bearbeiten",
+		"field_datum": "Datum",
+		"field_titel": "Titel",
+		"field_startzeit": "Startzeit",
+		"field_endzeit": "Endzeit",
+		"field_unternehmen": "Unternehmen",
+		"field_auditor": "Auditor",
+		"field_beschreibung": "Beschreibung",
+		"save_success": "Kalendereintrag gespeichert",
+		"delete_confirm": "Kalendereintrag '{{name}}' wirklich löschen?",
+		"delete_success": "Kalendereintrag gelöscht",
+		"no_entries": "Keine Einträge an diesem Tag.",
+		"weekdays": {
+			"mo": "Mo",
+			"tu": "Di",
+			"we": "Mi",
+			"th": "Do",
+			"fr": "Fr",
+			"sa": "Sa",
+			"su": "So"
+		},
+		"weekdays_long": {
+			"mo": "Montag",
+			"tu": "Dienstag",
+			"we": "Mittwoch",
+			"th": "Donnerstag",
+			"fr": "Freitag",
+			"sa": "Samstag",
+			"su": "Sonntag"
+		}
+	},
 	"validation": {
 		"required": "Dieses Feld ist erforderlich.",
 		"email_invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
