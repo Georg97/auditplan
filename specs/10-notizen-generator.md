@@ -106,7 +106,6 @@ interface NotizenBlockToggles {
  * notizen_block_qhse_dokument
  * QHSE-Dokumente innerhalb eines Blocks (§25).
  * FK: notizenBlockId -> notizen_block.id (CASCADE DELETE)
- * Word-Export-Format: "Name (Datum) - Notizen"
  */
 interface NotizenBlockQhseDokument {
 	id: string; // PK, crypto.randomUUID()
@@ -122,7 +121,6 @@ interface NotizenBlockQhseDokument {
  * notizen_block_bewertung
  * Bewertungseintrag innerhalb eines Blocks (§26).
  * FK: notizenBlockId -> notizen_block.id (CASCADE DELETE)
- * Word-Export: Typ fett+gelb, Kapitel in Klammern, Beschreibung nach Doppelpunkt.
  */
 interface NotizenBlockBewertung {
 	id: string; // PK, crypto.randomUUID()
@@ -148,7 +146,7 @@ interface NotizenBlockBewertungKapitel {
 
 /**
  * notizen_block_normkapitel
- * Junction: NotizenBlock <-> Normkapitel (m:n, Searchable Multiselect).
+ * Junction: NotizenBlock <-> Normkapitel (m:n).
  * FK: notizenBlockId -> notizen_block.id (CASCADE DELETE)
  * normkapitelId referenziert die ID eines Normkapitels aus der Wissensdatenbank.
  */
@@ -178,69 +176,71 @@ Die Seite ist ein langes, scrollbares Formular. Oben eine fixierte Aktionsleiste
 
 ### Aktionsleiste (fixiert, oben)
 
-Horizontale Leiste mit 3 Buttons:
+Aktionsleiste mit folgenden Funktionen:
 
-| Button        | Typ        | Beschreibung                             |
-| ------------- | ---------- | ---------------------------------------- |
-| Speichern     | Primaer    | Speichert Notizen in DB                  |
-| Generieren    | Sekundaer  | Generiert Word-Dokument (.docx)          |
-| Zuruecksetzen | Destruktiv | Loescht alle Eingaben (mit Bestaetigung) |
+- **Speichern**: Speichert Notizen in DB.
+- **Generieren**: Generiert Word-Dokument (.docx).
+- **Zuruecksetzen**: Loescht alle Eingaben (mit Bestaetigung).
 
-### Header-Bereich (2-Spalten-Layout)
+### Header-Bereich
 
-Das Header-Layout ist zweispaltig: links die Formularfelder, rechts der Logo-Upload.
+Header mit Formularfeldern und Logo-Upload.
 
-#### Linke Spalte: Formularfelder
+#### Formularfelder
 
-4 Zeilen mit jeweils 2 Feldern nebeneinander:
+Folgende Felder sind im Header enthalten:
 
-| Zeile | Links                              | Rechts                             |
-| ----- | ---------------------------------- | ---------------------------------- |
-| 1     | Firma/Auftraggeber (Text)          | Standard(s) (Text)                 |
-| 2     | Zertifikat (Text)                  | Auditart (Text)                    |
-| 3     | Datum Von (Date), Datum Bis (Date) | Standort(e) (Text)                 |
-| 4     | Auditor (Text)                     | Seite Von (Text), Seite Bis (Text) |
+- Firma/Auftraggeber (Text)
+- Standard(s) (Text)
+- Zertifikat (Text)
+- Auditart (Text)
+- Datum Von (Date), Datum Bis (Date)
+- Standort(e) (Text)
+- Auditor (Text)
+- Seite Von (Text), Seite Bis (Text)
 
-#### Rechte Spalte: Logo-Upload
+#### Logo-Upload
 
-- **File upload**: Akzeptiert Bildformate, gestylt als Button _"Logo hochladen"_.
-- **Vorschau**: Image preview container mit dashed border in brand color.
-- **Entfernen-Button**: Unter der Vorschau, nur sichtbar wenn Logo vorhanden.
+- File upload fuer Bildformate.
+- Vorschau des hochgeladenen Bildes.
+- Entfernen-Funktion, nur sichtbar wenn Logo vorhanden.
 - Logo wird als Base64-String gespeichert.
 
 ### Notizen-Bloecke (§24.2)
 
 #### Block-Verwaltung
 
-- **Block hinzufuegen-Button**: _"+ Notizen-Block hinzufuegen"_ -- erstellt einen neuen Block.
+- Bloecke koennen hinzugefuegt werden.
 - Bloecke werden in einem Array gespeichert und nach `position` sortiert.
+
+#### Block-Operationen (§24.3)
+
+Jeder Block unterstuetzt folgende Operationen:
+
+- **Loeschen**: Mit Bestaetigung per AlertDialog, dann Entfernen.
+- **Duplizieren**: Deep Copy aller Werte, Toggles, QHSE-Dokumente, Bewertungen.
+- **Verschieben**: Block nach oben/unten verschieben.
+- **Drag & Drop**: Block per Drag & Drop neu positionieren.
 
 #### Block-Kopfzeile
 
-Jeder Block hat eine Kopfzeile mit:
-
 - **Block-Titel**: Organisationseinheit (oder "Neuer Block" als Platzhalter).
-- **Aktions-Buttons** (§24.3):
-  - Loeschen (Papierkorb), Duplizieren (Kopieren), Nach oben (Pfeil), Nach unten (Pfeil), Drag & Drop (Griff).
 
 #### Block-Felder
 
 Identisch zu den Audit-Block-Zeilen aus Spec 09:
 
-| Feld                 | Typ                     | Beschreibung                          |
-| -------------------- | ----------------------- | ------------------------------------- |
-| Datum                | Date picker             | Toggle-gesteuert                      |
-| Uhrzeit Von          | Time picker             | Toggle-gesteuert                      |
-| Uhrzeit Bis          | Time picker             | Toggle-gesteuert                      |
-| Remote               | Checkbox                | Toggle-gesteuert                      |
-| Organisationseinheit | Text input mit datalist | 26+ vordefinierte Abteilungen         |
-| Normkapitel          | Searchable Multiselect  | Gefiltert nach Organisationseinheit   |
-| Thema                | Searchable Multiselect  | + Custom, gefiltert nach Org.-einheit |
-| Element/Prozess      | Searchable Multiselect  | + Custom                              |
-| Auditor              | Textfeld                |                                       |
-| Gespraechspartner    | Textfeld                |                                       |
+- **Datum**: Date picker (Toggle-gesteuert).
+- **Uhrzeit Von / Bis**: Time picker (Toggle-gesteuert).
+- **Remote**: Checkbox (Toggle-gesteuert).
+- **Organisationseinheit**: Texteingabe mit Vorschlaegen aus 26+ vordefinierten Abteilungen.
+- **Normkapitel**: Searchable Multiselect, gefiltert nach Organisationseinheit.
+- **Thema**: Searchable Multiselect mit Custom-Eintraegen, gefiltert nach Organisationseinheit.
+- **Element/Prozess**: Searchable Multiselect mit Custom-Eintraegen.
+- **Auditor**: Textfeld.
+- **Gespraechspartner**: Textfeld.
 
-#### Notizen-Felder (aufklappbar)
+#### Collapsible notes section with 6 text fields
 
 | Feld            | Auto-Fill                                           |
 | --------------- | --------------------------------------------------- |
@@ -251,9 +251,9 @@ Identisch zu den Audit-Block-Zeilen aus Spec 09:
 | Dokumente       | Leer                                                |
 | Zusammenfassung | Aus `zusammenfassungBeschreibungen[org.einheit]`    |
 
-#### 6 Toggles (§22.2)
+#### 6 per-block visibility toggles (§22.2)
 
-Pro Block 6 ShadCN Switch Komponenten:
+Pro Block 6 Toggles fuer Export-Sichtbarkeit:
 
 | Toggle             | Default | Wirkung                                             |
 | ------------------ | ------- | --------------------------------------------------- |
@@ -268,70 +268,32 @@ Toggle-Zustaende werden bei allen Operationen erhalten: Duplizieren, Verschieben
 
 #### QHSE-Dokumente (§25)
 
-Unterhalb der Notizen-Felder, innerhalb jedes Blocks:
+Innerhalb jedes Blocks:
 
-- **Ueberschrift**: _"QHSE-Dokumente"_
-- **Hinzufuegen-Button**: _"+ Dokument hinzufuegen"_
-- **Dokumenten-Liste**: Jedes Dokument als Zeile mit:
+- QHSE-Dokumente koennen hinzugefuegt, geloescht (mit Bestaetigung) und nach oben/unten verschoben werden.
+- Jedes Dokument hat folgende Felder:
 
-  | Feld     | Typ         | Beschreibung           |
-  | -------- | ----------- | ---------------------- |
-  | Name     | Text input  | Dokumentname           |
-  | Datum    | Date picker | Dokumentdatum          |
-  | Notizen  | Text input  | Freitext-Anmerkungen   |
-  | Aktionen | Buttons     | Loeschen, Hoch, Runter |
-
-- **Loeschen**: Mit Bestaetigung per AlertDialog.
-- **Verschieben**: Nach oben/unten Buttons.
-
-**Word-Export-Format**: Jedes QHSE-Dokument wird als eigene Tabellenzeile gerendert:
-
-```
-Name (Datum) - Notizen
-```
+  | Feld    | Typ         | Beschreibung         |
+  | ------- | ----------- | -------------------- |
+  | Name    | Text input  | Dokumentname         |
+  | Datum   | Date picker | Dokumentdatum        |
+  | Notizen | Text input  | Freitext-Anmerkungen |
 
 #### Bewertungsfelder (§26)
 
-Unterhalb der QHSE-Dokumente, innerhalb jedes Blocks:
+Innerhalb jedes Blocks:
 
-- **Ueberschrift**: _"Bewertungen"_
-- **Hinzufuegen-Button**: _"+ Bewertung hinzufuegen"_
-- **Bewertungs-Liste**: Jede Bewertung als Zeile/Karte mit:
+- Bewertungen koennen hinzugefuegt und geloescht werden (Loeschen ohne zusaetzliche Bestaetigung).
+- Default-Typ bei neuer Bewertung: "Beobachtung" (`observation`).
+- Jede Bewertung hat folgende Felder:
 
-  | Feld         | Typ                    | Beschreibung                              |
-  | ------------ | ---------------------- | ----------------------------------------- |
-  | Typ          | ShadCN Select          | 5 Bewertungstypen (siehe `BewertungsTyp`) |
-  | Kapitel      | Searchable Multiselect | ISO-Kapitel                               |
-  | Beschreibung | Multi-line text area   | Freitext                                  |
-  | Aktionen     | Buttons                | Loeschen                                  |
+  | Feld         | Beschreibung                                          |
+  | ------------ | ----------------------------------------------------- |
+  | Typ          | Auswahl aus 5 Bewertungstypen (siehe `BewertungsTyp`) |
+  | Kapitel      | Searchable Multiselect fuer ISO-Kapitel               |
+  | Beschreibung | Multi-line text area (Freitext)                       |
 
-**Bewertungstypen im Detail:**
-
-| Typ                   | Farbe im UI           | Word-Format            |
-| --------------------- | --------------------- | ---------------------- |
-| major_nonconformity   | Destructive variant   | Fett + Gelb hinterlegt |
-| minor_nonconformity   | Warning variant       | Fett + Gelb hinterlegt |
-| observation           | Caution variant       | Fett + Gelb hinterlegt |
-| improvement_potential | Informational variant | Fett + Gelb hinterlegt |
-| positive_finding      | Success variant       | Fett + Gelb hinterlegt |
-
-**Word-Export-Format**: Pro Bewertung eine Zeile:
-
-```
-**[Typ]** (Kapitel 1, Kapitel 2): Beschreibungstext
-```
-
-Der Typ wird fett und gelb hinterlegt dargestellt. Die Kapitel stehen in Klammern. Die Beschreibung folgt nach einem Doppelpunkt.
-
-#### Export-Checkboxen pro Block
-
-Drei Checkboxen am Blockende, die bestimmen, welche Abschnitte im Word-Export enthalten sind:
-
-- **Dokumente anzeigen**: QHSE-Dokumente ein-/ausblenden.
-- **Bewertung anzeigen**: Bewertungsfelder ein-/ausblenden.
-- **Notizen anzeigen**: Notizen-Felder ein-/ausblenden.
-
-Diese Checkboxen sind gekoppelt an die Toggles `dokumenteAnzeigen`, `bewertungAnzeigen`, `notizenAnzeigen`.
+**Bewertungstypen:** `major_nonconformity`, `minor_nonconformity`, `observation`, `improvement_potential`, `positive_finding`. Jeder Typ soll visuell unterscheidbar dargestellt werden (z.B. durch Farbkodierung nach Schweregrad).
 
 ## Interaktionen
 
@@ -349,13 +311,13 @@ Diese Checkboxen sind gekoppelt an die Toggles `dokumenteAnzeigen`, `bewertungAn
 1. Klick auf **Generieren**.
 2. Client bereitet die Daten auf:
    - Toggle-Zustaende pro Block bestimmen, welche Felder erscheinen.
-   - Export-Checkboxen bestimmen, welche Abschnitte (Dokumente, Bewertung, Notizen) enthalten sind.
+   - Export-Toggles bestimmen, welche Abschnitte (Dokumente, Bewertung, Notizen) enthalten sind.
 3. Server-Call (`generateNotesWord`): Erstellt .docx-Datei.
 4. Word-Dokument-Struktur:
    - Header-Daten als Tabelle oben.
    - Pro Notizen-Block eine Tabelle mit den sichtbaren Feldern.
-   - QHSE-Dokumente (wenn aktiviert): Jedes Dokument als Zeile im Format _"Name (Datum) - Notizen"_.
-   - Bewertungen (wenn aktiviert): Jede Bewertung als Zeile mit Typ (fett, gelb), Kapitel (Klammern), Beschreibung (nach Doppelpunkt).
+   - QHSE-Dokumente (wenn aktiviert): Jedes Dokument als eigene Zeile.
+   - Bewertungen (wenn aktiviert): Jede Bewertung als eigene Zeile mit Typ, Kapitel und Beschreibung.
 5. Datei wird zum Download angeboten.
 
 ### Zuruecksetzen
@@ -366,7 +328,7 @@ Diese Checkboxen sind gekoppelt an die Toggles `dokumenteAnzeigen`, `bewertungAn
 
 ### Notizen-Block hinzufuegen (§24.2)
 
-1. Klick auf _"+ Notizen-Block hinzufuegen"_.
+1. Klick auf Block hinzufuegen.
 2. Ein neuer Block wird erstellt:
    - Neue UUID.
    - Position: letzter Index + 1.
@@ -376,7 +338,7 @@ Diese Checkboxen sind gekoppelt an die Toggles `dokumenteAnzeigen`, `bewertungAn
 
 ### Notizen-Block duplizieren (§24.3)
 
-1. Klick auf Duplizieren-Icon.
+1. Duplizieren eines Blocks.
 2. **Deep Copy** des gesamten Blocks:
    - Neue UUID fuer Block, alle QHSE-Dokumente und alle Bewertungen.
    - Alle Feldwerte werden kopiert.
@@ -384,12 +346,11 @@ Diese Checkboxen sind gekoppelt an die Toggles `dokumenteAnzeigen`, `bewertungAn
    - Alle QHSE-Dokumente werden kopiert (inkl. Name, Datum, Notizen).
    - Alle Bewertungen werden kopiert (inkl. Typ, Kapitel, Beschreibung).
    - Alle `manuellBearbeitet`-Flags werden kopiert.
-   - Alle Export-Optionen werden kopiert.
 3. Kopie wird direkt unterhalb des Originals eingefuegt.
 
 ### Notizen-Block loeschen (§24.3)
 
-1. Klick auf Loeschen-Icon.
+1. Loeschen eines Blocks.
 2. AlertDialog: _"Notizen-Block wirklich loeschen? Alle Eintraege, QHSE-Dokumente und Bewertungen gehen verloren."_
 3. Bei Bestaetigung: Block wird aus dem Array entfernt.
 
@@ -400,31 +361,29 @@ Diese Checkboxen sind gekoppelt an die Toggles `dokumenteAnzeigen`, `bewertungAn
 
 ### QHSE-Dokument hinzufuegen (§25)
 
-1. Klick auf _"+ Dokument hinzufuegen"_ innerhalb eines Blocks.
+1. Klick auf Dokument hinzufuegen innerhalb eines Blocks.
 2. Neues leeres Dokument-Objekt wird dem `qhseDokumente`-Array angefuegt.
 3. Felder sind sofort bearbeitbar.
 
 ### QHSE-Dokument loeschen (§25)
 
-1. Klick auf Loeschen-Button neben einem Dokument.
+1. Loeschen eines Dokuments.
 2. AlertDialog: _"QHSE-Dokument '{name}' wirklich loeschen?"_
 3. Bei Bestaetigung: Dokument wird aus dem Array entfernt.
 
 ### QHSE-Dokument verschieben (§25)
 
-1. Klick auf Hoch/Runter-Button.
-2. Dokument wird im Array um eine Position nach oben/unten verschoben.
+1. Dokument wird im Array um eine Position nach oben/unten verschoben.
 
 ### Bewertung hinzufuegen (§26)
 
-1. Klick auf _"+ Bewertung hinzufuegen"_ innerhalb eines Blocks.
+1. Klick auf Bewertung hinzufuegen innerhalb eines Blocks.
 2. Neues Bewertungs-Objekt mit Default-Typ "Beobachtung" wird angefuegt.
 3. Felder sind sofort bearbeitbar.
 
 ### Bewertung loeschen (§26)
 
-1. Klick auf Loeschen-Button neben einer Bewertung.
-2. Bewertung wird aus dem Array entfernt (ohne zusaetzliche Bestaetigung).
+1. Bewertung wird aus dem Array entfernt (ohne zusaetzliche Bestaetigung).
 
 ### Auto-Population bei Organisationseinheit-Aenderung (§23.2)
 
@@ -467,14 +426,13 @@ Die 6 Toggles pro Block werden in folgenden Situationen vollstaendig erhalten:
 
 ### Extern (Bibliotheken)
 
-| Paket          | Verwendung                                                         |
-| -------------- | ------------------------------------------------------------------ |
-| SvelteKit      | Routing (`/notes-generator`), Server-Funktionen                    |
-| Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`, `$effect`)      |
-| ShadCN-svelte  | Card, Button, Select, Checkbox, Switch, Badge, Collapsible, Dialog |
-| Tailwind CSS 4 | Formularlayout, 2-Spalten-Header, responsive Design                |
-| Drizzle ORM    | CRUD fuer `saved_notes`                                            |
-| Turso          | SQLite-Datenbank (libsql)                                          |
-| better-auth    | Authentifizierung, Session-Management                              |
-| Bun            | Runtime, Paketmanager                                              |
-| docx (o.ae.)   | Word-Generierung                                                   |
+| Paket          | Verwendung                                                    |
+| -------------- | ------------------------------------------------------------- |
+| SvelteKit      | Routing (`/notes-generator`), Server-Funktionen               |
+| Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`, `$effect`) |
+| Tailwind CSS 4 | Layout, responsive Design                                     |
+| Drizzle ORM    | CRUD fuer `saved_notes`                                       |
+| Turso          | SQLite-Datenbank (libsql)                                     |
+| better-auth    | Authentifizierung, Session-Management                         |
+| Bun            | Runtime, Paketmanager                                         |
+| docx (o.ae.)   | Word-Generierung                                              |

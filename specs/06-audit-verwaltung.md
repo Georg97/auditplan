@@ -170,82 +170,82 @@ Die Seite gliedert sich in zwei Bereiche:
 
 ### 1. Suchleiste
 
-- Ein einzelnes Textfeld (`<input type="text">`) mit Placeholder _"Audits durchsuchen... (Name, Auditor, Abteilung)"_.
+- Ein einzelnes Textfeld mit Placeholder _"Audits durchsuchen... (Name, Auditor, Abteilung)"_.
 - Suche erfolgt in Echtzeit (Debounce 300 ms) per Server-Funktion.
 - Die Suche ist **case-insensitive** und durchsucht gleichzeitig die Spalten `auditName`, `abteilung` sowie den verknuepften Auditor-Namen.
-- Rechts neben dem Suchfeld: Button **"Neues Audit anlegen"** (primarer Button, Bits-UI `Button`).
+- Rechts neben dem Suchfeld: Button **"Neues Audit anlegen"**.
 
-### 2. Suchergebnisse (Responsive Grid)
+### 2. Suchergebnisse
 
-- Responsive Grid: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` mit `gap-4`.
-- Jede Karte (`Card` aus Bits-UI) zeigt:
-  - **Kopfzeile**: Auditname (fett), Status-Badge (farbkodiert, siehe unten).
+- Audit-Ergebnisse werden in einem responsiven Karten-Grid dargestellt.
+- Jede Karte zeigt:
+  - **Kopfzeile**: Auditname, Status-Indikator (farbkodiert nach Status).
   - **Mitte**: Audittyp, Unternehmen, Abteilung, Zeitraum (Start- bis Enddatum).
   - **Fusszeile**: Drei Aktions-Buttons:
-    - **Bearbeiten** (Stift-Icon) -- oeffnet das Formular mit vorausgefuellten Daten.
-    - **Loeschen** (Papierkorb-Icon) -- Bestaetigung per Dialog.
-    - **Dateien** (Bueroklammer-Icon) -- oeffnet Datei-Panel/Modal.
+    - **Bearbeiten** -- oeffnet das Formular mit vorausgefuellten Daten.
+    - **Loeschen** -- Bestaetigung per Bestaetigungsdialog.
+    - **Dateien** -- oeffnet Datei-Panel/Modal.
 
-**Status-Farbkodierung**: Use ShadCN Badge component with semantic variant per status:
+**Status-Semantik**:
 
-| Status      | Badge Variant |
-| ----------- | ------------- |
-| planned     | info          |
-| in_progress | warning       |
-| completed   | success       |
-| postponed   | muted         |
-| cancelled   | destructive   |
+| Status      | Bedeutung                      |
+| ----------- | ------------------------------ |
+| planned     | Geplant (informativ)           |
+| in_progress | In Bearbeitung (Warnung)       |
+| completed   | Abgeschlossen (Erfolg)         |
+| postponed   | Verschoben (gedaempft)         |
+| cancelled   | Abgesagt (destruktiv/kritisch) |
 
 ### 3. Audit-Formular (6 Sektionen)
 
-Das Formular wird entweder in einem eigenen Bereich (unterhalb der Suche) oder in einem breitbildigen Modal angezeigt. Jede Sektion ist als zusammenklappbares Akkordeon (Bits-UI `Accordion`) implementiert.
+Das Formular wird entweder in einem eigenen Bereich (unterhalb der Suche) oder in einem Modal angezeigt. Jede Sektion ist als zusammenklappbarer Bereich implementiert.
 
 #### Sektion 1: Grundinformationen
 
-| Feld      | Typ                  | Pflicht | Hinweise                      |
-| --------- | -------------------- | ------- | ----------------------------- |
-| Auditname | `<input text>`       | Ja      | Min. 3 Zeichen                |
-| Audittyp  | `<Select>` (Bits-UI) | Ja      | 5 Optionen (siehe `AuditTyp`) |
+| Feld      | Typ     | Pflicht | Hinweise                      |
+| --------- | ------- | ------- | ----------------------------- |
+| Auditname | Text    | Ja      | Min. 3 Zeichen                |
+| Audittyp  | Auswahl | Ja      | 5 Optionen (siehe `AuditTyp`) |
 
 #### Sektion 2: Zeitplanung
 
-| Feld        | Typ            | Pflicht | Hinweise      |
-| ----------- | -------------- | ------- | ------------- |
-| Startdatum  | `<input date>` | Ja      |               |
-| Enddatum    | `<input date>` | Nein    | >= Startdatum |
-| Uhrzeit Von | `<input time>` | Nein    |               |
-| Uhrzeit Bis | `<input time>` | Nein    | > Uhrzeit Von |
+| Feld        | Typ   | Pflicht | Hinweise      |
+| ----------- | ----- | ------- | ------------- |
+| Startdatum  | Datum | Ja      |               |
+| Enddatum    | Datum | Nein    | >= Startdatum |
+| Uhrzeit Von | Zeit  | Nein    |               |
+| Uhrzeit Bis | Zeit  | Nein    | > Uhrzeit Von |
 
 #### Sektion 3: Organisation & Standort
 
-| Feld        | Typ            | Pflicht | Hinweise                  |
-| ----------- | -------------- | ------- | ------------------------- |
-| Unternehmen | `<input text>` | Ja      |                           |
-| Abteilung   | `<input text>` | Ja      |                           |
-| Standort    | `<input text>` | Nein    |                           |
-| Format      | `<Select>`     | Nein    | Vor Ort / Remote / Hybrid |
+| Feld        | Typ     | Pflicht | Hinweise                  |
+| ----------- | ------- | ------- | ------------------------- |
+| Unternehmen | Text    | Ja      |                           |
+| Abteilung   | Text    | Ja      |                           |
+| Standort    | Text    | Nein    |                           |
+| Format      | Auswahl | Nein    | Vor Ort / Remote / Hybrid |
 
 #### Sektion 4: Norm & Geltungsbereich
 
-- **5+1 ISO-Checkboxen**: Jede Norm als Bits-UI `Checkbox` mit Label.
-- **Geltungsbereich**: `<textarea>` (4 Zeilen).
+- **5+1 ISO-Checkboxen**: Jede Norm als Checkbox mit Label.
+- **Geltungsbereich**: Mehrzeiliges Textfeld.
 
 #### Sektion 5: Personal
 
-| Feld              | Typ                    | Pflicht | Hinweise                                |
-| ----------------- | ---------------------- | ------- | --------------------------------------- |
-| Leitender Auditor | `<Select>` (dynamisch) | Ja      | Optionen aus `auditors`-Tabelle geladen |
-| Auditteam         | `<textarea>`           | Nein    | Freitext, ein Name pro Zeile            |
-| Ansprechpartner   | `<input text>`         | Nein    |                                         |
-| Kontakt-E-Mail    | `<input email>`        | Nein    | E-Mail-Validierung                      |
+| Feld              | Typ                   | Pflicht | Hinweise                                |
+| ----------------- | --------------------- | ------- | --------------------------------------- |
+| Leitender Auditor | Auswahl (dynamisch)   | Ja      | Optionen aus `auditors`-Tabelle geladen |
+| Auditteam         | Mehrzeiliges Textfeld | Nein    | Freitext, ein Name pro Zeile            |
+| Ansprechpartner   | Text                  | Nein    |                                         |
+| Kontakt-E-Mail    | E-Mail                | Nein    | E-Mail-Validierung                      |
 
 #### Sektion 6: Notizen & Dokumente
 
-| Feld            | Typ                     | Hinweise                                                  |
-| --------------- | ----------------------- | --------------------------------------------------------- |
-| Notizen         | `<textarea>` (6 Zeilen) |                                                           |
-| Dokumente/Links | `<textarea>` (4 Zeilen) | Ein Link pro Zeile                                        |
-| Datei-Upload    | `<input type="file">`   | `multiple`, `accept` siehe erlaubte Typen, max 5 MB/Datei |
+| Feld            | Typ                   | Hinweise                                                      |
+| --------------- | --------------------- | ------------------------------------------------------------- |
+| Notizen         | Mehrzeiliges Textfeld |                                                               |
+| Dokumente/Links | Mehrzeiliges Textfeld | Ein Link pro Zeile                                            |
+| Datei-Upload    | Datei-Upload          | Mehrfachauswahl, erlaubte Typen (siehe unten), max 5 MB/Datei |
 
 **Erlaubte Dateitypen**: PDF (`.pdf`), Word (`.doc`, `.docx`), Excel (`.xls`, `.xlsx`), PowerPoint (`.ppt`, `.pptx`), Text (`.txt`), Bilder (`.png`, `.jpg`, `.jpeg`, `.gif`).
 
@@ -270,7 +270,7 @@ Unterhalb des Upload-Feldes: Liste bereits hochgeladener Dateien mit Dateiname, 
 
 1. Klick auf "Neues Audit anlegen".
 2. Formular oeffnet sich mit leeren Feldern (`istNeu = true`).
-3. Pflichtfelder sind markiert (destructive border bei Fehler).
+3. Pflichtfelder sind markiert (Fehleranzeige bei Validierungsfehler).
 4. Bei "Speichern": Client-Validierung -> Server-Call (`createAudit`).
 5. Dateien werden separat per `uploadAuditDatei` in Object Storage (R2/S3) hochgeladen (Groessenpruefung client- und serverseitig). Nur Metadaten (Name, Typ, Groesse, Storage-Key) werden in der DB gespeichert.
 6. Bei Erfolg: Formular schliesst, Suchergebnisse aktualisieren.
@@ -285,7 +285,7 @@ Unterhalb des Upload-Feldes: Liste bereits hochgeladener Dateien mit Dateiname, 
 ### Audit loeschen
 
 1. Klick auf "Loeschen".
-2. Bestaetigung per Bits-UI `AlertDialog`: _"Audit '{auditName}' wirklich loeschen? Alle zugehoerigen Dateien werden ebenfalls entfernt."_
+2. Bestaetigung per Bestaetigungsdialog: _"Audit '{auditName}' wirklich loeschen? Alle zugehoerigen Dateien werden ebenfalls entfernt."_
 3. Bei Bestaetigung: Server-Call (`deleteAudit`), CASCADE loescht auch `audit_dateien`.
 4. Karte wird aus dem Grid entfernt.
 
@@ -313,16 +313,3 @@ Unterhalb des Upload-Feldes: Liste bereits hochgeladener Dateien mit Dateiname, 
 | Drizzle ORM Schema      | Tabellendefinitionen `audits`, `audit_normen`, `audit_team_members`, `audit_dateien`, `auditors` |
 | Spec 07 (Kalender)      | Audits koennen als Kalendereintraege referenziert werden                                         |
 | Spec 08 (Import/Export) | Audits werden beim Export/Import beruecksichtigt                                                 |
-
-### Extern (Bibliotheken)
-
-| Paket          | Verwendung                                             |
-| -------------- | ------------------------------------------------------ |
-| SvelteKit      | Routing (`/audits`), Server-Funktionen                 |
-| Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`)     |
-| Bits-UI        | Select, Checkbox, Button, Card, AlertDialog, Accordion |
-| Tailwind CSS 4 | Styling, responsive Grid                               |
-| Drizzle ORM    | SQL-Queries, Schema-Definition                         |
-| Turso          | SQLite-Datenbank (libsql)                              |
-| better-auth    | Authentifizierung, Session-Management                  |
-| Bun            | Runtime, Paketmanager                                  |

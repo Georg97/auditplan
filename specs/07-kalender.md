@@ -94,30 +94,29 @@ Die Kalenderseite besteht aus drei Bereichen:
 
 Horizontale Leiste mit folgenden Elementen (von links nach rechts):
 
-- **Zurueck-Button** (`<` / Chevron Left) -- navigiert zum vorherigen Monat/Woche/Tag.
-- **Periodenbezeichnung** (zentriert, fett): z.B. _"Maerz 2026"_ (Monatsansicht), _"KW 12 - 16.03. - 22.03.2026"_ (Wochenansicht), _"Mittwoch, 18. Maerz 2026"_ (Tagesansicht).
-- **Weiter-Button** (`>` / Chevron Right) -- navigiert zum naechsten Monat/Woche/Tag.
-- **Heute-Button** (rechts) -- springt zur aktuellen Periode zurueck.
-- **Ansichts-Umschalter** (rechts): 3 Buttons / SegmentedControl (Bits-UI `ToggleGroup`):
-  - Monat | Woche | Tag
+- **Zurueck-Button** -- navigiert zum vorherigen Monat/Woche/Tag.
+- **Periodenbezeichnung** (zentriert): z.B. _"Maerz 2026"_ (Monatsansicht), _"KW 12 - 16.03. - 22.03.2026"_ (Wochenansicht), _"Mittwoch, 18. Maerz 2026"_ (Tagesansicht).
+- **Weiter-Button** -- navigiert zum naechsten Monat/Woche/Tag.
+- **Heute-Button** -- springt zur aktuellen Periode zurueck.
+- **Ansichts-Umschalter**: 3 Optionen: Monat | Woche | Tag
 
 ### 2. Kalender-Grid
 
 #### Monatsansicht
 
-- **7-Spalten-Grid**: `grid-cols-7`.
-- **Kopfzeile**: Wochentage (Mo, Di, Mi, Do, Fr, Sa, So) als Labels.
-- **Zellen**: Quadratische Zellen (`aspect-square`).
+- **7-Spalten-Grid** fuer die Wochentage (Mo-So).
+- **Kopfzeile**: Wochentage als Labels.
+- **Zellen**:
   - Tagesnummer oben links.
-  - Tage ausserhalb des aktuellen Monats: muted foreground, reduzierte Deckkraft.
-  - Heutiger Tag: Farbiger Kreis um die Tagesnummer (`bg-primary text-primary-foreground rounded-full`).
-  - **Tage mit Audit-Eintraegen**: Highlight days with audits using brand color (light background `bg-brand/10`, left border accent `border-l-2 border-brand`).
+  - Tage ausserhalb des aktuellen Monats: visuell abgeschwaecht dargestellt.
+  - Heutiger Tag: visuell hervorgehoben.
+  - Tage mit Audit-Eintraegen: visuell hervorgehoben (z.B. farbiger Hintergrund/Rand).
   - Bei Klick auf eine Zelle: Modal zum Erstellen eines neuen Eintrags oeffnen (Datum vorausgefuellt).
   - Vorhandene Eintraege werden als kleine Pillen/Badges innerhalb der Zelle angezeigt (Titel, ggf. gekuerzt). Bei Klick auf einen Eintrag: Modal zum Bearbeiten oeffnen.
 
 #### Wochenansicht
 
-- **8-Spalten-Layout**: 1 Spalte fuer Uhrzeiten (links), 7 Spalten fuer Mo-So.
+- **Layout**: 1 Spalte fuer Uhrzeiten (links), 7 Spalten fuer Mo-So.
 - **Stundenslots**: Zeilen fuer jede Stunde (Standard: 07:00-20:00, konfigurierbar).
 - Eintraege werden als farbige Bloecke ueber die entsprechenden Stundenslots gelegt.
 - Klick auf einen leeren Slot: Modal oeffnen mit vorausgefuelltem Datum und Startzeit.
@@ -130,23 +129,23 @@ Horizontale Leiste mit folgenden Elementen (von links nach rechts):
 
 ### 3. Eintrags-Modal
 
-Bits-UI `Dialog` mit folgenden Feldern:
+Dialog mit folgenden Feldern:
 
-| Feld         | Typ            | Hinweise                            |
-| ------------ | -------------- | ----------------------------------- |
-| Datum        | `<input date>` | Vorausgefuellt mit angeklicktem Tag |
-| Titel        | `<input text>` | Pflichtfeld                         |
-| Startzeit    | `<input time>` |                                     |
-| Endzeit      | `<input time>` | Muss > Startzeit sein               |
-| Unternehmen  | `<input text>` |                                     |
-| Auditor      | `<Select>`     | Dynamisch aus Auditoren-Tabelle     |
-| Beschreibung | `<textarea>`   | 4 Zeilen                            |
+| Feld         | Typ                   | Hinweise                            |
+| ------------ | --------------------- | ----------------------------------- |
+| Datum        | Datum                 | Vorausgefuellt mit angeklicktem Tag |
+| Titel        | Text                  | Pflichtfeld                         |
+| Startzeit    | Zeit                  |                                     |
+| Endzeit      | Zeit                  | Muss > Startzeit sein               |
+| Unternehmen  | Text                  |                                     |
+| Auditor      | Auswahl               | Dynamisch aus Auditoren-Tabelle     |
+| Beschreibung | Mehrzeiliges Textfeld |                                     |
 
 **Buttons** am unteren Rand des Modals:
 
 - **Abbrechen** (sekundaer) -- Modal schliessen ohne Speichern.
 - **Speichern** (primaer) -- Validierung, dann Server-Call.
-- Bei bestehendem Eintrag zusaetzlich: **Loeschen** (destructive variant).
+- Bei bestehendem Eintrag zusaetzlich: **Loeschen** (destruktiv).
 
 ## Interaktionen
 
@@ -159,7 +158,7 @@ Bits-UI `Dialog` mit folgenden Feldern:
 
 ### Ansicht wechseln
 
-1. Klick auf Monat/Woche/Tag im ToggleGroup.
+1. Klick auf Monat/Woche/Tag im Ansichts-Umschalter.
 2. `ansicht` wird aktualisiert.
 3. Das Grid rendert sich entsprechend um.
 4. Eintraege werden ggf. neu geladen (anderer Datumsbereich).
@@ -182,7 +181,7 @@ Bits-UI `Dialog` mit folgenden Feldern:
 ### Eintrag loeschen
 
 1. Im Bearbeitungs-Modal: Klick auf **Loeschen**.
-2. Bestaetigung per AlertDialog: _"Kalendereintrag '{titel}' wirklich loeschen?"_
+2. Bestaetigung per Bestaetigungsdialog: _"Kalendereintrag '{titel}' wirklich loeschen?"_
 3. Bei Bestaetigung: Server-Call (`deleteCalendarEntry`).
 4. Eintrag wird aus dem Kalender entfernt.
 
@@ -203,16 +202,3 @@ Bits-UI `Dialog` mit folgenden Feldern:
 | better-auth Session        | `organizationId` fuer alle CRUD-Operationen              |
 | Drizzle ORM Schema         | Tabellendefinition `calendar_entries`                    |
 | Spec 06 (Audit-Verwaltung) | Audits koennen als Kalendereintraege verknuepft werden   |
-
-### Extern (Bibliotheken)
-
-| Paket          | Verwendung                                         |
-| -------------- | -------------------------------------------------- |
-| SvelteKit      | Routing (`/calendar`), Server-Funktionen           |
-| Svelte 5       | Reaktive Zustandsverwaltung (`$state`, `$derived`) |
-| Bits-UI        | Dialog, ToggleGroup, Button, Select, AlertDialog   |
-| Tailwind CSS 4 | Grid-Layout, responsive Styling                    |
-| Drizzle ORM    | SQL-Queries, Schema-Definition                     |
-| Turso          | SQLite-Datenbank (libsql)                          |
-| better-auth    | Authentifizierung, Session-Management              |
-| Bun            | Runtime, Paketmanager                              |

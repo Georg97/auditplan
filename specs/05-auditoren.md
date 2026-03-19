@@ -112,87 +112,28 @@ interface AuditorRemoteFunctions {
 
 #### Seitenaufbau
 
-```
-+------------------------------------------------------+
-|  Seitentitel: "Auditorenverwaltung"                  |
-+------------------------------------------------------+
-|  Suchfeld: [Suche nach Name, Firma, Spezialisierung] |
-+------------------------------------------------------+
-|                                                      |
-|  [Auditor-Karte]  [Auditor-Karte]  [Auditor-Karte]  |
-|  [Auditor-Karte]  [Auditor-Karte]  [Auditor-Karte]  |
-|  ...                                                 |
-|                                                      |
-+------------------------------------------------------+
-```
+Die Seite zeigt ein Suchfeld und darunter ein responsives Grid von Auditor-Karten.
 
 #### Suchfeld
 
-| Eigenschaft   | Wert                                                      |
-| ------------- | --------------------------------------------------------- |
-| Breite        | full width, max-w-lg                                      |
-| Padding       | standard input padding with space for icon                |
-| Border        | border color, 2px                                         |
-| Border-Radius | rounded-full (Pill-Form)                                  |
-| Icon          | Lucide `search` icon links im Feld (absolut positioniert) |
-| Placeholder   | "Suche nach Name, Firma oder Spezialisierung..."          |
-| Focus-Border  | brand color                                               |
+- Placeholder: "Suche nach Name, Firma oder Spezialisierung..."
+- Filtert in Echtzeit (Debounce 300ms) die angezeigten Auditor-Karten
+- Suche erfolgt server-seitig via SQL LIKE/WHERE auf `name`, `company` und Qualifikationsfeldern
+- Ergebnisse werden paginiert zurueckgegeben
 
-Die Suche filtert in Echtzeit (Debounce 300ms) die angezeigten Auditor-Karten. Die Suche erfolgt server-seitig via SQL LIKE/WHERE auf `name`, `company` und Qualifikationsfeldern. Ergebnisse werden paginiert zurueckgegeben.
+#### Auditor-Karten
 
-#### Auditor-Karten-Grid
+Jede Karte zeigt:
 
-| Eigenschaft | Wert                  |
-| ----------- | --------------------- |
-| Layout      | responsive card grid  |
-| Gap         | gap-6                 |
-| Padding     | standard card padding |
-
-#### Einzelne Auditor-Karte
-
-| Eigenschaft   | Wert                                  |
-| ------------- | ------------------------------------- |
-| Hintergrund   | ShadCN Card (`bg-card`)               |
-| Border-Radius | rounded-lg                            |
-| Box-Shadow    | card shadow                           |
-| Padding       | standard card padding                 |
-| Transition    | smooth transition                     |
-| Hover         | subtle hover lift, shadow intensified |
-
-Karten-Inhalt:
-
-```
-+------------------------------------------+
-|  [user icon] Max Mustermann              |
-|  Titel: Lead Auditor                     |
-|  ----------------------------------------|
-|  [mail icon] max@example.com             |
-|  [phone icon] +49 123 456789            |
-|  [building icon] Audit GmbH             |
-|  ----------------------------------------|
-|  ISO: [9001] [14001] [27001]             |
-|  Erfahrung: 12 Jahre                     |
-|  ----------------------------------------|
-|  [Bearbeiten]  [Loeschen]               |
-+------------------------------------------+
-```
-
-- **Name:** medium heading text, bold, foreground color
-- **Titel:** small text, muted foreground
-- **Kontaktdaten:** Lucide icons (`mail`, `phone`, `building-2`) + Text, small text
-- **ISO-Badges:** use ShadCN Badge with appropriate variant for each ISO standard
-  - ISO 9001: brand/primary variant
-  - ISO 14001: success variant
-  - ISO 45001: warning variant
-  - ISO 50001: info variant
-  - ISO 27001: destructive variant
+- **Name** und **Titel**
+- **Kontaktdaten:** E-Mail, Telefon, Unternehmen
+- **ISO-Qualifikationen** als Badges (ISO 9001, 14001, 45001, 50001, 27001)
 - **Erfahrung:** "X Jahre" Anzeige
-- **Buttons:** Flexbox, gap-2, am unteren Rand der Karte. "Bearbeiten" as outline button, "Loeschen" as destructive button
+- **Aktionen:** Bearbeiten und Loeschen
 
 #### Leerer Zustand
 
-- Zentrierte Anzeige: "Keine Auditoren vorhanden. Fuegen Sie Ihren ersten Auditor hinzu."
-- Button: primary button "Auditor hinzufuegen" -> navigiert zu `/add-auditor`
+Hinweis: "Keine Auditoren vorhanden. Fuegen Sie Ihren ersten Auditor hinzu." mit Button "Auditor hinzufuegen" der zu `/add-auditor` navigiert.
 
 ---
 
@@ -205,55 +146,7 @@ Im Bearbeitungsmodus wird die Route mit Query-Parameter aufgerufen: `/add-audito
 
 #### Seitenaufbau
 
-```
-+------------------------------------------------------+
-|  Seitentitel: "Auditor hinzufuegen"                  |
-|  (oder "Auditor bearbeiten" im Edit-Modus)           |
-+------------------------------------------------------+
-|                                                      |
-|  Abschnitt 1: Persoenliche Daten                     |
-|  [Name*] [Titel] [E-Mail*] [Telefon] [Mobil] [Firma] |
-|                                                      |
-|  Abschnitt 2: Adresse                                |
-|  [Strasse] [PLZ] [Ort] [Land]                        |
-|                                                      |
-|  Abschnitt 3: Qualifikationen                        |
-|  [x] ISO 9001  [ ] ISO 14001  [x] ISO 45001         |
-|  [ ] ISO 50001  [ ] ISO 27001                        |
-|  [Zertifizierungen] [Sprachen] [Erfahrung]           |
-|                                                      |
-|  Abschnitt 4: Verfuegbarkeit                         |
-|  [Tagessatz] [Verfuegbarkeit]                        |
-|                                                      |
-|  Abschnitt 5: Notizen                                |
-|  [Textarea]                                          |
-|                                                      |
-|  [Speichern]  [Zuruecksetzen]                        |
-+------------------------------------------------------+
-```
-
-#### Formular-Abschnitte
-
-Jeder Abschnitt hat:
-
-| Eigenschaft   | Wert                     |
-| ------------- | ------------------------ |
-| Hintergrund   | ShadCN Card (`bg-card`)  |
-| Border-Radius | rounded-lg               |
-| Box-Shadow    | card shadow              |
-| Padding       | standard card padding    |
-| Margin-Bottom | standard section spacing |
-
-Abschnitts-Titel:
-
-| Eigenschaft    | Wert                    |
-| -------------- | ----------------------- |
-| Schriftgroesse | medium heading text     |
-| Schriftstil    | bold                    |
-| Farbe          | foreground              |
-| Border-Bottom  | brand color border, 2px |
-| Padding-Bottom | small spacing           |
-| Margin-Bottom  | standard spacing        |
+Seitentitel: "Auditor hinzufuegen" (oder "Auditor bearbeiten" im Edit-Modus). Das Formular ist in fuenf Abschnitte gegliedert:
 
 #### Abschnitt 1: Persoenliche Daten
 
@@ -266,8 +159,6 @@ Abschnitts-Titel:
 | Mobil       | `tel`   | Nein    | -             | "+49 170 1234567"     |
 | Unternehmen | `text`  | Nein    | -             | "Firmenname"          |
 
-Layout: responsive card grid (auto-fill columns, min 250px)
-
 #### Abschnitt 2: Adresse
 
 | Feld    | Typ    | Pflicht | Standard      |
@@ -277,11 +168,9 @@ Layout: responsive card grid (auto-fill columns, min 250px)
 | Ort     | `text` | Nein    | -             |
 | Land    | `text` | Nein    | "Deutschland" |
 
-Layout: 4-spaltiges Grid auf Desktop, 2-spaltig auf Tablet, 1-spaltig auf Mobil
-
 #### Abschnitt 3: Qualifikationen
 
-**ISO-Checkboxen** (5 Stueck, horizontale Reihe mit Wrap):
+**ISO-Checkboxen** (ShadCN `Checkbox`):
 
 | Checkbox   | Label                              |
 | ---------- | ---------------------------------- |
@@ -291,13 +180,11 @@ Layout: 4-spaltiges Grid auf Desktop, 2-spaltig auf Tablet, 1-spaltig auf Mobil
 | `iso50001` | ISO 50001 - Energiemanagement      |
 | `iso27001` | ISO 27001 - Informationssicherheit |
 
-Jede Checkbox: ShadCN `Checkbox`-Komponente, farbiger Akzent passend zur ISO-Norm.
-
 **Weitere Felder:**
 
 | Feld             | Typ        | Beschreibung                                      |
 | ---------------- | ---------- | ------------------------------------------------- |
-| Zertifizierungen | `textarea` | Freitext fuer weitere Zertifizierungen, 3 Zeilen  |
+| Zertifizierungen | `textarea` | Freitext fuer weitere Zertifizierungen            |
 | Sprachen         | `text`     | Kommagetrennte Sprachen, z.B. "Deutsch, Englisch" |
 | Berufserfahrung  | `number`   | Ganzzahl, Jahre, `min="0"`, `max="50"`            |
 
@@ -312,38 +199,21 @@ Das Select-Feld wird mit einer ShadCN `Select`-Komponente umgesetzt.
 
 #### Abschnitt 5: Notizen
 
-| Feld    | Typ        | Details                                                                 |
-| ------- | ---------- | ----------------------------------------------------------------------- |
-| Notizen | `textarea` | 5 Zeilen, `resize: vertical`, Platzhalter "Zusaetzliche Anmerkungen..." |
+| Feld    | Typ        | Details                                              |
+| ------- | ---------- | ---------------------------------------------------- |
+| Notizen | `textarea` | Platzhalter "Zusaetzliche Anmerkungen...", resizable |
 
 #### Aktions-Buttons
 
-| Button        | Stil                       | Aktion                             |
-| ------------- | -------------------------- | ---------------------------------- |
-| Speichern     | primary button             | Formular absenden                  |
-| Zuruecksetzen | secondary button (outline) | Formular leeren / auf Anfangswerte |
-
-Buttons: standard button padding, rounded-md
-
-#### Eingabefelder (allgemein)
-
-| Eigenschaft    | Wert                                          |
-| -------------- | --------------------------------------------- |
-| Padding        | standard input padding                        |
-| Border         | border color, 2px                             |
-| Border-Radius  | rounded-md                                    |
-| Schriftgroesse | base text                                     |
-| Focus-Border   | brand color (ring)                            |
-| Focus-Shadow   | brand color focus ring                        |
-| Fehler-Border  | destructive color                             |
-| Fehler-Text    | small text, destructive color, unter dem Feld |
+- **Speichern** — Formular absenden
+- **Zuruecksetzen** — Formular leeren bzw. auf Anfangswerte zuruecksetzen
 
 ## Interaktionen
 
 ### Grid-Ansicht: Daten laden
 
 1. Beim Seitenaufruf wird `getAuditors(page, limit)` aufgerufen (paginiert)
-2. Skeleton-Loader waehrend des Ladens (6 Platzhalter-Karten)
+2. Skeleton-Loader waehrend des Ladens
 3. Ergebnis wird in `$state`-Variablen gespeichert (items + Pagination-Metadaten)
 4. Die Karten werden reaktiv gerendert
 5. Pagination-Buttons ermoeglichen das Blaettern durch die Ergebnisse
@@ -382,7 +252,7 @@ Buttons: standard button padding, rounded-md
 1. Clientseitige Validierung beim Absenden:
    - `name`: Darf nicht leer sein -> Fehler: "Name ist erforderlich"
    - `email`: Muss gueltiges E-Mail-Format haben -> Fehler: "Bitte geben Sie eine gueltige E-Mail-Adresse ein"
-2. Fehlerhafte Felder: destructive border, Fehlermeldung darunter
+2. Fehlerhafte Felder werden visuell markiert mit Fehlermeldung
 3. Erstes fehlerhaftes Feld erhaelt automatisch den Fokus
 
 ### Formular: Speichern

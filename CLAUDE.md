@@ -122,13 +122,23 @@
 - Use the reusable `DataTable.svelte` wrapper in `src/lib/components/`
 - ShadCN `table` component for styling
 
-### UI Components — ShadCN-first
+### UI Components — ShadCN-first, Composable Design
 
-- Before creating ANY new UI component, check if it exists:
-  1. `bunx shadcn-svelte@next add <name> --no-git` (shadcn-svelte registry, non-interactive)
-  2. `bunx jsrepo add <name> --yes` (shadcn-svelte-extras registry, non-interactive)
-- ALWAYS use `--no-git` / `--yes` flags to avoid interactive prompts (loop runs unattended)
-- Only hand-write a component if NEITHER registry has it
+All UI is built on ShadCN components + the Tailwind theme config. The design system lives in `src/lib/components/ui/` and `src/routes/layout.css`.
+
+**Component sourcing (in priority order):**
+
+1. `bunx shadcn-svelte@next add <name> --no-git` (shadcn-svelte registry, non-interactive)
+2. `bunx jsrepo add <name> --yes` (shadcn-svelte-extras registry, non-interactive)
+3. Hand-write ONLY if neither registry has it
+
+**Composable design principles:**
+
+- **Extend the component library** — if you need a variant of Button, Badge, Card, etc., add it as a variant/slot in the existing ShadCN component, NOT as inline Tailwind classes scattered across pages.
+- **No one-off inline styling** — if you find yourself adding the same Tailwind class combination to multiple elements, extract it into a reusable component in `src/lib/components/` or a variant in `src/lib/components/ui/`.
+- **Theme-driven, not hardcoded** — colors come from the OKLCH CSS variables in `layout.css`, spacing from Tailwind's scale, typography from `font-display`/`font-body`. Never hardcode hex colors or pixel values.
+- **ShadCN is the design system** — use its semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`, `bg-destructive`), its component patterns (Card for containers, Badge for tags, Button for actions, Dialog for modals, AlertDialog for confirmations), and its built-in dark mode support.
+- **ALWAYS use `--no-git` / `--yes`** flags to avoid interactive prompts (loop runs unattended)
 - NEVER hand-write Dialog, Select, Table, Dropdown, Popover, Checkbox, RadioGroup, etc.
 
 ### i18n

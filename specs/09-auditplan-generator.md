@@ -40,7 +40,7 @@ type Auditmethode = 'on_site' | 'on_site_and_remote' | 'fully_remote';
 // Display text comes from i18n
 type TeamRolle = 'lead_auditor' | 'auditors' | 'trainees' | 'experts';
 
-// ISO-Normen (5+1 Checkboxen)
+// ISO-Normen (5 vordefinierte + 1 Freitext-Option)
 const ISO_NORMEN = [
 	{ id: 'iso9001', label: 'ISO 9001:2015' },
 	{ id: 'iso14001', label: 'ISO 14001:2015' },
@@ -189,7 +189,7 @@ interface AuditPlanStandort {
 interface AuditPlanRevision {
 	id: string; // crypto.randomUUID()
 	auditPlanId: string; // FK -> audit_plans.id, CASCADE DELETE
-	nummer: string; // Auto: "Rev. 1.0", "Rev. 2.0", ...
+	nummer: string; // Auto-inkrementierende Revisionsnummer
 	datum: string; // ISO-Date
 	beschreibung: string; // Multi-line
 	position: number;
@@ -374,32 +374,30 @@ type AbteilungThemen = Record<string, string[]>;
 
 ### Gesamtlayout
 
-Die Seite ist ein langes, scrollbares Formular mit einer fixierten Aktionsleiste am oberen Rand. Die einzelnen Sektionen sind vertikal untereinander angeordnet, jeweils in einer ShadCN Card mit Titel.
+Die Seite ist ein langes, scrollbares Formular mit einer fixierten Aktionsleiste am oberen Rand. Die einzelnen Sektionen sind vertikal untereinander angeordnet, jeweils als eigener Abschnitt mit Titel.
 
 ### Aktionsleiste (fixiert, oben)
 
-Horizontale Leiste mit 5 Buttons:
+Aktionsleiste mit folgenden Funktionen:
 
-| Button                  | Typ        | Beschreibung                                     |
-| ----------------------- | ---------- | ------------------------------------------------ |
-| Speichern               | Primaer    | Speichert Plan in DB                             |
-| Als Word generieren     | Sekundaer  | Generiert .docx-Datei                            |
-| Als PDF generieren      | Sekundaer  | Generiert .pdf-Datei                             |
-| Auditnotizen generieren | Sekundaer  | Uebertraegt Daten an Notizen-Generator (Spec 10) |
-| Formular zuruecksetzen  | Destruktiv | Loescht alle Eingaben (mit Bestaetigung)         |
+- **Speichern**: Speichert Plan in DB.
+- **Als Word generieren**: Generiert .docx-Datei.
+- **Als PDF generieren**: Generiert .pdf-Datei.
+- **Auditnotizen generieren**: Uebertraegt Daten an Notizen-Generator (Spec 10).
+- **Formular zuruecksetzen**: Loescht alle Eingaben (mit Bestaetigung).
 
 ### Sektion: ZN-Verwaltung (Zertifikatsnummern)
 
-- **Eingabefeld** + **Hinzufuegen-Button**: Textfeld fuer neue ZN, Button mit `+`-Icon.
-- **Anzeige**: Pill-Badges (ShadCN Badge) nebeneinander.
-  - Jede Pill zeigt die ZN und hat einen `x`-Button zum Loeschen.
+- Eingabefeld fuer neue ZN mit Hinzufuegen-Funktion (Button oder Enter).
+- Eingegebene ZN werden als entfernbare Tags/Pills angezeigt.
+- Jede ZN kann einzeln entfernt werden.
 - Daten gespeichert in `zertifikatsnummern: string[]`.
 
 ### Sektion: Logo-Upload
 
-- **File upload**: Akzeptiert Bildformate, gestylt als Button.
-- **Vorschau**: Bild in einem image preview container mit dashed border in brand color.
-- **Entfernen-Button**: Unter der Vorschau, nur sichtbar wenn Logo vorhanden.
+- File upload fuer Bildformate.
+- Vorschau des hochgeladenen Bildes.
+- Entfernen-Funktion, nur sichtbar wenn Logo vorhanden.
 - Logo wird als Base64-String gespeichert.
 
 ### Sektion: Grunddaten
@@ -410,28 +408,26 @@ Horizontale Leiste mit 5 Buttons:
 
 #### Standorte (dynamische Liste)
 
-- Jeder Standort: Textfeld + Loeschen-Button (Papierkorb-Icon).
-- **Hinzufuegen-Button**: _"+ Standort hinzufuegen"_ am Ende der Liste.
+- Jeder Standort: Textfeld mit Loeschen-Funktion.
+- Standorte koennen hinzugefuegt werden.
 - Mindestens 1 Standort muss vorhanden sein.
 
 #### Geltungsbereich
 
-- Multi-line text area, frei skalierbar.
+- Multi-line text area.
 
-#### Normgrundlage / Auditkriterien (Custom Multiselect)
+#### Normgrundlage / Auditkriterien
 
-- **5+1 ISO-Checkboxen**: Jede Norm als Checkbox mit Label.
-- **Durchsuchbares Dropdown**: Textfeld zum Filtern der Normen.
-- Ausgewaehlte Normen werden als Pills unterhalb angezeigt.
+- Searchable Multiselect fuer ISO-Normen: 5 vordefinierte Normen + 1 Freitext-Option ("Andere").
+- Ausgewaehlte Normen werden als entfernbare Tags angezeigt.
 
 ### Sektion: Auditdetails
 
-#### Auditart (Searchable Multiselect)
+#### Auditart
 
-- Dropdown mit 16 vordefinierten Auditarten (siehe `AuditartOption`).
-- Suchfeld zum Filtern.
-- Moeglichkeit, benutzerdefinierte Eintraege hinzuzufuegen (Freitext-Eingabe + Enter).
-- Ausgewaehlte Arten als Pills.
+- Searchable Multiselect mit 16 vordefinierten Auditarten (siehe `AuditartOption`).
+- Moeglichkeit, benutzerdefinierte Eintraege hinzuzufuegen (Freitext).
+- Ausgewaehlte Arten als entfernbare Tags.
 
 #### Beauftragter
 
@@ -439,27 +435,20 @@ Horizontale Leiste mit 5 Buttons:
 
 #### Auditziel
 
-- Multi-line text area (readonly, muted background).
+- Multi-line text area (initial readonly).
 - Standardtext (vordefiniert, ca. 3-4 Saetze zum Auditzweck).
-- **Checkbox**: _"Auditziel bearbeiten"_ -- schaltet text area auf editierbar um (default background).
+- Checkbox zum Freischalten der Bearbeitung — schaltet text area auf editierbar um.
 
-#### Auditsprache (Multiselect)
+#### Auditsprache
 
-- Dropdown mit 14 Sprachen.
-- Mehrfachauswahl moeglich.
-- Ausgewaehlte Sprachen als Pills.
+- Multiselect mit 14 Sprachen.
+- Ausgewaehlte Sprachen als entfernbare Tags.
 
 ### Sektion: Audit-Team
 
-4 Rollengruppen, jeweils als Untersektion:
+4 Rollengruppen (Auditleiter, Auditoren, Trainees, Experten), jeweils als dynamische Liste:
 
-| Rolle       | Felder                                                    |
-| ----------- | --------------------------------------------------------- |
-| Auditleiter | Name (text area), Extern (Checkbox), Firmenname (bedingt) |
-| Auditoren   | Name (text area), Extern (Checkbox), Firmenname (bedingt) |
-| Trainees    | Name (text area), Extern (Checkbox), Firmenname (bedingt) |
-| Experten    | Name (text area), Extern (Checkbox), Firmenname (bedingt) |
-
+- Jeder Eintrag hat: Name (Textfeld), Extern-Flag (Checkbox), Firmenname (bedingt sichtbar).
 - **Firmenname-Feld**: Nur sichtbar, wenn `istExtern = true`.
 - Jede Rolle kann mehrere Eintraege haben (dynamische Liste mit Hinzufuegen/Entfernen).
 
@@ -467,7 +456,7 @@ Horizontale Leiste mit 5 Buttons:
 
 #### Schichtsystem
 
-- 4 Radio-Buttons: 1-Schicht, 2-Schicht, 3-Schicht, Anderes.
+- Auswahl aus 4 Optionen: 1-Schicht, 2-Schicht, 3-Schicht, Anderes.
 - Bei "Anderes": Freitextfeld erscheint.
 
 #### Schichtuebergaben
@@ -482,7 +471,7 @@ Horizontale Leiste mit 5 Buttons:
 
 #### Methode
 
-- 3 Radio-Buttons: vor Ort, vor Ort & remote, 100% remote.
+- Auswahl aus 3 Optionen: vor Ort, vor Ort & remote, 100% remote.
 
 #### IKT-Technik
 
@@ -504,11 +493,11 @@ Horizontale Leiste mit 5 Buttons:
 
 - **Dynamische Liste** mit automatischer Nummerierung.
 - Jede Revision:
-  - **Nummer** (readonly): "Rev. 1.0", "Rev. 2.0", "Rev. 3.0", ...
+  - **Nummer** (readonly): Auto-inkrementierende Revisionsnummer.
   - **Datum**: Date picker.
   - **Beschreibung**: Multi-line text area.
-  - **Loeschen-Button**: Papierkorb-Icon.
-- **Hinzufuegen-Button**: _"+ Revision hinzufuegen"_.
+  - **Loeschen**: Entfernt die Revision.
+- Revisionen koennen hinzugefuegt werden. Neue Revision erhaelt automatisch die naechste Nummer, Datum auf heute voreingestellt.
 - Zusaetzliche Felder:
   - **Ort/Datum**: Textfeld.
   - **Aenderung waehrend Audit**: Multi-line text area.
@@ -516,16 +505,11 @@ Horizontale Leiste mit 5 Buttons:
 
 ### Sektion: Auditzeiten-Uebersicht
 
-- **Tabelle hinzufuegen-Button**: _"+ Auditzeiten-Tabelle hinzufuegen"_.
+- Auditzeiten-Tabellen koennen hinzugefuegt werden.
 - Jede Tabelle:
-  - **Kopf**: Auditor (Select aus Team-Mitgliedern), Standort (Select aus Standorten).
-  - **Zeilen** (dynamisch):
-
-    | Startzeit | Endzeit | Aktivitaet | Stunden |
-    | --------- | ------- | ---------- | ------- |
-    | HH:mm     | HH:mm   | Freitext   | Auto    |
-
-  - **Zeile hinzufuegen**: Button unter der Tabelle.
+  - **Kopf**: Auditor (Auswahl aus Team-Mitgliedern), Standort (Auswahl aus Standorten).
+  - **Zeilen** (dynamisch): Startzeit (HH:mm), Endzeit (HH:mm), Aktivitaet (Freitext), Stunden (auto-berechnet).
+  - Zeilen koennen hinzugefuegt werden.
   - **Gesamtsumme**: Automatisch berechnete Stundensumme am Tabellenende.
   - Stunden pro Zeile: `(endzeit - startzeit)` in Dezimalstunden.
 
@@ -535,21 +519,18 @@ Dies ist der komplexeste Teil des Auditplan-Generators.
 
 #### Block-Verwaltung
 
-- **Block hinzufuegen-Button**: _"+ Audit-Block hinzufuegen"_ -- erstellt einen neuen Block.
+- Bloecke koennen hinzugefuegt werden.
 - Jeder Block hat eine eindeutige Timestamp-ID (`Date.now().toString()`).
 - Bloecke werden in einem Array gespeichert und nach `position` sortiert.
 
 #### Block-Operationen (§24.3)
 
-Jeder Block hat in der Kopfzeile folgende Aktions-Buttons:
+Jeder Block unterstuetzt folgende Operationen:
 
-| Aktion      | Icon/Button           | Beschreibung                                      |
-| ----------- | --------------------- | ------------------------------------------------- |
-| Loeschen    | Papierkorb            | Bestaetigung per AlertDialog, dann Entfernen      |
-| Duplizieren | Kopieren-Icon         | Deep Copy aller Werte, Toggles, QHSE, Bewertungen |
-| Nach oben   | Pfeil hoch            | Block eine Position nach oben verschieben         |
-| Nach unten  | Pfeil runter          | Block eine Position nach unten verschieben        |
-| Drag & Drop | Griff-Icon (6 Punkte) | Block per Drag & Drop neu positionieren           |
+- **Loeschen**: Mit Bestaetigung per AlertDialog, dann Entfernen.
+- **Duplizieren**: Deep Copy aller Werte, Toggles, Notizen.
+- **Verschieben**: Block nach oben/unten verschieben.
+- **Drag & Drop**: Block per Drag & Drop neu positionieren.
 
 #### Zeilen pro Block
 
@@ -557,20 +538,17 @@ Jeder Block kann mehrere Zeilen enthalten. Jede Zeile hat folgende Felder:
 
 **Hauptfelder:**
 
-| Feld                 | Typ                     | Beschreibung                                    |
-| -------------------- | ----------------------- | ----------------------------------------------- |
-| Datum                | Date picker             | Toggle-gesteuert (§22.1)                        |
-| Uhrzeit Von          | Time picker             | Toggle-gesteuert (§22.1)                        |
-| Uhrzeit Bis          | Time picker             | Toggle-gesteuert (§22.1)                        |
-| Remote               | Checkbox                | Toggle-gesteuert (§22.1)                        |
-| Organisationseinheit | Text input mit datalist | 26+ vordefinierte Abteilungen                   |
-| Normkapitel          | Searchable Multiselect  | Gefiltert nach Organisationseinheit             |
-| Thema                | Searchable Multiselect  | + Custom-Eintraege, gefiltert nach Org.-einheit |
-| Element/Prozess      | Searchable Multiselect  | + Custom-Eintraege                              |
-| Auditor              | Textfeld                |                                                 |
-| Gespraechspartner    | Textfeld                |                                                 |
+- **Datum**: Date picker (Toggle-gesteuert, §22.1).
+- **Uhrzeit Von / Bis**: Time picker (Toggle-gesteuert, §22.1).
+- **Remote**: Checkbox (Toggle-gesteuert, §22.1).
+- **Organisationseinheit**: Texteingabe mit Vorschlaegen aus 26+ vordefinierten Abteilungen.
+- **Normkapitel**: Searchable Multiselect, gefiltert nach Organisationseinheit.
+- **Thema**: Searchable Multiselect mit Custom-Eintraegen, gefiltert nach Organisationseinheit.
+- **Element/Prozess**: Searchable Multiselect mit Custom-Eintraegen.
+- **Auditor**: Textfeld.
+- **Gespraechspartner**: Textfeld.
 
-**Toggles (§22.1):**
+**Per-row visibility toggles (§22.1):**
 
 Drei Toggles pro Zeile, die bestimmen, ob das jeweilige Feld im Word-Export erscheint:
 
@@ -578,11 +556,9 @@ Drei Toggles pro Zeile, die bestimmen, ob das jeweilige Feld im Word-Export ersc
 - **Uhrzeit-Toggle**: Wenn aus, werden Uhrzeit Von/Bis im Export nicht angezeigt.
 - **Remote-Toggle**: Wenn aus, wird die Remote-Kennzeichnung im Export nicht angezeigt.
 
-Die Toggles sind als ShadCN Switch Komponenten neben den jeweiligen Feldern positioniert.
+**Collapsible notes section per row with 6 text fields:**
 
-**Notizen-Panel (aufklappbar):**
-
-Unter jeder Zeile befindet sich ein aufklappbares Panel (ShadCN Collapsible) mit folgenden Textfeldern:
+Unter jeder Zeile befindet sich ein aufklappbarer Bereich mit folgenden Textfeldern:
 
 | Feld            | Auto-Fill                                           |
 | --------------- | --------------------------------------------------- |
@@ -598,7 +574,7 @@ Unter jeder Zeile befindet sich ein aufklappbares Panel (ShadCN Collapsible) mit
 Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktionen ausgeloest:
 
 1. **Normkapitel filtern**: Nur die fuer die Abteilung relevanten Normkapitel werden im Multiselect angezeigt (aus `AbteilungNormkapitel`).
-2. **Themen aktualisieren**: Themen-Dropdown wird mit abteilungsspezifischen Optionen befuellt (aus `AbteilungThemen`).
+2. **Themen aktualisieren**: Themen-Auswahl wird mit abteilungsspezifischen Optionen befuellt (aus `AbteilungThemen`).
 3. **Beschreibung auto-fuellen**: Das Notizen-Feld "Beschreibung" wird mit dem Text aus `abteilungBeschreibungen` gefuellt.
 4. **Zusammenfassung auto-fuellen**: Das Notizen-Feld "Zusammenfassung" wird mit dem Text aus `zusammenfassungBeschreibungen` gefuellt.
 5. **Label aktualisieren**: Die Zeilen-Ueberschrift zeigt den Abteilungsnamen.
@@ -608,7 +584,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 
 ### Sektion: Hinweise und Verteiler
 
-- **Info-Box**: Informational variant background, readonly Text mit Hinweisen zum Auditplan.
+- **Info-Box**: Readonly Text mit Hinweisen zum Auditplan.
 - **Verteiler**: Multi-line text area fuer Freitext-Verteilerliste.
 - **4 Verteilungs-Checkboxen**:
   - Auditteam
@@ -654,24 +630,24 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 ### ZN hinzufuegen
 
 1. Benutzer tippt ZN in das Eingabefeld.
-2. Klick auf "Hinzufuegen" oder Enter.
-3. ZN wird dem Array hinzugefuegt und als Pill angezeigt.
+2. Klick auf Hinzufuegen oder Enter.
+3. ZN wird dem Array hinzugefuegt und als Tag angezeigt.
 4. Eingabefeld wird geleert.
 
 ### ZN loeschen
 
-1. Klick auf `x` an einer ZN-Pill.
+1. Klick auf Entfernen an einer ZN.
 2. ZN wird aus dem Array entfernt.
 
 ### Logo hochladen
 
-1. Klick auf Upload-Button oeffnet Datei-Dialog.
+1. Klick auf Upload-Funktion oeffnet Datei-Dialog.
 2. Bild wird als Base64 gelesen.
-3. Vorschau wird im Container angezeigt.
+3. Vorschau wird angezeigt.
 
 ### Logo entfernen
 
-1. Klick auf "Entfernen".
+1. Klick auf Entfernen.
 2. `logoBase64` und `logoDateiname` werden auf `null` gesetzt.
 3. Vorschau verschwindet.
 
@@ -682,20 +658,20 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 
 ### Revision hinzufuegen
 
-1. Klick auf "Revision hinzufuegen".
+1. Klick auf Revision hinzufuegen.
 2. Neue Revision mit automatischer Nummer (naechste ganze Zahl + ".0") wird angefuegt.
 3. Datum ist auf heute voreingestellt.
 
 ### Auditzeitzeile hinzufuegen
 
-1. Klick auf "Zeile hinzufuegen" in einer Auditzeiten-Tabelle.
+1. Klick auf Zeile hinzufuegen in einer Auditzeiten-Tabelle.
 2. Neue leere Zeile wird angefuegt.
 3. Bei Eingabe von Start- und Endzeit: Stunden werden automatisch berechnet.
 4. Gesamtsumme aktualisiert sich automatisch.
 
 ### Audit-Block hinzufuegen (§24.1)
 
-1. Klick auf "Audit-Block hinzufuegen".
+1. Klick auf Block hinzufuegen.
 2. Ein neuer Block wird erstellt:
    - Neue ID: `Date.now().toString()`.
    - Position: letzter Index + 1.
@@ -704,7 +680,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 
 ### Audit-Block duplizieren (§24.3)
 
-1. Klick auf Duplizieren-Icon in der Block-Kopfzeile.
+1. Duplizieren eines Blocks.
 2. Deep Copy des gesamten Blocks:
    - Neue ID fuer Block und alle Zeilen.
    - Alle Feldwerte werden kopiert.
@@ -715,7 +691,7 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 
 ### Audit-Block loeschen (§24.3)
 
-1. Klick auf Loeschen-Icon.
+1. Loeschen eines Blocks.
 2. AlertDialog: _"Audit-Block wirklich loeschen? Alle Zeilen und Notizen gehen verloren."_
 3. Bei Bestaetigung: Block wird aus dem Array entfernt.
 
@@ -752,15 +728,14 @@ Bei Aenderung der **Organisationseinheit** in einer Zeile werden folgende Aktion
 
 ### Extern (Bibliotheken)
 
-| Paket               | Verwendung                                                         |
-| ------------------- | ------------------------------------------------------------------ |
-| SvelteKit           | Routing (`/plan-generator`), Server-Funktionen                     |
-| Svelte 5            | Reaktive Zustandsverwaltung (`$state`, `$derived`, `$effect`)      |
-| ShadCN-svelte       | Card, Button, Select, Checkbox, Switch, Badge, Collapsible, Dialog |
-| Tailwind CSS 4      | Formularlayout, responsive Design                                  |
-| Drizzle ORM         | CRUD fuer `saved_plans`                                            |
-| Turso               | SQLite-Datenbank (libsql)                                          |
-| better-auth         | Authentifizierung, Session-Management                              |
-| Bun                 | Runtime, Paketmanager                                              |
-| docx (o.ae.)        | Word-Generierung (z.B. `docx` npm-Paket)                           |
-| pdf-lib / puppeteer | PDF-Generierung                                                    |
+| Paket               | Verwendung                                                    |
+| ------------------- | ------------------------------------------------------------- |
+| SvelteKit           | Routing (`/plan-generator`), Server-Funktionen                |
+| Svelte 5            | Reaktive Zustandsverwaltung (`$state`, `$derived`, `$effect`) |
+| Tailwind CSS 4      | Layout, responsive Design                                     |
+| Drizzle ORM         | CRUD fuer `saved_plans`                                       |
+| Turso               | SQLite-Datenbank (libsql)                                     |
+| better-auth         | Authentifizierung, Session-Management                         |
+| Bun                 | Runtime, Paketmanager                                         |
+| docx (o.ae.)        | Word-Generierung (z.B. `docx` npm-Paket)                      |
+| pdf-lib / puppeteer | PDF-Generierung                                               |

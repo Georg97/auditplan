@@ -4,25 +4,27 @@
 
 ```typescript
 interface NavItem {
-	label: string; // i18n-Schlüssel, z.B. "nav.overview"
-	icon: string; // Lucide-Icon-Name, z.B. "clipboard-list"
-	href: string; // SvelteKit-Route, z.B. "/overview"
+	label: string; // i18n-Schlüssel
+	icon: Component; // Lucide-Svelte Icon-Komponente — passend zum Seitenzweck wählen
+	href: string; // SvelteKit-Route
 }
 
 // Navigationspunkte (12 Einträge)
+// Icon-Auswahl: Passende Lucide-Icons für jeden Menüpunkt auswählen.
+// Die Icons sollen den Seitenzweck klar vermitteln.
 const NAV_ITEMS: NavItem[] = [
-	{ label: 'nav.overview', icon: 'clipboard-list', href: '/overview' },
-	{ label: 'nav.dashboard', icon: 'bar-chart-3', href: '/dashboard' },
-	{ label: 'nav.auditorManagement', icon: 'users', href: '/auditor-management' },
-	{ label: 'nav.addAuditor', icon: 'user-plus', href: '/add-auditor' },
-	{ label: 'nav.searchManage', icon: 'search', href: '/search-manage' },
-	{ label: 'nav.calendar', icon: 'calendar', href: '/calendar' },
-	{ label: 'nav.importExport', icon: 'folder-down', href: '/import-export' },
-	{ label: 'nav.planGenerator', icon: 'file-text', href: '/plan-generator' },
-	{ label: 'nav.reportGenerator', icon: 'file-check', href: '/report-generator' },
-	{ label: 'nav.notesGenerator', icon: 'sticky-note', href: '/notes-generator' },
-	{ label: 'nav.auditQuestions', icon: 'circle-help', href: '/audit-questions' },
-	{ label: 'nav.actionPlan', icon: 'list-checks', href: '/action-plan' }
+	{ label: 'nav.overview', icon: /* passendes Icon */, href: '/overview' },
+	{ label: 'nav.dashboard', icon: /* passendes Icon */, href: '/dashboard' },
+	{ label: 'nav.auditorManagement', icon: /* passendes Icon */, href: '/auditor-management' },
+	{ label: 'nav.addAuditor', icon: /* passendes Icon */, href: '/add-auditor' },
+	{ label: 'nav.searchManage', icon: /* passendes Icon */, href: '/search-manage' },
+	{ label: 'nav.calendar', icon: /* passendes Icon */, href: '/calendar' },
+	{ label: 'nav.importExport', icon: /* passendes Icon */, href: '/import-export' },
+	{ label: 'nav.planGenerator', icon: /* passendes Icon */, href: '/plan-generator' },
+	{ label: 'nav.reportGenerator', icon: /* passendes Icon */, href: '/report-generator' },
+	{ label: 'nav.notesGenerator', icon: /* passendes Icon */, href: '/notes-generator' },
+	{ label: 'nav.auditQuestions', icon: /* passendes Icon */, href: '/audit-questions' },
+	{ label: 'nav.actionPlan', icon: /* passendes Icon */, href: '/action-plan' }
 ];
 ```
 
@@ -71,12 +73,12 @@ Verwende ShadCN `sidebar` Komponente als Basis: `bunx shadcn-svelte@next add sid
 
 2. **Sidebar-Content (scrollbar):**
    - 12 Nav-Items als Liste
-   - Jedes Item: Lucide-Icon + Label aus `i18n.t(item.label)`
+   - Jedes Item: Icon + Label aus `i18n.t(item.label)`
    - Aktiver Zustand: Vergleich `$page.url.pathname` mit `item.href`
    - Optional: Nav-Items in Gruppen unterteilen (z.B. "Übersicht", "Verwaltung", "Generatoren", "Tools")
 
 3. **Sidebar-Footer:**
-   - Einstellungen-Button: Lucide `settings` Icon + `i18n.t('nav.settings')`
+   - Einstellungen-Button: Passendes Icon + `i18n.t('nav.settings')`
    - User-Info: Avatar/Name des eingeloggten Benutzers aus `data.user`
    - Theme-Toggle: Light/Dark Mode Schalter (ShadCN `theme-switcher` bereits vorhanden)
 
@@ -92,7 +94,7 @@ Die ShadCN `sidebar` Komponente bringt diese Zustände bereits mit — nutze die
 
 ### Mobile Navigation
 
-- **Trigger:** Hamburger-Button (`menu` Lucide-Icon) oben links im Header, nur sichtbar auf Mobile (`lg:hidden`)
+- **Trigger:** Hamburger-Button oben links im Header, nur sichtbar auf Mobile
 - **Overlay:** ShadCN `Sheet` Komponente (side="left"), enthält dieselbe Sidebar-Komponente
 - **Schließen:** Klick außerhalb, Escape-Taste, oder Klick auf Nav-Item (automatische Navigation schließt Sheet)
 

@@ -54,7 +54,8 @@ Execute based on the task tag:
 - For database operations: use Drizzle queries in server-side code only.
 - Use Svelte 5 runes (`$state`, `$derived`, `$effect`) — NOT Svelte 4 stores.
 - Use `{@render children()}` — NOT `<slot/>`.
-- Use the project's theme system: `bg-brand`, `bg-accent-mid`, `bg-accent-deep`, `bg-surface-light`, ShadCN semantic colors. See `CLAUDE.md` Styling section. Support dark mode.
+- **Composable design:** Build UI from ShadCN components and the Tailwind theme — do NOT scatter inline Tailwind classes across pages. If you need a repeated pattern, extend the component library in `src/lib/components/ui/` or create a reusable component in `src/lib/components/`. Add variants to existing ShadCN components rather than overriding with one-off styles.
+- Use ShadCN semantic tokens (`bg-card`, `text-muted-foreground`, `bg-destructive`, etc.) and the project's custom theme (`bg-brand`, `bg-accent-mid`, `bg-accent-deep`, `bg-surface-light`). Support dark mode. See `CLAUDE.md` Styling section.
 - No placeholders, no shortcuts, no incomplete implementations.
 - Verification: `make check` (ALL four gates must pass: format + typecheck + lint + test)
 

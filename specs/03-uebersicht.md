@@ -47,87 +47,28 @@ Diese Seite ist die Standard-Startseite der Anwendung nach dem Login.
 
 ### Seitenaufbau
 
-```
-+------------------------------------------------------+
-|  Seitentitel: "Uebersicht"                           |
-+------------------------------------------------------+
-|                                                      |
-|  Abschnitt 1: Gespeicherte Auditfragen & Dokumente  |
-|  +------------------------------------------------+  |
-|  | [Name]  [Datum]  [Bearbeiten] [Loeschen] [DL]  |  |
-|  | [Name]  [Datum]  [Bearbeiten] [Loeschen] [DL]  |  |
-|  | ...                                             |  |
-|  +------------------------------------------------+  |
-|                                                      |
-|  Abschnitt 2: Gespeicherte Auditnotizen             |
-|  +------------------------------------------------+  |
-|  | [Name]  [Datum]  [Bearbeiten] [Loeschen] [DL]  |  |
-|  | ...                                             |  |
-|  +------------------------------------------------+  |
-|                                                      |
-|  Abschnitt 3: Gespeicherte Auditplaene              |
-|  +------------------------------------------------+  |
-|  | [Name]  [Datum]  [Bearbeiten] [Loeschen] [DL]  |  |
-|  | ...                                             |  |
-|  +------------------------------------------------+  |
-+------------------------------------------------------+
-```
+Die Seite zeigt drei Abschnitte als scrollbare Listen:
 
-### Abschnitt-Container
+1. **Gespeicherte Auditfragen & Dokumente**
+2. **Gespeicherte Auditnotizen**
+3. **Gespeicherte Auditplaene**
 
-| Eigenschaft   | Wert                                            |
-| ------------- | ----------------------------------------------- |
-| Hintergrund   | ShadCN Card (`bg-card`)                         |
-| Border-Radius | rounded-lg                                      |
-| Box-Shadow    | card shadow                                     |
-| Padding       | standard card padding                           |
-| Margin-Bottom | standard section spacing                        |
-| Max-Hoehe     | scrollable container with reasonable max height |
-| Overflow-Y    | `auto` (scrollbar bei vielen Eintraegen)        |
-
-### Abschnitts-Titel
-
-| Eigenschaft    | Wert                                                                                                 |
-| -------------- | ---------------------------------------------------------------------------------------------------- |
-| Schriftgroesse | medium heading text                                                                                  |
-| Schriftstil    | bold                                                                                                 |
-| Farbe          | foreground                                                                                           |
-| Margin-Bottom  | standard spacing                                                                                     |
-| Icon           | Lucide icon vor dem Titel (Dokumente: `file-text`, Notizen: `pencil-line`, Plaene: `clipboard-list`) |
+Jeder Abschnitt zeigt eine Liste von Eintraegen mit Name, Datum und Aktions-Buttons. Bei vielen Eintraegen ist der Container scrollbar.
 
 ### Eintrags-Zeile
 
-| Eigenschaft       | Wert                                                             |
-| ----------------- | ---------------------------------------------------------------- |
-| Layout            | Flexbox, `justify-content: space-between`, `align-items: center` |
-| Padding           | compact row padding                                              |
-| Border-Bottom     | border color                                                     |
-| Hover-Hintergrund | muted background                                                 |
+Jeder Eintrag zeigt:
 
-#### Linke Seite (Name + Datum)
-
-- **Name:** base text size, foreground color, bold
-- **Datum:** small text, muted foreground, formatiert mit `@internationalized/date` (z.B. "14. Maerz 2026")
-
-#### Rechte Seite (Aktions-Buttons)
-
-3 Buttons nebeneinander mit gap-2:
-
-1. **Bearbeiten** — primary button (outline variant), Lucide icon: `pencil`
-2. **Loeschen** — destructive button, Lucide icon: `trash-2`
-3. **Download** — outline button (success intent), Lucide icon: `download`
-   - Dropdown bei Klick: "Word (.docx)" und "PDF (.pdf)"
-
-All buttons use compact button padding.
+- **Name** des Eintrags
+- **Datum** (formatiert mit `@internationalized/date`, z.B. "14. Maerz 2026")
+- **Aktionen:**
+  1. **Bearbeiten** — oeffnet die entsprechende Generator-Seite
+  2. **Loeschen** — loescht den Eintrag nach Bestaetigung
+  3. **Download** — Dropdown mit Optionen "Word (.docx)" und "PDF (.pdf)"
 
 ### Leerer Zustand
 
-Wenn ein Abschnitt keine Eintraege hat:
-
-- Zentrierter Text: "Keine gespeicherten [Typ] vorhanden."
-- Farbe: muted foreground
-- Schriftgroesse: small text
-- Padding: generous empty-state padding
+Wenn ein Abschnitt keine Eintraege hat, wird ein Hinweis angezeigt: "Keine gespeicherten [Typ] vorhanden."
 
 ## Interaktionen
 
@@ -137,7 +78,7 @@ Wenn ein Abschnitt keine Eintraege hat:
    - `getPlans(page, limit)` -> Laedt Auditplaene aus `audit_plans` (Spec 09), nur Summary-Felder (paginiert)
    - `getNotes(page, limit)` -> Laedt Auditnotizen aus `audit_notes` (Spec 10), nur Summary-Felder (paginiert)
    - `getQuestions(page, limit)` -> Laedt Auditfragen aus `saved_audit_questions` (Spec 11), nur Summary-Felder (paginiert)
-2. Waehrend des Ladens wird ein Skeleton-Loader angezeigt (3 Platzhalter-Bloecke)
+2. Waehrend des Ladens wird ein Skeleton-Loader angezeigt
 3. Die Ergebnisse werden in reaktive `$state`-Variablen gespeichert
 4. Beim Scrollen werden weitere Eintraege nachgeladen (infinite scroll oder Pagination-Buttons)
 
@@ -154,7 +95,7 @@ Wenn ein Abschnitt keine Eintraege hat:
 
 1. Klick auf "Loeschen" -> Bestaetigungsdialog oeffnet sich (ShadCN `AlertDialog`)
 2. Dialog-Text: "Moechten Sie '[Name]' wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden."
-3. Buttons: outline button "Abbrechen" und destructive button "Loeschen"
+3. Buttons: "Abbrechen" und "Loeschen"
 4. Bei Bestaetigung: Remote Function `deletePlan(id)` / `deleteNote(id)` / `deleteQuestion(id)` wird aufgerufen
 5. Nach erfolgreichem Loeschen: Eintrag wird aus der lokalen `$state`-Liste entfernt (optimistic UI)
 6. Toast-Benachrichtigung: "Erfolgreich geloescht"

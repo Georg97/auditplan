@@ -9,9 +9,9 @@ interface AuditReport {
 	id: string;
 	organizationId: string;
 	auditId: string; // FK → saved_audits.id
-	feststellungen: string; // Textarea, 4 Zeilen
-	empfehlungen: string; // Textarea, 4 Zeilen
-	fazit: string; // Textarea, 3 Zeilen
+	feststellungen: string;
+	empfehlungen: string;
+	fazit: string;
 	generatedHtml: string; // Generierter Bericht als HTML
 	createdAt: Date;
 	updatedAt: Date;
@@ -116,16 +116,16 @@ interface Massnahme {
 	id: string;
 	organizationId: string;
 	auditId: string | null; // Optionaler FK → audits.id
-	description: string; // Textarea
-	findingType: FindingType; // Select, farbcodiert
-	plannedAction: string; // Textarea
-	status: ActionStatus; // Select
-	responsible: string; // Dynamisch
+	description: string;
+	findingType: FindingType; // Visually distinguished by semantic color
+	plannedAction: string;
+	status: ActionStatus;
+	responsible: string;
 	priority: Priority;
 	dueDate: string; // ISO-Datum
 	completionDate: string | null; // ISO-Datum
-	norm: ActionNorm; // Select
-	evidenceNotes: string; // Textarea
+	norm: ActionNorm;
+	evidenceNotes: string;
 	auditType: AuditType;
 	createdAt: Date;
 	updatedAt: Date;
@@ -161,31 +161,31 @@ interface OverdueCheck {
 }
 ```
 
-## UI-Beschreibung
+## Funktionale Anforderungen
 
 ### Berichtsgenerator
 
 **Route:** `/report-generator`
 **Datei:** `src/routes/report-generator/+page.svelte`
 
-Das Formular zum Erstellen eines Auditberichts besteht aus folgenden Feldern:
+**Formularfelder:**
 
 | Feld             | Typ               | Details                                                              |
 | ---------------- | ----------------- | -------------------------------------------------------------------- |
 | Audit auswaehlen | Select (required) | Dynamisch befuellt aus gespeicherten Audits (`saved_audits`-Tabelle) |
-| Feststellungen   | Textarea          | 4 Zeilen Hoehe, volle Breite                                         |
-| Empfehlungen     | Textarea          | 4 Zeilen Hoehe, volle Breite                                         |
-| Fazit            | Textarea          | 3 Zeilen Hoehe, volle Breite                                         |
+| Feststellungen   | Textarea          | Mehrzeilig                                                           |
+| Empfehlungen     | Textarea          | Mehrzeilig                                                           |
+| Fazit            | Textarea          | Mehrzeilig                                                           |
 | Absenden         | Button            | Generiert den Bericht                                                |
 
-Nach dem Absenden wird der generierte Bericht in einem separaten Container unterhalb des Formulars angezeigt. Der Bericht hat ein strukturiertes Format mit Ueberschriften fuer jede Sektion (Feststellungen, Empfehlungen, Fazit) und wird aus den eingegebenen Daten zusammengesetzt.
+Nach dem Absenden wird der generierte Bericht unterhalb des Formulars angezeigt. Der Bericht hat ein strukturiertes Format mit Ueberschriften fuer jede Sektion (Feststellungen, Empfehlungen, Fazit) und wird aus den eingegebenen Daten zusammengesetzt.
 
 ### Auditfragen & Dokumente
 
 **Route:** `/audit-questions`
 **Datei:** `src/routes/audit-questions/+page.svelte`
 
-**Audit-Informationen (oberer Bereich):**
+**Audit-Informationen:**
 
 | Feld        | Typ        | Details     |
 | ----------- | ---------- | ----------- |
@@ -194,7 +194,7 @@ Nach dem Absenden wird der generierte Bericht in einem separaten Container unter
 | Uhrzeit Von | Time-Input | Pflichtfeld |
 | Uhrzeit Bis | Time-Input | Pflichtfeld |
 
-**Bereichsauswahl (mittlerer Bereich):**
+**Bereichsauswahl:**
 
 | Feld        | Typ    | Details                                  |
 | ----------- | ------ | ---------------------------------------- |
@@ -205,7 +205,7 @@ Nach dem Absenden wird der generierte Bericht in einem separaten Container unter
 **Fragen- und Dokumentenanzeige:**
 
 - `loadAuditQuestions()` laedt Fragen aus der Wissensdatenbank basierend auf Abteilung + Norm
-- Fragen werden als nummerierte Liste in einem Fragen-Container dargestellt
+- Fragen werden als nummerierte Liste dargestellt
 - Dokumente werden als separate Liste unterhalb der Fragen angezeigt
 
 **Aktionen:**
@@ -221,47 +221,41 @@ Nach dem Absenden wird der generierte Bericht in einem separaten Container unter
 **Route:** `/action-plan`
 **Datei:** `src/routes/action-plan/+page.svelte`
 
-**Filterleiste (6 Filter in 2 Reihen):**
+**Filterleiste:**
 
-| Reihe   | Filter 1                          | Filter 2                                            | Filter 3                        |
-| ------- | --------------------------------- | --------------------------------------------------- | ------------------------------- |
-| Reihe 1 | FindingType (7 Optionen + "Alle") | Status (5 Optionen + "Alle")                        | AuditType (6 Optionen + "Alle") |
-| Reihe 2 | Responsible (dynamisch + "Alle")  | Priority (4 Optionen: Hoch/Mittel/Niedrig + "Alle") | Norm (7 Optionen + "Alle")      |
+6 Filter controls:
 
-**Massnahmen-Eintraege:**
+| Filter      | Optionen                                      |
+| ----------- | --------------------------------------------- |
+| FindingType | 7 Optionen + "Alle"                           |
+| Status      | 5 Optionen + "Alle"                           |
+| AuditType   | 6 Optionen + "Alle"                           |
+| Responsible | Dynamisch aus vorhandenen Eintraegen + "Alle" |
+| Priority    | Hoch / Mittel / Niedrig + "Alle"              |
+| Norm        | 7 Optionen + "Alle"                           |
 
-Jede Massnahme wird als Karte dargestellt mit folgenden Feldern:
+**Massnahmen-Felder:**
 
-| Feld (i18n Label)         | DB Field       | Typ         | Besonderheit                                                  |
-| ------------------------- | -------------- | ----------- | ------------------------------------------------------------- |
-| Feststellungsbeschreibung | description    | Textarea    | Mehrzeilig                                                    |
-| Feststellungsart          | findingType    | Select      | Farbcodiert via semantische Farbklassen (siehe Tabelle unten) |
-| Geplante Massnahme        | plannedAction  | Textarea    | Mehrzeilig                                                    |
-| Status                    | status         | Select      | 5 Optionen                                                    |
-| Verantwortlicher          | responsible    | Text/Select | Dynamisch                                                     |
-| Prioritaet                | priority       | Select      | Hoch / Mittel / Niedrig                                       |
-| Frist                     | dueDate        | Date-Input  |                                                               |
-| Abschlussdatum            | completionDate | Date-Input  | Optional                                                      |
-| Norm                      | norm           | Select      | ISO-Norm-Auswahl                                              |
-| Nachweise/Notizen         | evidenceNotes  | Textarea    | Mehrzeilig                                                    |
+| Feld (i18n Label)         | DB Field       | Typ         | Besonderheit                                         |
+| ------------------------- | -------------- | ----------- | ---------------------------------------------------- |
+| Feststellungsbeschreibung | description    | Textarea    | Mehrzeilig                                           |
+| Feststellungsart          | findingType    | Select      | Visually distinguished by semantic color (see below) |
+| Geplante Massnahme        | plannedAction  | Textarea    | Mehrzeilig                                           |
+| Status                    | status         | Select      | 5 Optionen                                           |
+| Verantwortlicher          | responsible    | Text/Select | Dynamisch                                            |
+| Prioritaet                | priority       | Select      | Hoch / Mittel / Niedrig                              |
+| Frist                     | dueDate        | Date-Input  |                                                      |
+| Abschlussdatum            | completionDate | Date-Input  | Optional                                             |
+| Norm                      | norm           | Select      | ISO-Norm-Auswahl                                     |
+| Nachweise/Notizen         | evidenceNotes  | Textarea    | Mehrzeilig                                           |
 
-**Farbcodierung FindingType:**
+**FindingType-Farbcodierung:**
 
-| Feststellungsart      | Semantische Farbe |
-| --------------------- | ----------------- |
-| major_nonconformity   | destructive       |
-| minor_nonconformity   | warning           |
-| recommendation        | warning (muted)   |
-| improvement_potential | info              |
-| positive_finding      | success           |
-| observation           | muted             |
-| note                  | info (muted)      |
-
-Die Farben werden ueber ShadCN-semantische Klassen (`bg-destructive`, `text-destructive`, `bg-muted`, etc.) und Tailwind-Utilities angewendet. Keine hardcodierten Hex-Werte.
+Finding types are visually distinguished by semantic color to indicate severity. More critical types (e.g. major_nonconformity) use destructive/warning colors, positive types (e.g. positive_finding) use success colors, and informational types use muted/info colors.
 
 **Ueberfaellig-Markierung:**
 
-Wenn `dueDate < heute` UND `status !== "completed"`, wird die Massnahme visuell hervorgehoben (destructive accent border or background).
+Wenn `dueDate < heute` UND `status !== "completed"`, wird die Massnahme visuell als ueberfaellig hervorgehoben.
 
 ## Interaktionen
 
@@ -269,7 +263,7 @@ Wenn `dueDate < heute` UND `status !== "completed"`, wird die Massnahme visuell 
 
 1. **Audit laden:** Beim Oeffnen der Seite werden alle gespeicherten Audits via Server-Load-Funktion geladen und im Select angezeigt.
 2. **Bericht generieren:** Klick auf "Absenden" sendet ein POST an eine SvelteKit-Server-Action. Der Server erstellt den Bericht und speichert ihn in der Datenbank.
-3. **Bericht anzeigen:** Nach erfolgreicher Generierung wird der Bericht im Container unterhalb des Formulars gerendert.
+3. **Bericht anzeigen:** Nach erfolgreicher Generierung wird der Bericht unterhalb des Formulars gerendert.
 
 ### Auditfragen & Dokumente
 

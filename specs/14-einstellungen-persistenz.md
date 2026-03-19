@@ -130,7 +130,7 @@ interface RatingState {
 }
 ```
 
-## UI-Beschreibung
+## Funktionale Anforderungen
 
 ### Einstellungen (Modal)
 
@@ -142,24 +142,18 @@ Das Einstellungen-Modal wird ueber das Zahnrad-Symbol im Header geoeffnet.
 
 **Light/Dark-Modus:**
 
-| Eigenschaft | Wert                                                                      |
-| ----------- | ------------------------------------------------------------------------- |
-| Steuerung   | `mode-watcher` (bereits eingerichtet)                                     |
-| Optionen    | Light / Dark / System (3 Buttons oder SegmentedControl)                   |
-| Mechanismus | Setzt `.dark` Klasse auf `<html>`, Tailwind dark mode uebernimmt den Rest |
-| Persistenz  | `mode-watcher` speichert Praeferenz automatisch                           |
+- Steuerung via `mode-watcher` (bereits eingerichtet)
+- 3 Optionen: Light / Dark / System
+- Setzt `.dark` Klasse auf `<html>`, Tailwind dark mode uebernimmt den Rest
+- `mode-watcher` speichert Praeferenz automatisch
 
 **Akzentfarben-Vorauswahl:**
 
-| Eigenschaft         | Wert                                                              |
-| ------------------- | ----------------------------------------------------------------- |
-| Layout              | Grid mit Farbvorschau-Kreisen oder Quadraten                      |
-| Anzahl Presets      | 7 (default, indigo, violet, rose, emerald, amber, slate)          |
-| Vorschau            | Jedes Preset als farbiger Kreis mit dem jeweiligen `--brand`-Wert |
-| Auswahl             | Klick auf Kreis setzt aktives Preset                              |
-| Sofortige Anwendung | CSS-Variablen werden sofort ueberschrieben                        |
-
-Bei Auswahl eines Presets werden die OKLCH-Werte fuer `--brand`, `--accent-mid` und `--accent-deep` als Inline-Styles auf `<html>` gesetzt (oder via `document.documentElement.style.setProperty()`). Alle ShadCN-Komponenten und Tailwind-Klassen, die diese Variablen referenzieren, passen sich automatisch an.
+- 7 Presets: default, indigo, violet, rose, emerald, amber, slate
+- Accent preset selector showing available color themes with a preview of each preset's brand color
+- Klick auf ein Preset setzt es als aktiv
+- Sofortige Anwendung: CSS-Variablen (`--brand`, `--accent-mid`, `--accent-deep`) werden sofort ueberschrieben
+- Bei Auswahl eines Presets werden die OKLCH-Werte als Inline-Styles auf `<html>` gesetzt. Alle ShadCN-Komponenten und Tailwind-Klassen, die diese Variablen referenzieren, passen sich automatisch an.
 
 #### Weitere Einstellungen
 
@@ -190,16 +184,13 @@ Bei Auswahl eines Presets werden die OKLCH-Werte fuer `--brand`, `--accent-mid` 
 | Verarbeitung     | `FileReader.readAsDataURL()` -> Base64-String |
 | Speicherung      | Dateiname + Groesse + Base64-Daten in DB      |
 
-**Vorschau-Modal:**
+**Datei-Vorschau:**
 
 - Zeigt hochgeladene Dateien mit Download- und Loesch-Button
-- Bilder: Als `<img>`-Tag dargestellt
-- PDFs: Als `<iframe>` eingebettet
-- Andere Dateitypen: Als Icon mit Dateiname
 
-**Datei-Viewer-Modal:**
+**Datei-Viewer:**
 
-- Modal layer z-index (ueber anderen Modals)
+- File viewer supports images (inline), PDFs (embedded), other formats (download link with file icon)
 - Oeffnet sich bei Klick auf eine Datei in der Vorschau
 
 **Hilfsfunktion:** `formatFileSize(bytes: number): string` - Formatiert Bytes in lesbare Groesse (KB, MB)
@@ -236,17 +227,12 @@ Alle Daten werden serverseitig in Turso (libSQL) via Drizzle ORM gespeichert. **
 
 **Verwendung:** Audit-Bloecke im Auditplan-Generator und Notizen-Bloecke
 
-#### Visuelle Rueckmeldung beim Ziehen
+#### Funktionales Verhalten
 
-| Eigenschaft | Wert                                                               |
-| ----------- | ------------------------------------------------------------------ |
-| Rahmen      | Brand color dashed border (`border-brand`)                         |
-| Hintergrund | Light accent background (`bg-accent-mid/10` or `bg-surface-light`) |
-| Skalierung  | Subtle scale animation                                             |
-
-#### Block-Verschiebung
-
-Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke neu gerendert. Dabei werden alle Feldwerte und Toggle-Zustaende beibehalten.
+- Benutzer kann Bloecke per Drag & Drop neu anordnen
+- Beim Ziehen wird visuelles Feedback angezeigt (der gezogene Block ist erkennbar hervorgehoben)
+- Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke neu gerendert
+- Alle Feldwerte und Toggle-Zustaende werden beim Verschieben beibehalten (State Preservation)
 
 ## Interaktionen
 
@@ -261,8 +247,8 @@ Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke ne
 
 ### Akzentfarbe anwenden
 
-1. Benutzer klickt auf ein Preset im Erscheinungsbild-Bereich.
-2. Die OKLCH-Werte des Presets werden via `document.documentElement.style.setProperty()` gesetzt.
+1. Benutzer waehlt ein Preset im Erscheinungsbild-Bereich.
+2. Die OKLCH-Werte des Presets werden auf dem `<html>`-Element als CSS Custom Properties gesetzt.
 3. Alle Tailwind-Klassen und ShadCN-Komponenten, die `--brand`, `--accent-mid`, `--accent-deep` referenzieren, passen sich automatisch an.
 4. Die Auswahl wird in der `settings`-Tabelle persistiert und beim naechsten App-Start wiederhergestellt.
 
@@ -277,10 +263,10 @@ Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke ne
 ### Datei anzeigen
 
 1. Benutzer klickt auf eine Datei in der Vorschau.
-2. Datei-Viewer-Modal oeffnet sich (modal layer z-index).
-3. Bilder: `<img src="data:image/...;base64,...">` direkt angezeigt.
-4. PDFs: `<iframe src="data:application/pdf;base64,...">` eingebettet.
-5. Andere Dateitypen: Icon mit Dateiname und Download-Link.
+2. Datei-Viewer oeffnet sich als Modal.
+3. Bilder werden inline angezeigt.
+4. PDFs werden eingebettet dargestellt.
+5. Andere Dateitypen zeigen ein Icon mit Dateiname und Download-Link.
 
 ### Daten exportieren
 
@@ -305,10 +291,10 @@ Nach dem Ablegen wird die Reihenfolge des Arrays aktualisiert und die Bloecke ne
 ### Drag & Drop - Bloecke verschieben
 
 1. **`initBlockDragAndDrop()`** wird beim Rendern der Block-Liste aufgerufen.
-2. **Drag Start:** `handleNotesDragStart()` speichert den Index des gezogenen Blocks. Visuelles Feedback wird angewendet (brand color dashed border, light accent background, subtle scale animation).
-3. **Drag Over:** `handleNotesDragOver()` verhindert Standard-Verhalten und zeigt die potenzielle Zielposition an.
-4. **Drop:** `handleNotesDrop()` berechnet die neue Position und aktualisiert das Array.
-5. **Drag End:** `handleNotesDragEnd()` entfernt visuelles Feedback.
+2. **Drag Start:** Speichert den Index des gezogenen Blocks. Visuelles Feedback wird angewendet.
+3. **Drag Over:** Verhindert Standard-Verhalten und zeigt die potenzielle Zielposition an.
+4. **Drop:** Berechnet die neue Position und aktualisiert das Array.
+5. **Drag End:** Entfernt visuelles Feedback.
 6. **State Preservation:** Vor dem Re-Render werden alle DOM-Werte gespeichert (Inputs, Textareas, Selects, Checkboxen, Sichtbarkeit, QHSE-Dokumente, Bewertungen). Nach dem Re-Render werden diese Werte wiederhergestellt.
 
 ## Abhaengigkeiten

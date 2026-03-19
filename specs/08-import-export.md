@@ -230,53 +230,46 @@ interface ImportExportState {
 
 ### Layout
 
-Die Seite zeigt 3 Karten in einem responsiven Grid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` mit `gap-6`.
+Die Seite zeigt drei Aktionskarten fuer Export, Import und CSV-Export.
 
-Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Beschreibungstext, Aktions-Button.
+Jede Karte hat eine einheitliche Struktur: Icon, Titel, Beschreibungstext, Aktions-Button.
 
 ### Karte 1: Daten exportieren
 
-- **Icon**: Download-Icon (z.B. Lucide `Download`).
 - **Titel**: _"Daten exportieren"_
 - **Beschreibung**: _"Exportiert alle Ihre Daten als JSON-Datei. Diese Datei kann spaeter zum Wiederherstellen verwendet werden."_
 - **Button**: _"JSON exportieren"_ (primaer).
-- **Verhalten nach Export**: Erfolgsmeldung unter dem Button: _"Backup erfolgreich erstellt: auditplan*backup*{timestamp}.json"_
+- **Verhalten nach Export**: Erfolgsmeldung: _"Backup erfolgreich erstellt: auditplan_backup_{timestamp}.json"\_
 
 ### Karte 2: Daten importieren
 
-- **Icon**: Upload-Icon (z.B. Lucide `Upload`).
 - **Titel**: _"Daten importieren"_
 - **Beschreibung**: _"Importiert Daten aus einer zuvor exportierten JSON-Datei. Bestehende Daten werden ergaenzt."_
-- **Button**: _"JSON importieren"_ (primaer) -- tatsaechlich ein gestyltes `<label>` fuer ein verstecktes `<input type="file" accept=".json">`.
+- **Button**: _"JSON importieren"_ -- oeffnet den nativen Datei-Dialog (nur `.json`-Dateien).
 - **Nach Import**: Zusammenfassung der importierten Daten (Anzahl pro Schluessel) oder Fehlermeldung.
 
 ### Karte 3: CSV Export
 
-- **Icon**: Tabellen-Icon (z.B. Lucide `FileSpreadsheet`).
 - **Titel**: _"CSV Export"_
 - **Beschreibung**: _"Exportiert die Audit-Daten als CSV-Datei fuer die Verwendung in Excel oder anderen Tabellenkalkulationen."_
 - **Button**: _"CSV exportieren"_ (primaer).
-- **Verhalten nach Export**: Erfolgsmeldung: _"CSV-Datei erstellt: audits*export*{timestamp}.csv"_
+- **Verhalten nach Export**: Erfolgsmeldung: _"CSV-Datei erstellt: audits_export_{timestamp}.csv"\_
 
 ### Allgemeine Gestaltung
 
-- Karten haben gleiche Hoehe (Grid `items-stretch`).
-- ShadCN Button loading state with Lucide Loader2 icon on the active button during the operation.
-- Fehlermeldungen: use toast error or ShadCN Alert destructive variant below the button.
+- Buttons zeigen waehrend der Operation einen Ladezustand an.
+- Fehlermeldungen werden unterhalb des jeweiligen Buttons oder als Toast angezeigt.
 
 ## Interaktionen
 
 ### JSON-Export
 
 1. Benutzer klickt **"JSON exportieren"**.
-2. Button zeigt Loading-State (ShadCN Button mit Lucide Loader2 Icon).
+2. Button zeigt Ladezustand.
 3. Server-Call (`exportAllData`): Laedt alle Datenschluessel aus der Datenbank fuer den aktuellen Benutzer.
 4. Server gibt das vollstaendige `ExportDaten`-Objekt zurueck.
-5. Client erstellt eine JSON-Datei:
-   ```
-   const blob = new Blob([JSON.stringify(daten, null, 2)], { type: "application/json" });
-   ```
-6. Datei wird per programmatischem `<a>`-Klick heruntergeladen.
+5. Client erstellt eine JSON-Datei (`JSON.stringify` mit Pretty-Print).
+6. Datei wird per programmatischem Download heruntergeladen.
 7. Dateiname: `auditplan_backup_{timestamp}.json` (Timestamp-Format: `YYYY-MM-DDTHH-mm-ss`).
 8. Erfolgsmeldung wird angezeigt.
 
@@ -284,15 +277,12 @@ Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Besc
 
 1. Benutzer klickt **"JSON importieren"** (oeffnet den nativen Datei-Dialog).
 2. Benutzer waehlt eine `.json`-Datei aus.
-3. Client liest die Datei per `FileReader`:
-   ```
-   reader.readAsText(file);
-   ```
-4. Client parst JSON und fuehrt Grundvalidierung durch:
+3. Client liest die Datei und parst JSON.
+4. Client fuehrt Grundvalidierung durch:
    - Ist es gueltiges JSON?
    - Enthaelt es mindestens einen bekannten Schluessel?
    - Sind die Werte Arrays?
-5. Bei Validierungsfehler: Fehlermeldung anzeigen (toast error oder ShadCN Alert destructive), Abbruch.
+5. Bei Validierungsfehler: Fehlermeldung anzeigen, Abbruch.
 6. Bei gueltigem JSON: Server-Call (`importData`) mit dem geparsten Objekt.
 7. Server validiert jeden Datensatz einzeln und schreibt gueltige Eintraege in die DB.
 8. Server gibt `ImportErgebnis` zurueck.
@@ -304,7 +294,7 @@ Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Besc
 ### CSV-Export
 
 1. Benutzer klickt **"CSV exportieren"**.
-2. Button zeigt Loading-State (ShadCN Button mit Lucide Loader2 Icon).
+2. Button zeigt Ladezustand.
 3. Server-Call (`getAuditsForCsvExport`): Laedt alle Audits des Benutzers.
 4. Client konvertiert die Audit-Daten in CSV-Format:
    - **UTF-8 BOM** (`\uFEFF`) am Dateianfang fuer korrekte Umlaute in Excel.
@@ -335,16 +325,3 @@ Jede Karte ist eine Bits-UI `Card` mit einheitlicher Struktur: Icon, Titel, Besc
 | Spec 09 (Auditplan)       | `audit_plans` + 14 child tables                                                                           |
 | Spec 10 (Notizen)         | `audit_notes` + 6 child tables                                                                            |
 | Spec 11 (Berichte/Fragen) | `audit_reports`, `saved_audit_questions`, `saved_question_entries`, `saved_question_documents`, `actions` |
-
-### Extern (Bibliotheken)
-
-| Paket          | Verwendung                                    |
-| -------------- | --------------------------------------------- |
-| SvelteKit      | Routing (`/import-export`), Server-Funktionen |
-| Svelte 5       | Reaktive Zustandsverwaltung (`$state`)        |
-| Bits-UI        | Card, Button                                  |
-| Tailwind CSS 4 | Grid-Layout, Karten-Styling                   |
-| Drizzle ORM    | Batch-Lese- und Schreib-Operationen           |
-| Turso          | SQLite-Datenbank (libsql)                     |
-| better-auth    | Authentifizierung, Session-Management         |
-| Bun            | Runtime, Paketmanager                         |

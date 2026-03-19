@@ -16,11 +16,9 @@ type ActionPriority = 'high' | 'medium' | 'low';
 
 interface StatCard {
 	id: string;
-	icon: string; // Lucide icon name
 	value: number;
 	label: string; // i18n-Schluessel
 	href: string; // Zielroute bei Klick
-	color: string; // ShadCN chart color token (chart-1 through chart-5)
 }
 
 // --- Status-Verteilung ---
@@ -28,7 +26,6 @@ interface StatCard {
 interface StatusDistribution {
 	label: string; // z.B. "Geplant", "In Bearbeitung", "Abgeschlossen", "Ueberfaellig (berechnet)"
 	percentage: number;
-	color: string; // semantic status color (success, warning, info, destructive)
 	count: number;
 	isComputed?: boolean; // true for 'overdue' (derived from frist < today AND status != 'completed')
 }
@@ -115,94 +112,48 @@ interface DashboardRemoteFunctions {
 
 ### Seitenaufbau
 
-```
-+------------------------------------------------------+
-|  Seitentitel: "Dashboard"                            |
-+------------------------------------------------------+
-|                                                      |
-|  Status-Verteilung (4 Karten)                        |
-|  [Aktuell 45%] [Faellig 20%] [Pruefung 25%] [Ueberf 10%] |
-|                                                      |
-+------------------------------------------------------+
-|                                                      |
-|  Statistik-Karten (2x4 Grid)                        |
-|  [Gesamt] [Auditoren] [Geplant] [Abgeschl.]         |
-|  [In Bearb.] [Offen] [Ueberfaellig] [Anstehend]     |
-|                                                      |
-+------------------------------------------------------+
-|                                                      |
-|  Audit-Liste mit Filtern                             |
-|  [Alle] [Geplant] [In Bearb.] [Abgeschlossen]       |
-|  +------------------------------------------------+  |
-|  | Audit-Eintraege ...                             |  |
-|  +------------------------------------------------+  |
-|                                                      |
-+------------------------------------------------------+
-|                                                      |
-|  [Naechste Audits]        [Kritische Massnahmen]     |
-|                                                      |
-+------------------------------------------------------+
-```
+Die Dashboard-Seite besteht aus folgenden Bereichen:
 
-### Status-Verteilung (oberer Bereich)
+1. **Status-Verteilung** — Vier Karten zeigen die prozentuale Verteilung der Audit-Status (Geplant, In Bearbeitung, Abgeschlossen, Ueberfaellig)
+2. **Statistik-Karten** — Responsive Grid mit 8 klickbaren Statistik-Karten
+3. **Audit-Liste mit Filtern** — Filterbare, paginierte Audit-Liste
+4. **Unterer Bereich** — Zwei Bereiche nebeneinander: Naechste anstehende Audits und Kritische Massnahmen
 
-4 Karten in einer Reihe (4-column grid, gap-4):
+### Status-Verteilung
 
-| Status                   | Farbe             | Beispiel |
-| ------------------------ | ----------------- | -------- |
-| Geplant                  | info color        | "30%"    |
-| In Bearbeitung           | warning color     | "25%"    |
-| Abgeschlossen            | success color     | "35%"    |
-| Ueberfaellig (berechnet) | destructive color | "10%"    |
+Vier Karten zeigen jeweils:
 
-Jede Karte:
+- Prozentwert
+- Status-Label
+- Anzahl
 
-| Eigenschaft   | Wert                                   |
-| ------------- | -------------------------------------- |
-| Hintergrund   | Jeweilige semantische Farbe            |
-| Textfarbe     | Weiss (primary-foreground)             |
-| Border-Radius | rounded-lg                             |
-| Padding       | standard card padding                  |
-| Prozentwert   | large display text, bold               |
-| Label         | small text, slightly transparent white |
-| Anzahl        | base text, darunter                    |
+Dargestellte Status:
 
-### Statistik-Karten (8 Karten)
+| Status                   | Bedeutung                               |
+| ------------------------ | --------------------------------------- |
+| Geplant                  | Audits mit Status `planned`             |
+| In Bearbeitung           | Audits mit Status `in_progress`         |
+| Abgeschlossen            | Audits mit Status `completed`           |
+| Ueberfaellig (berechnet) | Frist < heute UND Status != `completed` |
 
-Responsive card grid (auto-fill columns, gap-4)
+### Statistik-Karten
 
-Die 8 Karten:
+8 klickbare Karten mit jeweils einem Zahlenwert und Label:
 
-| #   | Icon (Lucide)    | Label                       | Farbe                      |
-| --- | ---------------- | --------------------------- | -------------------------- |
-| 1   | `bar-chart-3`    | Gesamte Audits              | chart-1 color              |
-| 2   | `users`          | Auditoren                   | chart-2 color              |
-| 3   | `calendar`       | Geplant                     | info color                 |
-| 4   | `check-circle`   | Abgeschlossen               | success color              |
-| 5   | `refresh-cw`     | In Bearbeitung              | warning color              |
-| 6   | `clipboard-list` | Offene Massnahmen           | destructive color          |
-| 7   | `alert-triangle` | Ueberfaellige Massnahmen    | destructive color (darker) |
-| 8   | `bell`           | Anstehende Audits (30 Tage) | info color                 |
-
-Jede Statistik-Karte:
-
-| Eigenschaft   | Wert                                  |
-| ------------- | ------------------------------------- |
-| Hintergrund   | ShadCN Card (`bg-card`)               |
-| Border-Radius | rounded-lg                            |
-| Box-Shadow    | card shadow                           |
-| Padding       | standard card padding                 |
-| Cursor        | Pointer                               |
-| Hover         | subtle hover lift, shadow intensified |
-| Icon          | large icon size, oben                 |
-| Wert          | large text, bold, accent color        |
-| Label         | small text, muted foreground          |
+| #   | Label                       | Navigation bei Klick                |
+| --- | --------------------------- | ----------------------------------- |
+| 1   | Gesamte Audits              | `/search-manage` (alle Audits)      |
+| 2   | Auditoren                   | `/auditor-management`               |
+| 3   | Geplant                     | `/search-manage?status=planned`     |
+| 4   | Abgeschlossen               | `/search-manage?status=completed`   |
+| 5   | In Bearbeitung              | `/search-manage?status=in_progress` |
+| 6   | Offene Massnahmen           | `/action-plan?filter=offen`         |
+| 7   | Ueberfaellige Massnahmen    | `/action-plan?filter=ueberfaellig`  |
+| 8   | Anstehende Audits (30 Tage) | `/calendar`                         |
 
 ### Audit-Liste mit Filtern
 
 #### Filter-Buttons
-
-Horizontale Reihe, gap-2:
 
 | Button         | Filter-Wert     |
 | -------------- | --------------- |
@@ -211,38 +162,37 @@ Horizontale Reihe, gap-2:
 | In Bearbeitung | `"in_progress"` |
 | Abgeschlossen  | `"completed"`   |
 
-Aktiver Filter: primary button variant (brand background, white text).
-Inaktiver Filter: outline button variant.
+Der aktive Filter ist visuell hervorgehoben.
 
 #### Audit-Eintraege
 
-Jeder Eintrag als Zeile mit:
+Jeder Eintrag zeigt:
 
-- **Titel** (bold)
-- **ISO-Norm** — use ShadCN Badge with appropriate variant for each standard
+- **Titel**
+- **ISO-Norm** (als Badge)
 - **Auditor** (Name)
 - **Datum** (formatiert)
-- **Status** — use ShadCN Badge with appropriate variant for each status
+- **Status** (als Badge)
 - **Abteilung**
 
-### Unterer Bereich (2-spaltig)
+### Unterer Bereich
 
-2-column grid, gap-6 (stacks to 1 column on mobile)
+Zwei Bereiche nebeneinander (auf Mobil untereinander):
 
-#### Naechste anstehende Audits (links)
+#### Naechste anstehende Audits
 
 - Chronologisch sortiert (naechstes Datum zuerst)
 - Maximal 5 Eintraege
 - Jeder Eintrag: Titel, Datum, Auditor, ISO-Norm
-- Datumsanzeige relativ: "in 3 Tagen", "in 2 Wochen" (via `@internationalized/date`)
+- Relative Datumsanzeige: "in 3 Tagen", "in 2 Wochen" (via `@internationalized/date`)
 
-#### Kritische Massnahmen (rechts)
+#### Kritische Massnahmen
 
 - Sortiert nach: Ueberfaellige zuerst, dann hohe Prioritaet
 - Maximal 5 Eintraege
 - Jeder Eintrag: Titel, zugehoeriges Audit, Faelligkeitsdatum, Verantwortlicher
-- Ueberfaellige: destructive background accent, Anzeige "X Tage ueberfaellig"
-- Hohe Prioritaet: warning color accent
+- Ueberfaellige Eintraege: Anzeige "X Tage ueberfaellig"
+- Hohe Prioritaet wird visuell hervorgehoben
 
 ## Interaktionen
 
@@ -256,29 +206,18 @@ Jeder Eintrag als Zeile mit:
 
 ### Statistik-Karten-Klick
 
-1. Klick auf eine Statistik-Karte -> Navigation zur relevanten Detailansicht
-   - "Gesamte Audits" -> `/search-manage` (alle Audits)
-   - "Auditoren" -> `/auditor-management`
-   - "Geplant" -> `/search-manage?status=planned`
-   - "Abgeschlossen" -> `/search-manage?status=completed`
-   - "In Bearbeitung" -> `/search-manage?status=in_progress`
-   - "Offene Massnahmen" -> `/action-plan?filter=offen`
-   - "Ueberfaellige Massnahmen" -> `/action-plan?filter=ueberfaellig`
-   - "Anstehende Audits" -> `/calendar`
+Klick auf eine Statistik-Karte navigiert zur relevanten Detailansicht (siehe Navigationstabelle oben).
 
 ### Audit-Filter
 
 1. Klick auf einen Filter-Button -> `activeFilter` State wird aktualisiert
 2. `getFilteredAudits(status, page, limit)` wird als Remote Function aufgerufen (paginiert)
 3. Die Audit-Liste wird mit den gefilterten Ergebnissen aktualisiert
-4. Der aktive Button erhaelt den primary button Stil
-5. Pagination-Buttons ermoeglichen das Blaettern durch die Ergebnisse
+4. Pagination-Buttons ermoeglichen das Blaettern durch die Ergebnisse
 
 ### Responsive Verhalten
 
-- Status-Verteilung: `4 -> 2 -> 1` Spalten bei kleineren Bildschirmen
-- Statistik-Karten: Automatisches Umfliessen durch responsive card grid
-- Unterer Bereich: `2 -> 1` Spalten unter `md` breakpoint
+- Alle Bereiche passen sich an die Bildschirmbreite an (mehrere Spalten auf Desktop, weniger auf Tablet, eine Spalte auf Mobil)
 
 ## Abhaengigkeiten
 
