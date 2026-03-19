@@ -16,6 +16,9 @@
 		createDefaultBlockNotizen,
 		createDefaultManuellBearbeitet
 	} from '$lib/types';
+	import { organisationseinheitOptionen } from '$lib/data/organisationseinheiten';
+	import { abteilungBeschreibungen } from '$lib/data/abteilung-beschreibungen';
+	import { zusammenfassungBeschreibungen, zusammenfassungDefaultText } from '$lib/data/zusammenfassungen';
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';
@@ -365,6 +368,42 @@
 			}
 			return b;
 		});
+	}
+
+	// --- Auto-Population (§23.1) ---
+	function handleOrgEinheitChange(blockIdx: number, zeileIdx: number, value: string) {
+		const zeile = plan.auditBloecke[blockIdx].zeilen[zeileIdx];
+		zeile.organisationseinheit = value;
+
+		// Find matching org unit data
+		const orgData = organisationseinheitOptionen.find((o) => o.name === value || o.name.toLowerCase() === value.toLowerCase());
+
+		// Auto-fill beschreibung (if not manually edited)
+		if (!zeile.manuellBearbeitet.beschreibung) {
+			zeile.notizen.beschreibung = abteilungBeschreibungen[value] ?? '';
+		}
+
+		// Auto-fill zusammenfassung (if not manually edited)
+		if (!zeile.manuellBearbeitet.zusammenfassung) {
+			zeile.notizen.zusammenfassung = zusammenfassungBeschreibungen[value] ?? zusammenfassungDefaultText;
+		}
+
+		// Auto-fill thema (if not manually edited)
+		if (!zeile.manuellBearbeitet.thema && orgData) {
+			zeile.thema = [...orgData.themen];
+		}
+
+		// Auto-fill normkapitel (if not manually edited)
+		if (!zeile.manuellBearbeitet.normkapitel) {
+			zeile.normkapitel = [];
+		}
+
+		// Trigger reactivity
+		plan.auditBloecke = [...plan.auditBloecke];
+	}
+
+	function markManualEdit(blockIdx: number, zeileIdx: number, field: 'beschreibung' | 'zusammenfassung' | 'thema' | 'normkapitel') {
+		plan.auditBloecke[blockIdx].zeilen[zeileIdx].manuellBearbeitet[field] = true;
 	}
 
 	// --- Actions ---
@@ -1222,7 +1261,11 @@
 										<Label class="text-xs">{i18n.t('plan.blockFields.department')}</Label>
 										<input
 											type="text"
-											bind:value={plan.auditBloecke[bi].zeilen[zeileIdx].organisationseinheit}
+											value={plan.auditBloecke[bi].zeilen[zeileIdx].organisationseinheit}
+											onchange={(e) => handleOrgEinheitChange(bi, zeileIdx, (e.target as HTMLInputElement).value)}
+											oninput={(e) => {
+												plan.auditBloecke[bi].zeilen[zeileIdx].organisationseinheit = (e.target as HTMLInputElement).value;
+											}}
 											placeholder={i18n.t('plan.blockFields.department')}
 											class="bg-background border-input focus:ring-ring flex h-9 w-full rounded-md border px-3 text-sm focus:ring-2 focus:outline-none"
 											list="org-einheiten"
@@ -1268,6 +1311,7 @@
 												<Label class="text-xs">{i18n.t('plan.blockNotes.description')}</Label>
 												<textarea
 													bind:value={plan.auditBloecke[bi].zeilen[zeileIdx].notizen.beschreibung}
+													oninput={() => markManualEdit(bi, zeileIdx, 'beschreibung')}
 													rows={5}
 													class="bg-background border-input focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:outline-none"
 												></textarea>
@@ -1276,6 +1320,7 @@
 												<Label class="text-xs">{i18n.t('plan.blockNotes.summary')}</Label>
 												<textarea
 													bind:value={plan.auditBloecke[bi].zeilen[zeileIdx].notizen.zusammenfassung}
+													oninput={() => markManualEdit(bi, zeileIdx, 'zusammenfassung')}
 													rows={5}
 													class="bg-background border-input focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:outline-none"
 												></textarea>

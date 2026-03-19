@@ -35,6 +35,9 @@ import {
 	createDefaultAuditplanDaten
 } from '$lib/types';
 import { getSavedPlans, getSavedPlanById, savePlan, updatePlan, deletePlan } from './plans.remote';
+import { organisationseinheitOptionen } from '$lib/data/organisationseinheiten';
+import { abteilungBeschreibungen } from '$lib/data/abteilung-beschreibungen';
+import { zusammenfassungBeschreibungen, zusammenfassungDefaultText } from '$lib/data/zusammenfassungen';
 
 // --- Enum values ---
 
@@ -807,5 +810,301 @@ describe('plans remote function exports', () => {
 
 	it('exports deletePlan', () => {
 		expect(typeof deletePlan).toBe('function');
+	});
+});
+
+// --- PG04: Block CRUD operations ---
+
+describe('createDefaultAuditBlock — factory (PG04)', () => {
+	it('creates a block with the given id', () => {
+		const block = createDefaultAuditBlock('block-xyz', 3);
+		expect(block.id).toBe('block-xyz');
+	});
+
+	it('creates a block with the given position', () => {
+		const block = createDefaultAuditBlock('block-xyz', 3);
+		expect(block.position).toBe(3);
+	});
+
+	it('creates a block with exactly one default zeile', () => {
+		const block = createDefaultAuditBlock('block-xyz', 3);
+		expect(block.zeilen).toHaveLength(1);
+	});
+
+	it('the default zeile references the block id via blockId', () => {
+		const block = createDefaultAuditBlock('block-abc', 0);
+		expect(block.zeilen[0].blockId).toBe('block-abc');
+	});
+
+	it('default zeile has datumToggle set to true', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(block.zeilen[0].datumToggle).toBe(true);
+	});
+
+	it('default zeile has uhrzeitToggle set to true', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(block.zeilen[0].uhrzeitToggle).toBe(true);
+	});
+
+	it('default zeile has remoteToggle set to true', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(block.zeilen[0].remoteToggle).toBe(true);
+	});
+
+	it('default zeile has manuellBearbeitet.beschreibung set to false', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(block.zeilen[0].manuellBearbeitet.beschreibung).toBe(false);
+	});
+
+	it('default zeile has manuellBearbeitet.zusammenfassung set to false', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(block.zeilen[0].manuellBearbeitet.zusammenfassung).toBe(false);
+	});
+
+	it('default zeile has manuellBearbeitet.thema set to false', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(block.zeilen[0].manuellBearbeitet.thema).toBe(false);
+	});
+
+	it('default zeile has manuellBearbeitet.normkapitel set to false', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(block.zeilen[0].manuellBearbeitet.normkapitel).toBe(false);
+	});
+
+	it('default zeile has all notizen fields as empty strings', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		const { notizen } = block.zeilen[0];
+		expect(notizen.beschreibung).toBe('');
+		expect(notizen.vorstellung).toBe('');
+		expect(notizen.allgemein).toBe('');
+		expect(notizen.notizen).toBe('');
+		expect(notizen.dokumente).toBe('');
+		expect(notizen.zusammenfassung).toBe('');
+	});
+
+	it('block position field is a number', () => {
+		const block = createDefaultAuditBlock('b', 7);
+		expect(typeof block.position).toBe('number');
+	});
+
+	it('default zeile normkapitel is an array', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(Array.isArray(block.zeilen[0].normkapitel)).toBe(true);
+	});
+
+	it('default zeile thema is an array', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(Array.isArray(block.zeilen[0].thema)).toBe(true);
+	});
+
+	it('default zeile elementProzess is an array', () => {
+		const block = createDefaultAuditBlock('b', 0);
+		expect(Array.isArray(block.zeilen[0].elementProzess)).toBe(true);
+	});
+
+	it('auditBlockSchema validates a block with multiple zeilen', () => {
+		const zeile1 = createDefaultBlockZeile('block-1', 'zeile-1');
+		const zeile2 = createDefaultBlockZeile('block-1', 'zeile-2');
+		const block = { id: 'block-1', zeilen: [zeile1, zeile2], position: 0 };
+		expect(auditBlockSchema.safeParse(block).success).toBe(true);
+	});
+});
+
+// --- PG04: Block deep clone behavior ---
+
+describe('AuditBlock deep clone behavior (PG04)', () => {
+	it('structuredClone preserves block id', () => {
+		const original = createDefaultAuditBlock('block-original', 1);
+		const clone = structuredClone(original);
+		expect(clone.id).toBe('block-original');
+	});
+
+	it('structuredClone preserves block position', () => {
+		const original = createDefaultAuditBlock('block-original', 5);
+		const clone = structuredClone(original);
+		expect(clone.position).toBe(5);
+	});
+
+	it('structuredClone preserves nested zeile blockId', () => {
+		const original = createDefaultAuditBlock('block-original', 0);
+		const clone = structuredClone(original);
+		expect(clone.zeilen[0].blockId).toBe('block-original');
+	});
+
+	it('cloned block zeilen have independent manuellBearbeitet flags', () => {
+		const original = createDefaultAuditBlock('block-clone', 0);
+		const clone = structuredClone(original);
+		clone.zeilen[0].manuellBearbeitet.beschreibung = true;
+		expect(original.zeilen[0].manuellBearbeitet.beschreibung).toBe(false);
+	});
+
+	it('cloned block zeilen have independent notizen.beschreibung', () => {
+		const original = createDefaultAuditBlock('block-clone', 0);
+		const clone = structuredClone(original);
+		clone.zeilen[0].notizen.beschreibung = 'changed';
+		expect(original.zeilen[0].notizen.beschreibung).toBe('');
+	});
+
+	it('cloned block zeilen have independent notizen.zusammenfassung', () => {
+		const original = createDefaultAuditBlock('block-clone', 0);
+		const clone = structuredClone(original);
+		clone.zeilen[0].notizen.zusammenfassung = 'summary changed';
+		expect(original.zeilen[0].notizen.zusammenfassung).toBe('');
+	});
+
+	it('cloned block zeilen array is independent from original', () => {
+		const original = createDefaultAuditBlock('block-clone', 0);
+		const clone = structuredClone(original);
+		clone.zeilen.push(createDefaultBlockZeile('block-clone', 'extra-zeile'));
+		expect(original.zeilen).toHaveLength(1);
+	});
+});
+
+// --- PG06: Auto-population data ---
+
+describe('organisationseinheitOptionen (PG06)', () => {
+	it('is a non-empty array', () => {
+		expect(Array.isArray(organisationseinheitOptionen)).toBe(true);
+		expect(organisationseinheitOptionen.length).toBeGreaterThan(0);
+	});
+
+	it('has at least 5 entries', () => {
+		expect(organisationseinheitOptionen.length).toBeGreaterThanOrEqual(5);
+	});
+
+	it('each entry has a name string', () => {
+		for (const entry of organisationseinheitOptionen) {
+			expect(typeof entry.name).toBe('string');
+		}
+	});
+
+	it('each entry has a themen array', () => {
+		for (const entry of organisationseinheitOptionen) {
+			expect(Array.isArray(entry.themen)).toBe(true);
+		}
+	});
+
+	it('each themen array contains only strings', () => {
+		for (const entry of organisationseinheitOptionen) {
+			for (const thema of entry.themen) {
+				expect(typeof thema).toBe('string');
+			}
+		}
+	});
+
+	it('each entry themen array is non-empty', () => {
+		for (const entry of organisationseinheitOptionen) {
+			expect(entry.themen.length).toBeGreaterThan(0);
+		}
+	});
+
+	it('contains a Management entry', () => {
+		expect(organisationseinheitOptionen.some((e) => e.name === 'Management')).toBe(true);
+	});
+
+	it('contains a Produktion entry', () => {
+		expect(organisationseinheitOptionen.some((e) => e.name === 'Produktion')).toBe(true);
+	});
+});
+
+describe('abteilungBeschreibungen (PG06)', () => {
+	it('is defined and not null', () => {
+		expect(abteilungBeschreibungen).toBeDefined();
+		expect(abteilungBeschreibungen).not.toBeNull();
+	});
+
+	it('is an object', () => {
+		expect(typeof abteilungBeschreibungen).toBe('object');
+	});
+
+	it('contains a Management description', () => {
+		expect(typeof abteilungBeschreibungen['Management']).toBe('string');
+		expect(abteilungBeschreibungen['Management'].length).toBeGreaterThan(0);
+	});
+
+	it('contains a Produktion description', () => {
+		expect(typeof abteilungBeschreibungen['Produktion']).toBe('string');
+		expect(abteilungBeschreibungen['Produktion'].length).toBeGreaterThan(0);
+	});
+});
+
+describe('zusammenfassungBeschreibungen (PG06)', () => {
+	it('is defined and not null', () => {
+		expect(zusammenfassungBeschreibungen).toBeDefined();
+		expect(zusammenfassungBeschreibungen).not.toBeNull();
+	});
+
+	it('is an object', () => {
+		expect(typeof zusammenfassungBeschreibungen).toBe('object');
+	});
+
+	it('contains a Management summary', () => {
+		expect(typeof zusammenfassungBeschreibungen['Management']).toBe('string');
+		expect(zusammenfassungBeschreibungen['Management'].length).toBeGreaterThan(0);
+	});
+
+	it('contains a Produktion summary', () => {
+		expect(typeof zusammenfassungBeschreibungen['Produktion']).toBe('string');
+		expect(zusammenfassungBeschreibungen['Produktion'].length).toBeGreaterThan(0);
+	});
+
+	it('zusammenfassungDefaultText is a non-empty string', () => {
+		expect(typeof zusammenfassungDefaultText).toBe('string');
+		expect(zusammenfassungDefaultText.length).toBeGreaterThan(0);
+	});
+});
+
+// --- PG06: Manual edit protection schema ---
+
+describe('manuellBearbeitetSchema — extended validation (PG06)', () => {
+	const allFalse = { beschreibung: false, zusammenfassung: false, thema: false, normkapitel: false };
+
+	it('validates when all fields are false', () => {
+		expect(manuellBearbeitetSchema.safeParse(allFalse).success).toBe(true);
+	});
+
+	it('validates when all fields are true', () => {
+		const allTrue = { beschreibung: true, zusammenfassung: true, thema: true, normkapitel: true };
+		expect(manuellBearbeitetSchema.safeParse(allTrue).success).toBe(true);
+	});
+
+	it('rejects when beschreibung is missing', () => {
+		const { beschreibung: _, ...rest } = allFalse;
+		expect(manuellBearbeitetSchema.safeParse(rest).success).toBe(false);
+	});
+
+	it('rejects when zusammenfassung is missing', () => {
+		const { zusammenfassung: _, ...rest } = allFalse;
+		expect(manuellBearbeitetSchema.safeParse(rest).success).toBe(false);
+	});
+
+	it('rejects when thema is missing', () => {
+		const { thema: _, ...rest } = allFalse;
+		expect(manuellBearbeitetSchema.safeParse(rest).success).toBe(false);
+	});
+
+	it('rejects when normkapitel is missing', () => {
+		const { normkapitel: _, ...rest } = allFalse;
+		expect(manuellBearbeitetSchema.safeParse(rest).success).toBe(false);
+	});
+
+	it('rejects when beschreibung is a string instead of boolean', () => {
+		expect(manuellBearbeitetSchema.safeParse({ ...allFalse, beschreibung: 'false' }).success).toBe(false);
+	});
+
+	it('rejects when zusammenfassung is a number instead of boolean', () => {
+		expect(manuellBearbeitetSchema.safeParse({ ...allFalse, zusammenfassung: 0 }).success).toBe(false);
+	});
+
+	it('rejects when thema is null instead of boolean', () => {
+		expect(manuellBearbeitetSchema.safeParse({ ...allFalse, thema: null }).success).toBe(false);
+	});
+
+	it('rejects when normkapitel is undefined instead of boolean', () => {
+		expect(manuellBearbeitetSchema.safeParse({ ...allFalse, normkapitel: undefined }).success).toBe(false);
+	});
+
+	it('createDefaultManuellBearbeitet output passes the schema', () => {
+		expect(manuellBearbeitetSchema.safeParse(createDefaultManuellBearbeitet()).success).toBe(true);
 	});
 });
