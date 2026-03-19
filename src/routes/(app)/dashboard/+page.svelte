@@ -3,6 +3,8 @@
 	import type { I18nRune } from '$lib/i18n/i18n.svelte';
 	import { getAudits } from '$lib/rpc/audits.remote';
 	import { getAuditors } from '$lib/rpc/auditoren.remote';
+	import { getActions } from '$lib/rpc/massnahmen.remote';
+	import { getCalendarEntries } from '$lib/rpc/kalender.remote';
 	import * as Card from '$lib/components/ui/card';
 	import { goto } from '$app/navigation';
 	import BarChart2 from '@lucide/svelte/icons/bar-chart-2';
@@ -17,6 +19,8 @@
 	// Use Awaited<ReturnType<...>> to match the actual DB row shape (wider string types)
 	type AuditRow = Awaited<ReturnType<typeof getAudits>>[number];
 	type AuditorRow = Awaited<ReturnType<typeof getAuditors>>[number];
+	type ActionRow = Awaited<ReturnType<typeof getActions>>[number];
+	type CalendarRow = Awaited<ReturnType<typeof getCalendarEntries>>[number];
 
 	const i18n = getContext<I18nRune>('i18n');
 
@@ -24,8 +28,11 @@
 
 	let activeFilter = $state<FilterValue>('all');
 
-	// Load all data once
-	const dataPromise = Promise.all([getAudits(), getAuditors()]);
+	// Load all data once — calendar needs a range, use current year
+	const now = new Date();
+	const yearStart = `${now.getFullYear()}-01-01`;
+	const yearEnd = `${now.getFullYear()}-12-31`;
+	const dataPromise = Promise.all([getAudits(), getAuditors(), getActions(), getCalendarEntries({ startDatum: yearStart, endDatum: yearEnd })]);
 
 	function getStatusColor(status: string): string {
 		switch (status) {
@@ -53,7 +60,7 @@
 		return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 	}
 
-	function computeStats(audits: AuditRow[], auditors: AuditorRow[]) {
+	function computeStats(audits: AuditRow[], auditors: AuditorRow[], actionsData: ActionRow[], calendarData: CalendarRow[]) {
 		const now = new Date();
 		const today = now.toISOString().slice(0, 10);
 		const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
@@ -69,6 +76,11 @@
 
 		const completedThisMonth = audits.filter((a) => a.status === 'completed' && a.updatedAt && new Date(a.updatedAt).toISOString().slice(0, 10) >= startOfMonth).length;
 
+		const openActions = actionsData.filter((a) => a.status !== 'completed' && a.status !== 'verified').length;
+		const overdueActions = actionsData.filter((a) => a.status !== 'completed' && a.status !== 'verified' && a.frist && a.frist < today).length;
+
+		const upcomingCalendarEntries = calendarData.filter((e) => e.datum >= today && e.datum <= in30Days).length;
+
 		return {
 			total,
 			planned,
@@ -77,7 +89,10 @@
 			cancelled,
 			totalAuditors: auditors.length,
 			upcomingAudits,
-			completedThisMonth
+			completedThisMonth,
+			openActions,
+			overdueActions,
+			upcomingCalendarEntries
 		};
 	}
 
@@ -124,23 +139,23 @@
 		return [...audits].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
 	}
 
-	function getCriticalAudits(audits: AuditRow[]): AuditRow[] {
+	function getOverdueActions(actionsData: ActionRow[]): ActionRow[] {
 		const today = new Date().toISOString().slice(0, 10);
-		return audits
-			.filter((a) => a.status !== 'completed' && a.status !== 'cancelled' && a.endDatum && a.endDatum < today)
-			.sort((a, b) => (a.endDatum ?? '').localeCompare(b.endDatum ?? ''))
+		return actionsData
+			.filter((a) => a.status !== 'completed' && a.status !== 'verified' && a.frist && a.frist < today)
+			.sort((a, b) => (a.frist ?? '').localeCompare(b.frist ?? ''))
 			.slice(0, 5);
+	}
+
+	function actionDaysOverdue(frist: string | null): number {
+		if (!frist) return 0;
+		const diff = new Date().getTime() - new Date(frist).getTime();
+		return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
 	}
 
 	function getFilteredAudits(audits: AuditRow[], filter: FilterValue): AuditRow[] {
 		if (filter === 'all') return audits;
 		return audits.filter((a) => a.status === filter);
-	}
-
-	function daysOverdue(endDatum: string | null | undefined): number {
-		if (!endDatum) return 0;
-		const diff = new Date().getTime() - new Date(endDatum).getTime();
-		return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
 	}
 
 	const statCards = [
@@ -227,11 +242,11 @@
 				<div class="bg-muted h-24 animate-pulse rounded-xl"></div>
 			{/each}
 		</div>
-	{:then [audits, auditors]}
-		{@const stats = computeStats(audits, auditors)}
+	{:then [audits, auditors, actionsData, calendarData]}
+		{@const stats = computeStats(audits, auditors, actionsData, calendarData)}
 		{@const distribution = computeDistribution(audits)}
 		{@const recentAudits = getRecentAudits(audits)}
-		{@const criticalAudits = getCriticalAudits(audits)}
+		{@const overdueActionsList = getOverdueActions(actionsData)}
 		{@const filteredAudits = getFilteredAudits(audits, activeFilter)}
 
 		<!-- Status Distribution -->
@@ -254,7 +269,7 @@
 		<section class="mb-6">
 			<div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
 				{#each statCards as card (card.key)}
-					{@const value = card.key === 'openActions' || card.key === 'overdueActions' ? 0 : ((stats as Record<string, number>)[card.key] ?? 0)}
+					{@const value = (stats as Record<string, number>)[card.key] ?? 0}
 					<button
 						class="bg-card cursor-pointer rounded-xl border p-5 text-left shadow-sm transition-transform duration-150 hover:-translate-y-1 hover:shadow-md"
 						onclick={() => goto(card.href)}
@@ -342,23 +357,23 @@
 				</Card.Content>
 			</Card.Root>
 
-			<!-- Critical Actions (overdue audits) -->
+			<!-- Critical Actions (overdue Maßnahmen) -->
 			<Card.Root>
 				<Card.Header>
 					<Card.Title>{i18n.t('dashboard.critical_actions')}</Card.Title>
 				</Card.Header>
 				<Card.Content class="p-0">
-					{#if criticalAudits.length === 0}
+					{#if overdueActionsList.length === 0}
 						<p class="text-muted-foreground px-6 py-4 text-sm">{i18n.t('dashboard.no_critical_actions')}</p>
 					{:else}
 						<div class="divide-y">
-							{#each criticalAudits as audit (audit.id)}
-								{@const overdue = daysOverdue(audit.endDatum)}
+							{#each overdueActionsList as action (action.id)}
+								{@const overdue = actionDaysOverdue(action.frist)}
 								<div class="flex items-start justify-between px-6 py-3">
 									<div>
-										<div class="text-sm font-medium">{audit.auditName}</div>
+										<div class="text-sm font-medium">{action.feststellungsbeschreibung}</div>
 										<div class="text-muted-foreground text-xs">
-											{audit.abteilung} · {formatDate(audit.endDatum ?? '')}
+											{action.verantwortlicher ?? '—'} · {formatDate(action.frist ?? '')}
 										</div>
 									</div>
 									{#if overdue > 0}

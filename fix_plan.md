@@ -123,7 +123,7 @@
 
 ## Phase 13: Integration Wiring
 
-- [ ] I01 [WIRE] Dashboard mit allen Datenquellen — Audits, Auditoren, Maßnahmen, Kalender zählen und aggregieren — Specs: 04-dashboard, 06-audit-verwaltung, 05-auditoren
+- [x] I01 [WIRE] Dashboard mit allen Datenquellen — Audits, Auditoren, Maßnahmen, Kalender zählen und aggregieren — Specs: 04-dashboard, 06-audit-verwaltung, 05-auditoren
 - [ ] I02 [WIRE] Übersicht mit Speicher/Lade-Flows — Gespeicherte Pläne/Notizen/Fragen laden, bearbeiten (in Generator-Formulare), löschen, downloaden — Specs: 03-uebersicht, 09-auditplan-generator, 10-notizen-generator
 - [ ] I03 [WIRE] Einstellungen global anwenden — Theme-Wechsel, Sprache, Kompaktansicht wirkt auf alle Seiten — Specs: 14-einstellungen-persistenz
 - [x] I04 [WIRE] Word-Export in alle Generatoren einbinden — Download-Buttons in Auditplan, Notizen, Auditfragen, Übersicht — Specs: 12-word-export
