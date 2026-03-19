@@ -1,6 +1,8 @@
 {
 	"app": {
-		"title": "ISO Audit Manager",
+		"title": "Der ISO Audit Manager",
+		"subtitle1": "Professionelle Auditplanung und Dokumentation",
+		"subtitle2": "ISO 9001 · ISO 14001 · ISO 45001 · ISO 50001 · ISO 27001",
 		"loading": "Laden..."
 	},
 	"nav": {
@@ -48,7 +50,9 @@
 		"notes": "Notizen",
 		"description": "Beschreibung",
 		"download": "Herunterladen",
-		"upload": "Hochladen"
+		"upload": "Hochladen",
+		"dragDropOrClick": "Dateien hierher ziehen oder klicken zum Auswählen",
+		"maxFileSize": "Maximale Dateigröße: {{size}}"
 	},
 	"status": {
 		"planned": "Geplant",
@@ -76,6 +80,9 @@
 		"required": "Dieses Feld ist erforderlich.",
 		"email_invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
 		"min_length": "Mindestens {{min}} Zeichen erforderlich.",
-		"max_length": "Maximal {{max}} Zeichen erlaubt."
+		"max_length": "Maximal {{max}} Zeichen erlaubt.",
+		"invalidFileType": "Dieser Dateityp wird nicht unterstützt.",
+		"fileTooLarge": "Die Datei ist zu groß (max. 5 MB).",
+		"fileReadError": "Fehler beim Lesen der Datei."
 	}
 }
