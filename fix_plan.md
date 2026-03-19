@@ -27,7 +27,7 @@
 - [x] S10 [SETUP] Shared State Klassen — SettingsState in src/lib/state/settings.svelte.ts (Theme, Kompaktansicht, Benachrichtigungen, Locale) — Specs: 01-architektur, 14-einstellungen-persistenz
 - [x] S11 [SETUP] Wissensdatenbank-Datendateien — Statische TS-Dateien in src/lib/data/ mit TypeScript-Interfaces und Loader-Funktionen. Erstelle vollständige organisationseinheitOptionen (31 Abteilungen mit je 6-10 Themen), ISO-Normkapitel-Listen (alle 5 Normen). Für abteilungBeschreibungen und zusammenfassungBeschreibungen: erstelle 3-5 vollständige Beispiel-Abteilungen als Vorlage, Rest als TODO-Platzhalter. auditQuestionsData: erstelle Struktur + 2-3 Beispiel-Abteilungen — Specs: 13-wissensdatenbank
 - [x] S12 [SETUP] Word-Export-Bibliothek einrichten — docx als Dependency (bun add docx), Basis-Hilfsfunktionen in src/lib/word/ — Specs: 12-word-export
-- [ ] S13 [SETUP] Drag-and-Drop-Utility — Wiederverwendbare Svelte-Action oder Komponente für Block-Sortierung in src/lib/components/ — Specs: 14-einstellungen-persistenz
+- [x] S13 [SETUP] Drag-and-Drop-Utility — Wiederverwendbare Svelte-Action oder Komponente für Block-Sortierung in src/lib/components/ — Specs: 14-einstellungen-persistenz
 - [ ] S14 [SETUP] Datei-Upload-Utility — Wiederverwendbare Upload-Komponente mit Validierung (Formate, 5MB), Base64-Konvertierung in src/lib/components/ — Specs: 14-einstellungen-persistenz
 
 ## Phase 2: Header & Navigation
