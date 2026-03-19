@@ -27,3 +27,15 @@ export const savedDocumentCreateSchema = savedDocumentBase.omit({
 });
 
 export type SavedDocumentCreate = z.infer<typeof savedDocumentCreateSchema>;
+
+// --- Overview Entry (lightweight for overview list) ---
+
+export const overviewEntrySchema = z.object({
+	id: z.string(),
+	name: z.string(),
+	createdAt: z.string(),
+	updatedAt: z.string(),
+	type: z.enum(['document', 'note', 'plan'])
+});
+
+export type OverviewEntry = z.infer<typeof overviewEntrySchema>;
