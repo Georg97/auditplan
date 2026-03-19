@@ -57,7 +57,7 @@
 - [x] D02 [TEST] Dashboard-Statistiken — 8 Karten, Statusverteilung, Filter — Specs: 04-dashboard
 - [x] D03 [IMPL] Dashboard — Statusverteilung (4 farbige Prozentkarten), 8 klickbare Statistik-Karten, Filterleiste (Alle/Geplant/In Bearbeitung/Abgeschlossen), Auditliste, anstehende Audits + kritische Maßnahmen — Specs: 04-dashboard
 - [x] U01 [IFACE] Übersicht-Datenmodell — Gespeicherte-Items-Typen für 3 Abschnitte — Specs: 03-uebersicht
-- [ ] U02 [TEST] Übersicht — Gespeicherte Auditfragen, Notizen, Pläne anzeigen — Specs: 03-uebersicht
+- [x] U02 [TEST] Übersicht — Gespeicherte Auditfragen, Notizen, Pläne anzeigen — Specs: 03-uebersicht
 - [ ] U03 [IMPL] Übersicht — 3 scrollbare Abschnitte mit Einträgen (Name/Datum + Aktionsbuttons: Bearbeiten, Löschen, Word/PDF-Download) — Specs: 03-uebersicht
 
 ## Phase 6: Kalender
