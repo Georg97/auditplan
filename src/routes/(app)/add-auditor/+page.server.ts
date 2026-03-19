@@ -10,7 +10,7 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals: _locals }) => {
 		const form = await superValidate(request, zod4(auditorSchema));
 		if (!form.valid) return fail(400, { form });
 

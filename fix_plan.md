@@ -48,12 +48,12 @@
 
 - [x] V01 [IFACE] Audit-Datenmodell + Server-Funktionen — TypeScript-Interfaces, CRUD, Datei-Anhang-Typ — Specs: 06-audit-verwaltung
 - [x] V02 [TEST] Audit-CRUD — Tests für Erstellen, Suchen, Filtern, Datei-Upload, Status-Validierung — Specs: 06-audit-verwaltung
-- [ ] V03 [IMPL] Audit-CRUD — Formular (6 Abschnitte: Grundinfo, Zeitplanung, Organisation, Norm, Personal, Notizen+Dokumente), Suchergebnisse als Grid-Karten mit Status-Farbkodierung — Specs: 06-audit-verwaltung
-- [ ] V04 [WIRE] Audit-Seite mit Auditoren verknüpfen — Auditor-Select dynamisch aus DB befüllen — Specs: 06-audit-verwaltung, 05-auditoren
+- [x] V03 [IMPL] Audit-CRUD — Formular (6 Abschnitte: Grundinfo, Zeitplanung, Organisation, Norm, Personal, Notizen+Dokumente), Suchergebnisse als Grid-Karten mit Status-Farbkodierung — Specs: 06-audit-verwaltung
+- [x] V04 [WIRE] Audit-Seite mit Auditoren verknüpfen — Auditor-Select dynamisch aus DB befüllen — Specs: 06-audit-verwaltung, 05-auditoren
 
 ## Phase 5: Dashboard & Übersicht
 
-- [ ] D01 [IFACE] Dashboard-Datenmodell — Statistik-Typen, Aggregationsfunktionen — Specs: 04-dashboard
+- [x] D01 [IFACE] Dashboard-Datenmodell — Statistik-Typen, Aggregationsfunktionen — Specs: 04-dashboard
 - [ ] D02 [TEST] Dashboard-Statistiken — 8 Karten, Statusverteilung, Filter — Specs: 04-dashboard
 - [ ] D03 [IMPL] Dashboard — Statusverteilung (4 farbige Prozentkarten), 8 klickbare Statistik-Karten, Filterleiste (Alle/Geplant/In Bearbeitung/Abgeschlossen), Auditliste, anstehende Audits + kritische Maßnahmen — Specs: 04-dashboard
 - [ ] U01 [IFACE] Übersicht-Datenmodell — Gespeicherte-Items-Typen für 3 Abschnitte — Specs: 03-uebersicht

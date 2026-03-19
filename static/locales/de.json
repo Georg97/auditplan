@@ -66,16 +66,52 @@
 		"updated": "Aktualisiert"
 	},
 	"audit": {
+		"addTitle": "Audit erstellen",
+		"editTitle": "Audit bearbeiten",
+		"noAudits": "Keine Audits vorhanden.",
+		"noAuditsHint": "Erstellen Sie Ihr erstes Audit.",
+		"deleteConfirmTitle": "Audit löschen",
+		"deleteConfirmMessage": "Möchten Sie das Audit '{{name}}' wirklich löschen?",
+		"savedSuccess": "Audit erfolgreich gespeichert",
+		"deletedSuccess": "Audit erfolgreich gelöscht",
+		"searchPlaceholder": "Suche nach Audit-Name, Unternehmen...",
+		"auditName": "Audit-Name",
+		"auditType": "Auditart",
+		"startDate": "Startdatum",
+		"endDate": "Enddatum",
+		"timeFrom": "Uhrzeit von",
+		"timeTo": "Uhrzeit bis",
+		"company": "Unternehmen",
+		"department": "Abteilung",
+		"location": "Standort",
+		"scope": "Geltungsbereich",
+		"leadAuditor": "Leitender Auditor",
+		"contactPerson": "Ansprechpartner",
+		"contactEmail": "Kontakt-E-Mail",
+		"allStatuses": "Alle",
 		"status": {
 			"planned": "Geplant",
 			"in_progress": "In Bearbeitung",
 			"completed": "Abgeschlossen",
+			"postponed": "Verschoben",
 			"cancelled": "Abgebrochen"
 		},
 		"priority": {
 			"high": "Hoch",
 			"medium": "Mittel",
 			"low": "Niedrig"
+		},
+		"type": {
+			"internal": "Intern",
+			"external": "Extern",
+			"certification": "Zertifizierung",
+			"surveillance": "Überwachung",
+			"recertification": "Rezertifizierung"
+		},
+		"format": {
+			"on_site": "Vor Ort",
+			"remote": "Remote",
+			"hybrid": "Hybrid"
 		}
 	},
 	"auditor": {
