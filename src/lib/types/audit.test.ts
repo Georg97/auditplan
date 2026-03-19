@@ -34,7 +34,7 @@ describe('auditSchema', () => {
 	});
 
 	it('rejects missing auditName', () => {
-		const { auditName, ...rest } = validAudit;
+		const { auditName: _auditName, ...rest } = validAudit;
 		const result = auditSchema.safeParse(rest);
 		expect(result.success).toBe(false);
 	});
@@ -45,19 +45,19 @@ describe('auditSchema', () => {
 	});
 
 	it('rejects missing startDatum', () => {
-		const { startDatum, ...rest } = validAudit;
+		const { startDatum: _startDatum, ...rest } = validAudit;
 		const result = auditSchema.safeParse(rest);
 		expect(result.success).toBe(false);
 	});
 
 	it('rejects missing unternehmen', () => {
-		const { unternehmen, ...rest } = validAudit;
+		const { unternehmen: _unternehmen, ...rest } = validAudit;
 		const result = auditSchema.safeParse(rest);
 		expect(result.success).toBe(false);
 	});
 
 	it('rejects missing abteilung', () => {
-		const { abteilung, ...rest } = validAudit;
+		const { abteilung: _abteilung, ...rest } = validAudit;
 		const result = auditSchema.safeParse(rest);
 		expect(result.success).toBe(false);
 	});

@@ -182,16 +182,30 @@
 		"week": "Woche",
 		"day": "Tag",
 		"today": "Heute",
-		"newEntry": "Neuer Eintrag"
+		"newEntry": "Neuer Eintrag",
+		"days": {
+			"mon": "Mo",
+			"tue": "Di",
+			"wed": "Mi",
+			"thu": "Do",
+			"fri": "Fr",
+			"sat": "Sa",
+			"sun": "So"
+		},
+		"noEvents": "Keine Termine vorhanden"
 	},
 	"importExport": {
 		"title": "Import / Export",
 		"exportJson": "Als JSON exportieren",
+		"exportJsonDesc": "Exportieren Sie alle Daten als JSON-Datei zur Sicherung oder Übertragung.",
 		"importJson": "JSON importieren",
-		"exportCsv": "Als CSV exportieren"
+		"importJsonDesc": "Importieren Sie Daten aus einer zuvor exportierten JSON-Datei.",
+		"exportCsv": "Als CSV exportieren",
+		"exportCsvDesc": "Exportieren Sie Ihre Auditdaten als CSV-Datei für die Verwendung in Tabellenkalkulationen."
 	},
 	"planGenerator": {
 		"title": "Auditplan-Generator",
+		"placeholder": "Der Auditplan-Generator wird hier implementiert.",
 		"client": "Auftraggeber",
 		"locations": "Standorte",
 		"scope": "Geltungsbereich",
@@ -206,6 +220,7 @@
 	},
 	"notesGenerator": {
 		"title": "Notizen-Generator",
+		"placeholder": "Der Notizen-Generator wird hier implementiert.",
 		"company": "Firma",
 		"standards": "Standards",
 		"certificate": "Zertifikat-Nr.",
@@ -219,6 +234,7 @@
 	},
 	"reportGenerator": {
 		"title": "Berichtsgenerator",
+		"placeholder": "Der Berichtsgenerator wird hier implementiert.",
 		"selectAudit": "Audit auswählen",
 		"findings": "Feststellungen",
 		"recommendations": "Empfehlungen",
@@ -226,6 +242,7 @@
 	},
 	"auditQuestions": {
 		"title": "Auditfragen & Dokumente",
+		"placeholder": "Auditfragen & Dokumente werden hier implementiert.",
 		"department": "Abteilung",
 		"norm": "Norm",
 		"chapter": "Kapitel",
@@ -234,6 +251,7 @@
 	},
 	"actionPlan": {
 		"title": "Maßnahmenplan",
+		"placeholder": "Der Maßnahmenplan wird hier implementiert.",
 		"finding": "Feststellung",
 		"findingType": "Feststellungsart",
 		"measure": "Maßnahme",
