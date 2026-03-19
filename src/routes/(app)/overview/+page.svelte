@@ -3,9 +3,12 @@
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import type { I18nRune } from '$lib/i18n/i18n.svelte';
-	import { getSavedPlans, deleteSavedPlan } from '$lib/rpc/plaene.remote';
-	import { getSavedNotes, deleteSavedNotes } from '$lib/rpc/notizen.remote';
-	import { getSavedAuditQuestions, deleteSavedAuditQuestions } from '$lib/rpc/auditfragen.remote';
+	import { getSavedPlans, getSavedPlanById, deleteSavedPlan } from '$lib/rpc/plaene.remote';
+	import { getSavedNotes, getSavedNotesById, deleteSavedNotes } from '$lib/rpc/notizen.remote';
+	import { getSavedAuditQuestions, getSavedAuditQuestionsById, deleteSavedAuditQuestions } from '$lib/rpc/auditfragen.remote';
+	import { generatePlanWordDocument } from '$lib/word/auditplan-word';
+	import { generateNotesWordDocument } from '$lib/word/auditnotizen-word';
+	import { generateAuditQuestionsWord } from '$lib/word/auditfragen-word';
 	import * as Card from '$lib/components/ui/card';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Button } from '$lib/components/ui/button';
@@ -109,6 +112,37 @@
 		else if (type === 'note') goto(`/notes-generator?edit=${id}`);
 		else goto(`/audit-questions?edit=${id}`);
 	}
+
+	async function handleDownload(id: string, type: 'plan' | 'note' | 'question') {
+		try {
+			if (type === 'plan') {
+				const plan = await getSavedPlanById(id);
+				if (!plan?.daten) return;
+				const data = JSON.parse(plan.daten);
+				await generatePlanWordDocument(data, data.logoBase64 ?? undefined);
+			} else if (type === 'note') {
+				const note = await getSavedNotesById(id);
+				if (!note?.daten) return;
+				const data = JSON.parse(note.daten);
+				await generateNotesWordDocument(data);
+			} else {
+				const q = await getSavedAuditQuestionsById(id);
+				if (!q) return;
+				const formData = JSON.parse(q.formData);
+				const questionsList = JSON.parse(q.questions);
+				const documentsList = JSON.parse(q.documents);
+				generateAuditQuestionsWord({
+					abteilung: formData.abteilung ?? '',
+					datum: formData.datum ?? '',
+					questions: questionsList,
+					documents: documentsList
+				});
+			}
+			toast.success(i18n.t('common.download') + ' ✓');
+		} catch {
+			toast.error(i18n.t('common.no_data'));
+		}
+	}
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -150,7 +184,7 @@
 									<Trash2 class="mr-1 h-4 w-4" />
 									{i18n.t('common.delete')}
 								</Button>
-								<Button size="sm" variant="outline">
+								<Button size="sm" variant="outline" onclick={() => handleDownload(item.id, 'question')}>
 									<Download class="mr-1 h-4 w-4" />
 									{i18n.t('common.download')}
 								</Button>
@@ -196,7 +230,7 @@
 									<Trash2 class="mr-1 h-4 w-4" />
 									{i18n.t('common.delete')}
 								</Button>
-								<Button size="sm" variant="outline">
+								<Button size="sm" variant="outline" onclick={() => handleDownload(item.id, 'note')}>
 									<Download class="mr-1 h-4 w-4" />
 									{i18n.t('common.download')}
 								</Button>
@@ -242,7 +276,7 @@
 									<Trash2 class="mr-1 h-4 w-4" />
 									{i18n.t('common.delete')}
 								</Button>
-								<Button size="sm" variant="outline">
+								<Button size="sm" variant="outline" onclick={() => handleDownload(item.id, 'plan')}>
 									<Download class="mr-1 h-4 w-4" />
 									{i18n.t('common.download')}
 								</Button>
