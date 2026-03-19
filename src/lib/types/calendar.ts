@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+// --- Calendar View Mode ---
+
+export const calendarViewValues = ['month', 'week', 'day'] as const;
+export type CalendarView = (typeof calendarViewValues)[number];
+export const calendarViewSchema = z.enum(calendarViewValues);
+
+// --- Calendar Entry ---
+
 export const calendarEntrySchema = z.object({
 	id: z.string(),
 	organizationId: z.string(),
@@ -9,6 +17,8 @@ export const calendarEntrySchema = z.object({
 	startTime: z.string().nullable().optional(),
 	endTime: z.string().nullable().optional(),
 	allDay: z.boolean().optional().default(false),
+	company: z.string().nullable().optional(),
+	auditorId: z.string().nullable().optional(),
 	auditId: z.string().nullable().optional(),
 	color: z.string().nullable().optional(),
 	createdAt: z.date(),

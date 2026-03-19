@@ -233,7 +233,37 @@
 		"week": "Woche",
 		"day": "Tag",
 		"today": "Heute",
-		"addEntry": "Eintrag hinzufügen"
+		"addEntry": "Neuer Eintrag",
+		"editEntry": "Eintrag bearbeiten",
+		"deleteEntry": "Eintrag löschen",
+		"deleteConfirmTitle": "Kalendereintrag löschen",
+		"deleteConfirmDescription": "Kalendereintrag '{{name}}' wirklich löschen?",
+		"deleteSuccess": "Eintrag erfolgreich gelöscht",
+		"saveSuccess": "Eintrag erfolgreich gespeichert",
+		"fields": {
+			"date": "Datum",
+			"title": "Titel",
+			"startTime": "Startzeit",
+			"endTime": "Endzeit",
+			"company": "Unternehmen",
+			"auditor": "Auditor",
+			"description": "Beschreibung"
+		},
+		"placeholders": {
+			"title": "Titel des Eintrags",
+			"company": "Unternehmen",
+			"description": "Beschreibung..."
+		},
+		"weekdays": {
+			"mo": "Mo",
+			"tu": "Di",
+			"we": "Mi",
+			"th": "Do",
+			"fr": "Fr",
+			"sa": "Sa",
+			"su": "So"
+		},
+		"noEntries": "Keine Einträge vorhanden"
 	},
 	"importExport": {
 		"title": "Import / Export",
